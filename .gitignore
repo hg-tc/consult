@@ -1,0 +1,234 @@
+# ==================== Python / Backend ====================
+# Python 缓存文件
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Python 虚拟环境
+venv/
+env/
+ENV/
+.venv/
+.env/
+.venv
+
+# Python 打包文件
+*.egg
+*.egg-info/
+dist/
+build/
+*.egg-info/
+
+# Python 测试覆盖率
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# ==================== Node.js / Frontend ====================
+# Node 依赖
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Next.js 构建输出
+.next/
+frontend/.next/
+out/
+frontend/out/
+
+# 构建文件
+build/
+dist/
+frontend/build/
+frontend/dist/
+
+# 调试日志
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+lerna-debug.log*
+
+# Lock 文件（根据使用的包管理器选择）
+# 如果使用 pnpm，删除下一行注释；如果使用 npm，取消注释
+# package-lock.json
+# yarn.lock
+
+# ==================== 数据库文件 ====================
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# PostgreSQL
+*.sql.gz
+*.sql
+
+# 向量数据库
+vector_db/
+*.chroma
+qdrant_storage/
+
+# ==================== 环境变量和配置 ====================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# ==================== 日志文件 ====================
+*.log
+backend.log
+frontend.log
+system.log
+logs/
+*.log.*
+
+# ==================== 上传和临时文件 ====================
+uploads/
+temp/
+tmp/
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# 备份文件
+*.backup
+*.bak
+*.old
+
+# 压缩文件（不需要版本控制）
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+
+# ==================== IDE 配置文件 ====================
+# VSCode
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+
+# ==================== macOS ====================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ==================== Windows ====================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# ==================== Linux ====================
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ==================== 开发工具 ====================
+# TypeScript
+*.tsbuildinfo
+
+# Vercel
+.vercel
+frontend/.vercel
+
+# PyCharm
+.idea/
+
+# ==================== 项目特定 ====================
+# 向量数据库存储
+global_vector_db/
+langchain_vector_db/
+web_search_cache/
+global_data/
+
+# 生成的文件
+generated/
+frontend/generated/
+
+# 测试数据
+test_data/
+frontend/test_data/
+backend/test_data/
+
+# 文档恢复相关
+恢复指南.txt
+RESTORE_SUMMARY.md
+*_SUMMARY.md
+
+# 防火墙配置
+iptables-rules.backup
+
+# 系统监控脚本生成的日志
+agent-platform.log
+
+# ==================== 其他 ====================
+# 临时脚本
+*.sh.bak
+*.py.bak
+
+# Python 字节码
+*.pyc
+*.pyo
+
+# 模型文件（如果太大）
+*.pth
+*.pt
+*.h5
+*.onnx
+
+# LLM 模型权重
+*.safetensors
+*.bin
+
