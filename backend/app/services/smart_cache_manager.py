@@ -189,7 +189,7 @@ class SmartCacheManager:
         self.metadata_cache = LRUCache(max_size=1000, max_memory_mb=10)  # 元数据缓存
         
         # 持久化存储
-        self.persistent_dir = Path("/root/workspace/consult/backend/cache_storage")
+        self.persistent_dir = Path("/root/consult/backend/cache_storage")
         self.persistent_dir.mkdir(exist_ok=True)
         
         # 加载持久化缓存

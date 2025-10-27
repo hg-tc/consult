@@ -36,7 +36,7 @@ router = APIRouter(prefix="/api/global", tags=["global"])
 performance_optimizer = get_performance_optimizer()  # 性能优化器
 
 # 持久化存储路径
-GLOBAL_DATA_DIR = Path("/root/workspace/consult/backend/global_data")
+GLOBAL_DATA_DIR = Path("/root/consult/backend/global_data")
 GLOBAL_DOCUMENTS_FILE = GLOBAL_DATA_DIR / "documents.json"
 GLOBAL_WORKSPACES_FILE = GLOBAL_DATA_DIR / "workspaces.json"
 
@@ -118,7 +118,7 @@ async def upload_global_document(
         file_id = str(uuid.uuid4())
         filename = f"{file_id}{file_ext}"
         upload_dir = Path("uploads/global")
-        upload_dir.mkdir(exist_ok=True)
+        upload_dir.mkdir(parents=True, exist_ok=True)
         file_path = upload_dir / filename
         
         with open(file_path, "wb") as f:
@@ -823,7 +823,7 @@ async def optimize_performance():
     """执行性能优化"""
     try:
         # 优化向量索引
-        vector_db_path = "/root/workspace/consult/backend/langchain_vector_db"
+        vector_db_path = "/root/consult/backend/langchain_vector_db"
         optimization_result = performance_optimizer.optimize_vector_index(vector_db_path)
         
         # 清理过期缓存
@@ -888,34 +888,48 @@ async def download_global_document(doc_id: str):
 
 @router.delete("/documents/{doc_id}")
 async def delete_global_document(doc_id: str):
-    """删除全局文档（使用索引快速定位）"""
+    """删除全局文档"""
     try:
         logger.info(f"收到删除全局文档请求: {doc_id}")
         
-        # 从索引中获取文件信息
-        file_info = file_index_manager.get_file_info(doc_id)
-        if not file_info:
-            logger.warning(f"文档 {doc_id} 在索引中未找到")
+        # 从documents.json中查找并删除文档
+        documents = load_global_documents()
+        document_to_delete = None
+        
+        for idx, doc in enumerate(documents):
+            if doc.get('id') == doc_id:
+                document_to_delete = doc
+                # 从列表中删除
+                documents.pop(idx)
+                break
+        
+        if not document_to_delete:
+            logger.warning(f"文档 {doc_id} 在文档列表中未找到")
             raise HTTPException(status_code=404, detail="文档未找到")
         
-        chunk_ids = file_info.get("chunk_ids", [])
-        original_filename = file_info.get("original_filename", doc_id)
-        file_path = file_info.get("file_path")
-        
-        logger.info(f"准备删除文档: {original_filename}, 包含 {len(chunk_ids)} 个块")
-        
-        # 使用高效的删除方法
-        rag_service = get_global_rag_service()
+        original_filename = document_to_delete.get('original_filename', doc_id)
+        file_path = document_to_delete.get('file_path')
         deleted_count = 0
         
-        for chunk_id in chunk_ids:
-            if rag_service.delete_document_efficient("global", chunk_id):
-                deleted_count += 1
-                logger.debug(f"删除chunk: {chunk_id}")
-            else:
-                logger.warning(f"删除chunk失败: {chunk_id}")
+        logger.info(f"准备删除文档: {original_filename}")
         
-        logger.info(f"成功删除了 {deleted_count}/{len(chunk_ids)} 个块")
+        # 尝试从向量存储中删除（如果存在）
+        try:
+            file_info = file_index_manager.get_file_info(doc_id)
+            if file_info:
+                chunk_ids = file_info.get("chunk_ids", [])
+                # 使用高效的删除方法
+                rag_service = get_global_rag_service()
+                for chunk_id in chunk_ids:
+                    if rag_service.delete_document_efficient("global", chunk_id):
+                        deleted_count += 1
+                        logger.debug(f"删除chunk: {chunk_id}")
+                    else:
+                        logger.warning(f"删除chunk失败: {chunk_id}")
+                # 从索引中删除文件记录
+                file_index_manager.remove_file(doc_id)
+        except Exception as e:
+            logger.warning(f"从向量存储删除失败: {str(e)}")
         
         # 删除物理文件
         if file_path and os.path.exists(file_path):
@@ -925,17 +939,15 @@ async def delete_global_document(doc_id: str):
             except Exception as e:
                 logger.warning(f"删除物理文件失败: {str(e)}")
         
-        # 从索引中删除文件记录
-        file_index_manager.remove_file(doc_id)
+        # 保存更新后的文档列表
+        save_global_documents(documents)
         
-        logger.info(f"文档删除完成: {original_filename}, 删除了 {deleted_count}/{len(chunk_ids)} 个块")
+        logger.info(f"文档删除完成: {original_filename}")
         
         return {
             "status": "deleted",
             "id": doc_id,
             "filename": original_filename,
-            "deleted_chunks": deleted_count,
-            "total_chunks": len(chunk_ids),
             "message": f"文档 {original_filename} 已成功删除"
         }
         

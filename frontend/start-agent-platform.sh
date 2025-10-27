@@ -1,7 +1,7 @@
 #!/bin/bash
 # Agent Service Platform 启动脚本
 
-cd /root/workspace/consult/frontend
+cd /root/consult/frontend
 
 # 检查Node.js是否安装
 if ! command -v node &> /dev/null; then
@@ -19,8 +19,8 @@ fi
 # 恢复防火墙规则（如果需要）
 if command -v iptables &> /dev/null; then
     echo "配置防火墙规则..."
-    if [ -f "/root/workspace/consult/frontend/iptables-rules.backup" ]; then
-        iptables-restore < /root/workspace/consult/frontend/iptables-rules.backup
+    if [ -f "/root/consult/frontend/iptables-rules.backup" ]; then
+        iptables-restore < /root/consult/frontend/iptables-rules.backup
     fi
     # 确保端口13000开放
     iptables -C INPUT -p tcp --dport 13000 -j ACCEPT 2>/dev/null || iptables -I INPUT -p tcp --dport 13000 -j ACCEPT

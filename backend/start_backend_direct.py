@@ -7,10 +7,10 @@ import sys
 import uvicorn
 
 # 添加路径
-sys.path.insert(0, '/root/workspace/consult/backend')
+sys.path.insert(0, '/root/consult/backend')
 
 # 设置工作目录
-os.chdir('/root/workspace/consult/backend')
+os.chdir('/root/consult/backend')
 
 # 导入app
 from app_simple import app

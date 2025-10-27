@@ -11,7 +11,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # 项目根目录
-PROJECT_ROOT="/root/workspace/consult"
+PROJECT_ROOT="/root/consult"
 
 # 函数：打印带颜色的消息
 print_message() {
@@ -132,7 +132,7 @@ main() {
     print_message $BLUE "🔍 服务状态检查:"
     check_service_status "后端" "18000" "http://localhost:18000/api/status"
     check_service_status "前端" "3000" "http://localhost:3000"
-    check_service_status "Nginx" "80" "http://localhost:13000"
+    check_service_status "Nginx" "13000" "http://localhost:13000"
     
     echo ""
     

@@ -2,7 +2,7 @@
 # Agent Service Platform 监控脚本
 # 此脚本会持续监控应用是否在运行，如果停止了会自动重启
 
-LOG_FILE="/root/workspace/consult/frontend/agent-platform.log"
+LOG_FILE="/root/consult/frontend/agent-platform.log"
 
 echo "$(date): 监控脚本启动" >> "$LOG_FILE"
 
@@ -17,7 +17,7 @@ while true; do
         fi
 
         # 启动应用
-        cd /root/workspace/consult/frontend
+        cd /root/consult/frontend
         nohup ./start-agent-platform.sh >> "$LOG_FILE" 2>&1 &
 
         echo "$(date): 应用已重启" >> "$LOG_FILE"

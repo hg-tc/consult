@@ -13,7 +13,11 @@ from typing import List, Dict, Any, Optional, Tuple
 from pathlib import Path
 
 # LangChain imports
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+# LangChain 1.0+ 使用新的导入路径
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
+from langchain_core.prompts import PromptTemplate
+
 from langchain_community.document_loaders import (
     TextLoader, 
     PyPDFLoader, 
@@ -23,12 +27,13 @@ from langchain_community.document_loaders import (
 )
 from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_community.embeddings import HuggingFaceEmbeddings
+try:
+    from langchain_community.embeddings import HuggingFaceEmbeddings
+except ImportError:
+    # 新版本路径
+    from langchain_huggingface import HuggingFaceEmbeddings
+
 from sentence_transformers import SentenceTransformer
-from langchain.prompts import PromptTemplate
-from langchain.schema import Document
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains import create_retrieval_chain
 
 # 导入缓存管理器
 from .smart_cache_manager import get_cache_manager
@@ -112,7 +117,7 @@ class LangChainRAGService:
             logger.info(f"使用HuggingFace镜像站: {os.environ['HF_ENDPOINT']}")
             
             # 检查本地模型
-            local_model_path = Path("/root/workspace/consult/backend/models/bge-large-zh-v1.5")
+            local_model_path = Path("/root/consult/backend/models/bge-large-zh-v1.5")
             if local_model_path.exists():
                 logger.info(f"使用本地模型: {local_model_path}")
                 model_name = str(local_model_path)
@@ -575,17 +580,11 @@ class LangChainRAGService:
                 # 使用简单的文本匹配模式
                 return await self._simple_text_match(vector_store, question, top_k)
             
-            # 创建文档链
-            document_chain = create_stuff_documents_chain(self.llm, prompt)
-            
-            # 创建检索链
-            retrieval_chain = create_retrieval_chain(retriever, document_chain)
-            
-            # 执行查询
-            response = await retrieval_chain.ainvoke({"input": question})
+            # 简化处理：直接使用检索和LLM，不使用链
+            docs = await retriever.aget_relevant_documents(question)
             
             # 提取相关文档
-            source_docs = response.get("context", [])
+            source_docs = docs
             references = []
             for i, doc in enumerate(source_docs):
                 references.append({
@@ -594,12 +593,20 @@ class LangChainRAGService:
                     "similarity": 0.8  # 简化处理
                 })
             
+            # 构建上下文
+            context = "\n\n".join([doc.page_content for doc in docs])
+            formatted_prompt = prompt_template.format(context=context, input=question)
+            
+            # 调用LLM
+            response = await self.llm.ainvoke(formatted_prompt)
+            
             # 安全提取答案
-            answer = response.get("answer", "")
-            if isinstance(answer, dict):
-                answer = str(answer)
-            elif not isinstance(answer, str):
-                answer = str(answer)
+            if hasattr(response, 'content'):
+                answer = response.content
+            elif isinstance(response, dict):
+                answer = response.get("answer", str(response))
+            elif not isinstance(response, str):
+                answer = str(response)
             
             result = {
                 "answer": answer,

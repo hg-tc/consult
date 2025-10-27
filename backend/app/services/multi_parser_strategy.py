@@ -530,7 +530,7 @@ def test_multi_parser():
     parser = MultiParserStrategy()
     
     # 测试文件
-    test_file = "/root/workspace/consult/大数据作业2.docx"
+    test_file = "/root/consult/大数据作业2.docx"
     
     if os.path.exists(test_file):
         result = parser.parse_document(test_file)

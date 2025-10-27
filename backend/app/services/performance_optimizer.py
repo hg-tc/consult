@@ -18,7 +18,7 @@ class PerformanceOptimizer:
     """性能优化服务"""
     
     def __init__(self):
-        self.cache_dir = Path("/root/workspace/consult/backend/cache")
+        self.cache_dir = Path("/root/consult/backend/cache")
         self.cache_dir.mkdir(exist_ok=True)
         
         # 缓存配置

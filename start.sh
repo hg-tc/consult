@@ -13,7 +13,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # 项目根目录
-PROJECT_ROOT="/root/workspace/consult"
+PROJECT_ROOT="/root/consult"
 BACKEND_DIR="$PROJECT_ROOT/backend"
 FRONTEND_DIR="$PROJECT_ROOT/frontend"
 
@@ -171,8 +171,8 @@ check_system_status() {
     fi
     
     # 检查Nginx
-    if check_service "Nginx" "80"; then
-        print_message $GREEN "✅ Nginx运行正常"
+    if check_service "Nginx" "13000"; then
+        print_message $GREEN "✅ Nginx运行正常 (端口 13000)"
     else
         print_message $RED "❌ Nginx未运行"
     fi

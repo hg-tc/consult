@@ -1,0 +1,114 @@
+[
+  {
+    "id": "5bddb72b-8b41-40f2-b4e6-8792cb0da611",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761530545.4023633,
+    "started_at": 1761530545.4036841,
+    "completed_at": 1761530546.7980072,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "p1.pdf",
+      "file_path": "uploads/global/96429807-ddab-4a99-bc25-bc3473a494d2.pdf",
+      "file_size": 245257,
+      "document_id": "96429807-ddab-4a99-bc25-bc3473a494d2"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "5917b4c7-a8ea-4578-aa9f-e5a6706f2864",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761531014.3694243,
+    "started_at": 1761531014.3830736,
+    "completed_at": 1761531016.0886812,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "p1.pdf",
+      "file_path": "uploads/global/43f4cb51-357f-41be-9afc-201f267d7640.pdf",
+      "file_size": 245257,
+      "document_id": "43f4cb51-357f-41be-9afc-201f267d7640"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "7bf4d46d-9068-494d-86f6-2579ca5cce6f",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761531198.6003897,
+    "started_at": 1761531198.6025155,
+    "completed_at": 1761531209.1802826,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "page1.pdf",
+      "file_path": "uploads/global/7e2d7170-40e2-42b8-860f-c8d0cb828d68.pdf",
+      "file_size": 294772,
+      "document_id": "7e2d7170-40e2-42b8-860f-c8d0cb828d68"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "bfb53789-7b8a-4d3d-9cc7-213d5586d1c1",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761532555.8769922,
+    "started_at": 1761532555.8785336,
+    "completed_at": 1761532571.1012764,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "方差分析-2023214240-闫恒睿.pdf",
+      "file_path": "uploads/global/89e05fc3-488d-4269-902b-7d3bfa3d999a.pdf",
+      "file_size": 518169,
+      "document_id": "89e05fc3-488d-4269-902b-7d3bfa3d999a",
+      "chunk_count": 6
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "c9e93f69-1b0e-4398-a513-d7e1bec87a98",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761532582.7274282,
+    "started_at": 1761532582.7299724,
+    "completed_at": 1761532587.7741666,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "p1.pdf",
+      "file_path": "uploads/global/381bf140-5363-45f0-9f77-84272f01cd74.pdf",
+      "file_size": 245257,
+      "document_id": "381bf140-5363-45f0-9f77-84272f01cd74",
+      "chunk_count": 1
+    },
+    "workspace_id": "global"
+  }
+]

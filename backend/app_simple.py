@@ -24,7 +24,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler('/root/workspace/consult/backend/debug.log')
+        logging.FileHandler('/root/consult/backend/debug.log')
     ]
 )
 logger = logging.getLogger(__name__)
@@ -123,7 +123,7 @@ async def root():
 async def favicon():
     """favicon图标"""
     from fastapi.responses import FileResponse
-    return FileResponse("/root/workspace/consult/backend/favicon.ico")
+    return FileResponse("/root/consult/backend/favicon.ico")
 
 @app.get("/api/health")
 async def health_check():
@@ -214,7 +214,7 @@ async def upload_database(file: UploadFile = File(...)):
         
         # 保存文件到全局数据库目录
         upload_dir = Path("uploads/global")
-        upload_dir.mkdir(exist_ok=True)
+        upload_dir.mkdir(parents=True, exist_ok=True)
         
         file_id = str(uuid.uuid4())
         filename = f"{file_id}_{file.filename}"
@@ -1712,7 +1712,7 @@ async def get_workspaces_api():
             rag_service = LangChainRAGService()
             
             # 检查向量数据库目录，找出所有工作区
-            vector_db_path = Path("/root/workspace/consult/backend/langchain_vector_db")
+            vector_db_path = Path("/root/consult/backend/langchain_vector_db")
             if vector_db_path.exists():
                 # 查找所有工作区目录
                 for item in vector_db_path.iterdir():
@@ -1775,7 +1775,7 @@ async def create_workspace_api(data: dict):
         workspace_id = str(uuid.uuid4())
         
         # 创建工作区目录
-        workspace_dir = Path(f"/root/workspace/consult/backend/langchain_vector_db/workspace_{workspace_id}")
+        workspace_dir = Path(f"/root/consult/backend/langchain_vector_db/workspace_{workspace_id}")
         workspace_dir.mkdir(parents=True, exist_ok=True)
         
         logger.info(f"[DEBUG] 创建工作区目录: {workspace_dir}")

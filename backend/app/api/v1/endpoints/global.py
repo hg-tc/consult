@@ -64,7 +64,7 @@ async def upload_global_document(
         file_id = str(uuid.uuid4())
         filename = f"{file_id}{file_ext}"
         upload_dir = Path("uploads/global")
-        upload_dir.mkdir(exist_ok=True)
+        upload_dir.mkdir(parents=True, exist_ok=True)
         file_path = upload_dir / filename
         
         with open(file_path, "wb") as f:

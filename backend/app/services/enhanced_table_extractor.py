@@ -404,7 +404,7 @@ def test_table_extraction():
     extractor = EnhancedTableExtractor()
     
     # 测试PDF文件
-    test_pdf = "/root/workspace/consult/大数据作业2.docx"  # 使用现有文件
+    test_pdf = "/root/consult/大数据作业2.docx"  # 使用现有文件
     
     if os.path.exists(test_pdf):
         tables = extractor.extract_tables_from_pdf(test_pdf)

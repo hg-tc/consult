@@ -70,7 +70,7 @@ class TaskQueue:
         self.task_callbacks: Dict[str, List[Callable]] = {}
         
         # 持久化存储路径
-        self.storage_path = Path("/root/workspace/consult/backend/task_storage")
+        self.storage_path = Path("/root/consult/backend/task_storage")
         self.storage_path.mkdir(exist_ok=True)
         
         # 并行处理器

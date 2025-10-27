@@ -13,7 +13,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # 项目根目录
-PROJECT_ROOT="/root/workspace/consult"
+PROJECT_ROOT="/root/consult"
 
 # 函数：打印带颜色的消息
 print_message() {
