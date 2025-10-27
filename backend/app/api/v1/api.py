@@ -3,7 +3,7 @@ API路由配置
 """
 
 from fastapi import APIRouter
-from app.api.v1.endpoints import auth, workspaces, documents, conversations, templates, qa, context, generation, health
+from app.api.v1.endpoints import auth, workspaces, documents, conversations, templates, qa, context, generation, health, production_agent_api
 
 api_router = APIRouter()
 
@@ -17,3 +17,5 @@ api_router.include_router(qa.router, prefix="/qa", tags=["问答系统"])
 api_router.include_router(context.router, prefix="/context", tags=["上下文管理"])
 api_router.include_router(generation.router, prefix="/generation", tags=["文档生成"])
 api_router.include_router(health.router, prefix="/health", tags=["健康检查"])
+# 生产级 Agent 系统
+api_router.include_router(production_agent_api.router, prefix="/production-agent", tags=["生产级Agent"])

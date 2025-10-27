@@ -400,30 +400,58 @@ async def ask_question(data: dict):
                     "suggested_params": intent.extracted_params
                 }
             
-            # 2.2 使用高级工作流系统
-            print("=== 开始高级工作流处理 ===")
+            # 2.2 使用生产级 Agent 工作流
+            print("=== 开始生产级 Agent 工作流处理 ===")
             
-            # 初始化工作流调度器
-            from app.services.web_search_service import get_web_search_service
-            web_search_service = get_web_search_service()
-            
-            workflow_orchestrator = WorkflowOrchestrator(
-                rag_service.llm, 
-                rag_service, 
-                web_search_service
-            )
-            
-            # 构建需求参数
-            requirements = {
-                "doc_type": intent.doc_type.value,
-                "enable_web_search": enable_web_search,
-                "workspace_id": workspace_id,
-                "conversation_history": conversation_history,
-                "intent_params": intent.extracted_params
-            }
-            
-            # 执行工作流
-            workflow_result = await workflow_orchestrator.execute_task(question, requirements)
+            try:
+                # 检查 LLM 是否可用
+                if not rag_service.llm:
+                    raise ValueError("LLM不可用：请配置OPENAI_API_KEY或THIRD_PARTY_API环境变量")
+                
+                from app.workflows.production_workflow import ProductionWorkflow
+                
+                # 初始化生产工作流
+                production_workflow = ProductionWorkflow(
+                    llm=rag_service.llm,
+                    rag_service=rag_service,
+                    web_search_service=None  # 暂时不使用网络搜索
+                )
+                
+                # 执行生产工作流
+                workflow_result = await production_workflow.execute(
+                    user_request=question,
+                    workspace_id=workspace_id,
+                    conversation_history=conversation_history
+                )
+                
+                # 转换结果格式以适配现有返回结构
+                if workflow_result.get('success'):
+                    workflow_result['workflow_type'] = 'production_agent'
+                    workflow_result['complexity_analysis'] = {
+                        'complexity': 'complex',
+                        'estimated_time': 60
+                    }
+            except Exception as production_error:
+                print(f"生产工作流失败: {production_error}")
+                # 回退到旧的工作流
+                from app.services.web_search_service import get_web_search_service
+                web_search_service = get_web_search_service()
+                
+                workflow_orchestrator = WorkflowOrchestrator(
+                    rag_service.llm, 
+                    rag_service, 
+                    web_search_service
+                )
+                
+                requirements = {
+                    "doc_type": intent.doc_type.value,
+                    "enable_web_search": enable_web_search,
+                    "workspace_id": workspace_id,
+                    "conversation_history": conversation_history,
+                    "intent_params": intent.extracted_params
+                }
+                
+                workflow_result = await workflow_orchestrator.execute_task(question, requirements)
             
             print(f"工作流执行完成: {workflow_result.get('success', False)}")
             print(f"使用工作流类型: {workflow_result.get('workflow_type', 'unknown')}")

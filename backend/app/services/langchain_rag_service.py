@@ -60,20 +60,23 @@ class LangChainRAGService:
     def _initialize_components(self):
         """初始化LangChain组件"""
         try:
-            # 设置OpenAI配置
-            os.environ['OPENAI_API_KEY'] = os.getenv('OPENAI_API_KEY', '')
-            os.environ['OPENAI_BASE_URL'] = os.getenv('THIRD_PARTY_API_BASE', 'https://api.openai.com/v1')
-            
             # 优先使用本地BGE嵌入模型
             self.embeddings = self._initialize_local_embeddings()
             
             # 初始化LLM - 添加回退机制
             try:
-                api_key = os.getenv('OPENAI_API_KEY')
-                api_base = os.getenv('THIRD_PARTY_API_BASE', 'https://api.openai.com/v1')
+                # 优先使用第三方API配置
+                api_key = os.getenv('THIRD_PARTY_API_KEY') or os.getenv('OPENAI_API_KEY')
+                api_base = os.getenv('THIRD_PARTY_API_BASE') or os.getenv('OPENAI_BASE_URL', 'https://api.openai.com/v1')
                 
                 if not api_key:
-                    raise ValueError("OPENAI_API_KEY not found")
+                    raise ValueError("THIRD_PARTY_API_KEY or OPENAI_API_KEY not found")
+                
+                logger.info(f"使用API Base: {api_base}")
+                
+                # 设置环境变量供LangChain使用
+                os.environ['OPENAI_API_KEY'] = api_key
+                os.environ['OPENAI_BASE_URL'] = api_base
                 
                 self.llm = ChatOpenAI(
                     model="gpt-3.5-turbo",
@@ -578,10 +581,13 @@ class LangChainRAGService:
             # 检查LLM是否可用
             if self.llm is None:
                 # 使用简单的文本匹配模式
-                return await self._simple_text_match(vector_store, question, top_k)
+                # 改为同步调用
+                import asyncio
+                return await asyncio.get_event_loop().run_in_executor(None, self._simple_text_match, vector_store, question, top_k)
             
             # 简化处理：直接使用检索和LLM，不使用链
-            docs = await retriever.aget_relevant_documents(question)
+            # 使用同步方法（在新版 LangChain 中）
+            docs = retriever.invoke(question) if hasattr(retriever, 'invoke') else retriever.get_relevant_documents(question)
             
             # 提取相关文档
             source_docs = docs
@@ -826,7 +832,7 @@ class LangChainRAGService:
             logger.error(f"删除工作区失败: {str(e)}")
             return False
     
-    async def _simple_text_match(self, vector_store, question: str, top_k: int = 5) -> Dict[str, Any]:
+    def _simple_text_match(self, vector_store, question: str, top_k: int = 5) -> Dict[str, Any]:
         """简单的文本匹配模式（当LLM不可用时）"""
         try:
             # 检索相关文档
@@ -836,7 +842,7 @@ class LangChainRAGService:
             )
             
             # 获取相关文档
-            docs = await retriever.aget_relevant_documents(question)
+            docs = retriever.invoke(question) if hasattr(retriever, 'invoke') else retriever.get_relevant_documents(question)
             
             if not docs:
                 return {
@@ -878,11 +884,40 @@ class LangChainRAGService:
             }
     
     async def search_and_answer(self, question: str, workspace_id: str, conversation_history: List[Dict] = None) -> Dict[str, Any]:
-        """搜索和回答的统一方法"""
+        """搜索和回答的统一方法 - 优先搜索工作区，如果工作区没有数据则搜索全局数据库"""
         try:
-            # 调用ask_question方法
-            result = await self.ask_question(workspace_id, question, top_k=5)
-            return result
+            # 优先尝试从当前工作区搜索
+            try:
+                result = await self.ask_question(workspace_id, question, top_k=5)
+                # 如果工作区有数据且找到了结果，直接返回
+                if result.get('references'):
+                    logger.info(f"从工作区 {workspace_id} 找到 {len(result['references'])} 个相关文档")
+                    return result
+            except Exception as workspace_error:
+                logger.info(f"工作区 {workspace_id} 搜索失败或无数据: {str(workspace_error)}")
+            
+            # 如果工作区没有结果，尝试从全局数据库搜索
+            logger.info(f"工作区 {workspace_id} 没有找到相关数据，尝试搜索全局数据库")
+            try:
+                global_result = await self.ask_question("global", question, top_k=5)
+                if global_result.get('references'):
+                    logger.info(f"从全局数据库找到 {len(global_result['references'])} 个相关文档")
+                    return global_result
+            except Exception as global_error:
+                logger.warning(f"全局数据库搜索也失败: {str(global_error)}")
+            
+            # 如果都没有结果，返回友好提示
+            return {
+                "answer": "抱歉，我在当前工作区和全局数据库都没有找到与您问题相关的文档内容。\n\n您可以：\n1. 上传相关文档到当前工作区\n2. 上传文档到全局数据库\n3. 或者直接提问，我会基于通用知识回答。",
+                "references": [],
+                "sources": [],
+                "confidence": 0.0,
+                "metadata": {
+                    "searched_workspace": workspace_id,
+                    "searched_global": True
+                }
+            }
+            
         except Exception as e:
             logger.error(f"search_and_answer失败: {str(e)}")
             return {
