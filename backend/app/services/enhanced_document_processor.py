@@ -142,11 +142,14 @@ class EnhancedDocumentProcessor:
             
             # 3. 智能分块
             self.progress.update("智能分块", 0.8)
+            logger.info(f"准备分块，elements数量: {len(result.get('elements', []))}")
             chunks = self._smart_chunking(result['elements'], file_type)
+            logger.info(f"分块完成，chunks数量: {len(chunks)}")
             
             # 4. 质量检查
             self.progress.update("质量检查", 0.9)
             quality_score = self._calculate_quality_score(chunks)
+            logger.info(f"质量分数: {quality_score:.2f}, chunks数量: {len(chunks)}")
             
             processing_time = time.time() - start_time
             
@@ -494,9 +497,31 @@ class EnhancedDocumentProcessor:
         current_chunk_elements = []
         current_chunk_type = None
         
-        for element in elements:
+        if not elements:
+            logger.warning("elements列表为空")
+            return chunks
+        
+        logger.info(f"开始分块，elements数量: {len(elements)}")
+        
+        for i, element in enumerate(elements):
             element_type = self._get_element_type(element)
-            element_content = str(element)
+            
+            # 尝试获取元素内容
+            try:
+                if hasattr(element, 'text'):
+                    element_content = element.text
+                elif hasattr(element, 'content'):
+                    element_content = element.content
+                else:
+                    element_content = str(element)
+            except Exception as e:
+                logger.warning(f"获取element {i}内容失败: {e}")
+                element_content = str(element)
+            
+            # 跳过空内容
+            if not element_content or not element_content.strip():
+                logger.debug(f"跳过空element {i}: {type(element)}")
+                continue
             
             # 判断是否需要创建新块
             if self._should_create_new_chunk(element_type, current_chunk_type, current_chunk_elements):
@@ -562,7 +587,21 @@ class EnhancedDocumentProcessor:
         
         for element in elements:
             element_type = self._get_element_type(element)
-            element_content = str(element)
+            
+            # 获取元素内容 - 使用text属性而不是str()
+            try:
+                if hasattr(element, 'text'):
+                    element_content = element.text
+                elif hasattr(element, 'content'):
+                    element_content = element.content
+                else:
+                    element_content = str(element)
+            except:
+                element_content = str(element)
+            
+            # 过滤空内容
+            if not element_content or not element_content.strip():
+                continue
             
             if element_type == ChunkType.TABLE:
                 has_table = True

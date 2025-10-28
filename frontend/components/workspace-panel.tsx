@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Plus, FolderOpen, Upload, Edit2, Trash2, AlertCircle, ChevronDown, ChevronRight, FileText, Download, Eye } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -27,7 +27,8 @@ function WorkspaceDocumentList({ workspaceId, workspaceName, isExpanded, onToggl
     if (onStatsUpdate && stats) {
       onStatsUpdate(stats.document_count)
     }
-  }, [stats, onStatsUpdate])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stats?.document_count]) // 只依赖document_count，不依赖onStatsUpdate
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -158,7 +159,7 @@ function WorkspaceDocumentList({ workspaceId, workspaceName, isExpanded, onToggl
                     {doc.filename}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {formatFileSize(doc.file_size)} · {doc.chunk_count} 个片段 · {formatDate(doc.upload_time)}
+                    {formatFileSize(doc.file_size)} · {doc.chunk_count} 个片段 · {formatDate(doc.upload_time || doc.created_at || '')}
                   </p>
                 </div>
               </div>
@@ -229,10 +230,16 @@ export function WorkspacePanel() {
     }
   }
   
-  // 接收子组件返回的文件数量
-  const updateWorkspaceStats = (workspaceId: string, count: number) => {
-    setWorkspaceStats((prev) => ({ ...prev, [workspaceId]: count }))
-  }
+  // 接收子组件返回的文件数量（使用useCallback避免无限循环）
+  const updateWorkspaceStats = useCallback((workspaceId: string, count: number) => {
+    setWorkspaceStats((prev) => {
+      // 只有当值真正改变时才更新，避免无限循环
+      if (prev[workspaceId] === count) {
+        return prev
+      }
+      return { ...prev, [workspaceId]: count }
+    })
+  }, [])
   
 
   const startEdit = (workspace: any) => {

@@ -383,8 +383,10 @@ async def ask_question(data: dict):
         from app.services.workspace_file_manager import WorkspaceFileManager
         from app.workflows.workflow_orchestrator import WorkflowOrchestrator
         
-        # 使用LangChain RAG服务（单例模式，不会重复初始化）
-        rag_service = get_rag_service()
+        # 使用LangChain RAG服务 - 使用正确的路径
+        from app.services.langchain_rag_service import LangChainRAGService
+        # 使用langchain_vector_db作为基础路径，以支持工作区查询
+        rag_service = LangChainRAGService(vector_db_path="langchain_vector_db")
         
         # 初始化意图分类器
         intent_classifier = IntentClassifier(rag_service.llm)
@@ -1160,6 +1162,23 @@ async def process_document_async(task_id: str, file_path: str, workspace_id: str
         )
         
         if success:
+            # 获取向量数据库中的chunks数量
+            try:
+                vector_store = rag_service._load_vector_store(workspace_id)
+                chunk_count = 0
+                if vector_store and hasattr(vector_store, 'docstore'):
+                    docstore = vector_store.docstore
+                    if hasattr(docstore, '_dict'):
+                        # 计算新添加的chunks数量（通过文件名匹配）
+                        for chunk_id, doc in docstore._dict.items():
+                            metadata = doc.metadata if hasattr(doc, 'metadata') else {}
+                            if metadata.get('original_filename') == original_filename:
+                                chunk_count += 1
+                logger.info(f"[DEBUG] 文档 {original_filename} 有 {chunk_count} 个chunks")
+            except Exception as e:
+                logger.warning(f"获取chunk_count失败: {e}")
+                chunk_count = 0
+            
             # 保存到JSON文件（全局和工作区都保存）
             try:
                 doc_id = str(uuid.uuid4())
@@ -1173,7 +1192,7 @@ async def process_document_async(task_id: str, file_path: str, workspace_id: str
                     'created_at': datetime.now().isoformat(),
                     'processing_started': datetime.now().isoformat(),
                     'processing_completed': datetime.now().isoformat(),
-                    'chunk_count': 0,
+                    'chunk_count': chunk_count,
                     'quality_score': 0.8
                 }
                 
@@ -1402,6 +1421,9 @@ async def process_zip_async(task_id: str, zip_path: str, workspace_id: str = "gl
                 for result in results:
                     if result['success'] and result.get('file_id'):
                         file_info = result.get('file_info', {})
+                        # 获取chunks数量
+                        chunk_count = file_info.get('chunk_count', 0)
+                        
                         internal_document = {
                             'id': result['file_id'],
                             'filename': result['filename'],
@@ -1413,7 +1435,7 @@ async def process_zip_async(task_id: str, zip_path: str, workspace_id: str = "gl
                             'created_at': datetime.now().isoformat(),
                             'processing_started': datetime.now().isoformat(),
                             'processing_completed': datetime.now().isoformat(),
-                            'chunk_count': 0,
+                            'chunk_count': chunk_count,
                             'quality_score': 0.8,
                             'is_archive': False,
                             'source_archive': Path(zip_path).name
@@ -2186,6 +2208,7 @@ async def get_workspace_documents_api(workspace_id: str):
                     "file_type": doc.get('file_type', ''),
                     "status": doc.get('status', 'completed'),
                     "created_at": doc.get('created_at', ''),
+                    "upload_time": doc.get('created_at', ''),  # 兼容字段
                     "chunk_count": doc.get('chunk_count', 0),
                     # 添加chunk_ids字段，使用id作为第一个chunk ID
                     "chunk_ids": [doc.get('id', '')]

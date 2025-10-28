@@ -7,11 +7,11 @@ export interface WorkspaceDocument {
   original_filename: string
   chunk_count: number
   file_size: number
-  upload_time: string
+  upload_time?: string
+  created_at?: string
   file_type: string
   chunk_ids: string[]
   status: string
-  created_at: string
 }
 
 export interface WorkspaceStats {

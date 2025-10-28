@@ -515,6 +515,22 @@ class LangChainRAGService:
             split_documents = self._smart_split_documents(documents)
             logger.info(f"智能文档分割完成: {len(split_documents)} 个片段")
             
+            # 过滤掉内容为空或无效的文档片段
+            valid_documents = []
+            for doc in split_documents:
+                # 确保page_content是字符串且不为空
+                if doc.page_content and isinstance(doc.page_content, str) and doc.page_content.strip():
+                    valid_documents.append(doc)
+                else:
+                    logger.warning(f"跳过无效文档片段: content_type={type(doc.page_content)}, is_empty={not doc.page_content}")
+            
+            if not valid_documents:
+                logger.error(f"所有文档片段都无效: {file_path}")
+                return False
+            
+            logger.info(f"有效文档片段数: {len(valid_documents)} / {len(split_documents)}")
+            split_documents = valid_documents
+            
             # 加载现有向量存储或创建新的
             vector_store = self._load_vector_store(workspace_id)
             
@@ -923,37 +939,98 @@ class LangChainRAGService:
             }
     
     async def search_and_answer(self, question: str, workspace_id: str, conversation_history: List[Dict] = None) -> Dict[str, Any]:
-        """搜索和回答的统一方法 - 优先搜索工作区，如果工作区没有数据则搜索全局数据库"""
+        """搜索和回答的统一方法 - 同时搜索工作区和全局数据库"""
         try:
-            # 优先尝试从当前工作区搜索
+            workspace_references = []
+            global_references = []
+            
+            # 1. 同时搜索工作区和全局数据库
             try:
-                result = await self.ask_question(workspace_id, question, top_k=5)
-                # 如果工作区有数据且找到了结果，直接返回
-                if result.get('references'):
-                    logger.info(f"从工作区 {workspace_id} 找到 {len(result['references'])} 个相关文档")
-                    return result
+                workspace_result = await self.ask_question(workspace_id, question, top_k=5)
+                workspace_references = workspace_result.get('references', [])
+                logger.info(f"从工作区 {workspace_id} 找到 {len(workspace_references)} 个相关文档")
             except Exception as workspace_error:
                 logger.info(f"工作区 {workspace_id} 搜索失败或无数据: {str(workspace_error)}")
             
-            # 如果工作区没有结果，尝试从全局数据库搜索
-            logger.info(f"工作区 {workspace_id} 没有找到相关数据，尝试搜索全局数据库")
             try:
                 global_result = await self.ask_question("global", question, top_k=5)
-                if global_result.get('references'):
-                    logger.info(f"从全局数据库找到 {len(global_result['references'])} 个相关文档")
-                    return global_result
+                global_references = global_result.get('references', [])
+                logger.info(f"从全局数据库找到 {len(global_references)} 个相关文档")
             except Exception as global_error:
-                logger.warning(f"全局数据库搜索也失败: {str(global_error)}")
+                logger.warning(f"全局数据库搜索失败: {str(global_error)}")
             
-            # 如果都没有结果，返回友好提示
+            # 2. 合并结果
+            all_references = workspace_references + global_references
+            
+            if not all_references:
+                return {
+                    "answer": "抱歉，我在当前工作区和全局数据库都没有找到与您问题相关的文档内容。\n\n您可以：\n1. 上传相关文档到当前工作区\n2. 上传文档到全局数据库\n3. 或者直接提问，我会基于通用知识回答。",
+                    "references": [],
+                    "sources": [],
+                    "confidence": 0.0,
+                    "metadata": {
+                        "searched_workspace": workspace_id,
+                        "searched_global": True
+                    }
+                }
+            
+            # 3. 合并上下文并生成答案
+            context_parts = []
+            for ref in all_references:
+                content = ref.get('content', ref.get('content_preview', ''))
+                if content:
+                    context_parts.append(content)
+            
+            combined_context = "\n\n".join(context_parts[:10])  # 限制上下文长度
+            
+            # 4. 使用LLM生成答案
+            if self.llm is None:
+                answer = f"根据检索到的文档内容，我找到了以下相关信息：\n\n{combined_context[:500]}..."
+            else:
+                # 构建格式化提示（与ask_question方法一致）
+                prompt_template = """你是一个智能助手，请根据以下上下文信息回答问题。
+
+上下文信息:
+{context}
+
+问题: {input}
+
+回答规则：
+1. 如果上下文信息与问题相关，请基于上下文信息提供准确回答
+2. 如果上下文信息与问题不相关或没有相关信息，请基于你的通用知识回答
+3. 在回答时，如果使用了通用知识，请简要说明
+
+请提供准确、详细的回答:"""
+                
+                formatted_prompt = prompt_template.format(context=combined_context, input=question)
+                
+                # 使用LLM生成答案
+                try:
+                    response = await self.llm.ainvoke(formatted_prompt)
+                    
+                    # 提取响应内容
+                    if hasattr(response, 'content'):
+                        answer = response.content
+                    elif isinstance(response, dict):
+                        answer = response.get("answer", str(response))
+                    elif isinstance(response, str):
+                        answer = response
+                    else:
+                        answer = str(response)
+                except Exception as llm_error:
+                    logger.error(f"LLM调用失败: {llm_error}")
+                    answer = f"根据检索到的文档内容，我找到了以下相关信息：\n\n{combined_context[:500]}..."
+            
             return {
-                "answer": "抱歉，我在当前工作区和全局数据库都没有找到与您问题相关的文档内容。\n\n您可以：\n1. 上传相关文档到当前工作区\n2. 上传文档到全局数据库\n3. 或者直接提问，我会基于通用知识回答。",
-                "references": [],
-                "sources": [],
-                "confidence": 0.0,
+                "answer": answer,
+                "references": all_references,
+                "sources": workspace_references + global_references,
+                "confidence": 0.8,
                 "metadata": {
                     "searched_workspace": workspace_id,
-                    "searched_global": True
+                    "searched_global": True,
+                    "workspace_count": len(workspace_references),
+                    "global_count": len(global_references)
                 }
             }
             
