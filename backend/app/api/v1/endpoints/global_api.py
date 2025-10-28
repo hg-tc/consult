@@ -292,35 +292,91 @@ async def process_global_document_with_progress(
             "正在生成向量..."
         )
         
-        # 添加文档到RAG系统
-        success = await global_rag.add_document(
-            workspace_id="global",
-            file_path=file_path,
-            metadata={
-                'document_id': doc_id,
-                'original_filename': document_data['original_filename'],
-                'file_type': document_data['mime_type'],
-                'file_size': document_data['file_size'],
-                'upload_time': document_data['created_at']
-            }
+        # 使用 LlamaIndex 导入（增加超时、心跳与细粒度日志）
+        from app.services.llamaindex_retriever import LlamaIndexRetriever
+        import asyncio as _asyncio
+        retriever = LlamaIndexRetriever("global")
+        logger.info(f"🔧 LlamaIndex add_document 开始: path={file_path}, size={document_data['file_size']}, mime={document_data['mime_type']}")
+        add_task = _asyncio.create_task(
+            retriever.add_document(
+                file_path=file_path,
+                metadata={
+                    'document_id': doc_id,
+                    'original_filename': document_data['original_filename'],
+                    'file_type': document_data['mime_type'],
+                    'file_size': document_data['file_size'],
+                    'upload_time': document_data['created_at']
+                }
+            )
         )
+        # 心跳轮询：每30秒更新一次，最大等待600秒
+        heartbeat_progress = 65
+        total_wait = 0
+        added_count = 0
+        try:
+            while True:
+                try:
+                    added_count = await _asyncio.wait_for(add_task, timeout=30)
+                    break
+                except _asyncio.TimeoutError:
+                    total_wait += 30
+                    # 心跳更新
+                    task_queue.update_task_progress(
+                        task_id,
+                        TaskStage.VECTORIZING,
+                        min(heartbeat_progress, 85),
+                        f"向量化进行中... 已等待 {total_wait}s"
+                    )
+                    logger.info(f"⏳ add_document 心跳: 等待 {total_wait}s, progress={heartbeat_progress}%")
+                    heartbeat_progress += 5
+                    if total_wait >= 600:
+                        raise _asyncio.TimeoutError()
+        except _asyncio.TimeoutError:
+            logger.error(f"⏰ LlamaIndex add_document 超时(600s): {file_path}")
+            await update_document_status(doc_id, 'failed', processing_completed=datetime.now().isoformat())
+            task_queue.fail_task(task_id, "LlamaIndex add_document 超时(600s)")
+            return
+        except Exception as e:
+            logger.error(f"❌ LlamaIndex add_document 失败: {e}")
+            await update_document_status(doc_id, 'failed', processing_completed=datetime.now().isoformat())
+            task_queue.fail_task(task_id, f"LlamaIndex 失败: {str(e)}")
+            return
+        finally:
+            logger.info(f"🔧 LlamaIndex add_document 结束，added_count={added_count}")
+
+        # 持久化也加入超时与心跳
+        logger.info("💾 开始持久化索引到存储目录")
+        persist_task = _asyncio.create_task(_asyncio.to_thread(retriever.index.storage_context.persist, persist_dir=str(retriever.storage_dir)))
+        persist_wait = 0
+        try:
+            while True:
+                try:
+                    await _asyncio.wait_for(persist_task, timeout=30)
+                    break
+                except _asyncio.TimeoutError:
+                    persist_wait += 30
+                    task_queue.update_task_progress(
+                        task_id,
+                        TaskStage.INDEXING,
+                        90,
+                        f"持久化索引中... 已等待 {persist_wait}s"
+                    )
+                    logger.info(f"⏳ persist 心跳: 等待 {persist_wait}s")
+                    if persist_wait >= 600:
+                        raise _asyncio.TimeoutError()
+        except _asyncio.TimeoutError:
+            logger.error("⏰ 持久化索引超时(600s)")
+            await update_document_status(doc_id, 'failed', processing_completed=datetime.now().isoformat())
+            task_queue.fail_task(task_id, "持久化索引超时(600s)")
+            return
+        success = bool(added_count)
         
         if success:
-            logger.info(f"✅ 文档解析和向量化成功: {document_data['original_filename']}")
+            logger.info(f"✅ 文档解析和向量化成功: {document_data['original_filename']}，新增 {added_count} 个节点")
             
-            # 获取处理结果统计
-            vector_store = global_rag._load_vector_store("global")
-            chunk_count = 0
+            # 统计新增节点数
+            chunk_count = int(added_count) if added_count else 0
             chunk_ids = []
-            if vector_store and hasattr(vector_store, 'docstore'):
-                docstore = vector_store.docstore
-                if hasattr(docstore, '_dict'):
-                    # 收集属于这个文档的所有chunk IDs
-                    for chunk_id, chunk_doc in docstore._dict.items():
-                        chunk_metadata = chunk_doc.metadata if hasattr(chunk_doc, 'metadata') else {}
-                        if chunk_metadata.get('document_id') == doc_id:
-                            chunk_ids.append(chunk_id)
-                            chunk_count += 1
             
             # 阶段4: 索引构建 (80-100%)
             task_queue.update_task_progress(
@@ -372,7 +428,7 @@ async def process_global_document_with_progress(
         task_queue.fail_task(task_id, str(e))
 
 async def process_global_document_step_by_step(file_path: str, document_data: Dict[str, Any]):
-    """分步处理全局文档：解析 -> 向量化 -> 清理"""
+    """分步处理全局文档：解析 -> LlamaIndex 导入 -> 持久化"""
     try:
         doc_id = document_data['id']
         logger.info(f"🚀 开始分步处理全局文档: {file_path}, ID: {doc_id}")
@@ -380,42 +436,74 @@ async def process_global_document_step_by_step(file_path: str, document_data: Di
         # 第一步：更新状态为处理中
         await update_document_status(doc_id, 'processing', processing_started=datetime.now().isoformat())
         
-        # 第二步：使用RAG服务处理文档
+        # 第二步：使用 LlamaIndex 处理文档
         try:
-            global_rag = get_global_rag_service()
-            
+            from app.services.llamaindex_retriever import LlamaIndexRetriever
             logger.info(f"📄 开始解析文档: {document_data['original_filename']}")
-            
-            # 添加文档到RAG系统
-            success = await global_rag.add_document(
-                workspace_id="global",
-                file_path=file_path,
-                metadata={
-                    'document_id': doc_id,
-                    'original_filename': document_data['original_filename'],
-                    'file_type': document_data['mime_type'],
-                    'file_size': document_data['file_size'],
-                    'upload_time': document_data['created_at']
-                }
+
+            retriever = LlamaIndexRetriever("global")
+            import asyncio as _asyncio
+            logger.info(f"🔧[step] LlamaIndex add_document 开始: {file_path}")
+            add_task = _asyncio.create_task(
+                retriever.add_document(
+                    file_path=file_path,
+                    metadata={
+                        'document_id': doc_id,
+                        'original_filename': document_data['original_filename'],
+                        'file_type': document_data['mime_type'],
+                        'file_size': document_data['file_size'],
+                        'upload_time': document_data['created_at']
+                    }
+                )
             )
-            
-            if success:
-                logger.info(f"✅ 文档解析和向量化成功: {document_data['original_filename']}")
-                
-                # 获取处理结果统计
-                vector_store = global_rag._load_vector_store("global")
-                chunk_count = 0
+            hb = 65
+            waited = 0
+            try:
+                while True:
+                    try:
+                        added_count = await _asyncio.wait_for(add_task, timeout=30)
+                        break
+                    except _asyncio.TimeoutError:
+                        waited += 30
+                        logger.info(f"⏳[step] add_document 心跳: 等待 {waited}s, progress={hb}%")
+                        hb = min(hb + 5, 85)
+                        if waited >= 600:
+                            raise _asyncio.TimeoutError()
+            except _asyncio.TimeoutError:
+                logger.error(f"⏰[step] LlamaIndex add_document 超时(600s): {file_path}")
+                await update_document_status(doc_id, 'failed', processing_completed=datetime.now().isoformat())
+                return
+            except Exception as e:
+                logger.error(f"❌[step] LlamaIndex add_document 失败: {e}")
+                await update_document_status(doc_id, 'failed', processing_completed=datetime.now().isoformat())
+                return
+            finally:
+                logger.info("🔧[step] LlamaIndex add_document 结束")
+            # 持久化
+            logger.info("💾[step] 开始持久化索引到存储目录")
+            persist_task = _asyncio.create_task(_asyncio.to_thread(retriever.index.storage_context.persist, persist_dir=str(retriever.storage_dir)))
+            waited_persist = 0
+            try:
+                while True:
+                    try:
+                        await _asyncio.wait_for(persist_task, timeout=30)
+                        break
+                    except _asyncio.TimeoutError:
+                        waited_persist += 30
+                        logger.info(f"⏳[step] persist 心跳: 等待 {waited_persist}s")
+                        if waited_persist >= 600:
+                            raise _asyncio.TimeoutError()
+            except _asyncio.TimeoutError:
+                logger.error("⏰[step] 持久化索引超时(600s)")
+                await update_document_status(doc_id, 'failed', processing_completed=datetime.now().isoformat())
+                return
+
+            if added_count:
+                logger.info(f"✅ 文档解析和入库成功: {document_data['original_filename']}，新节点: {added_count}")
+                # 简化：无法从 LlamaIndex 直接按 doc_id 统计 chunk 数；记录节点数即可
+                chunk_count = int(added_count)
                 chunk_ids = []
-                if vector_store and hasattr(vector_store, 'docstore'):
-                    docstore = vector_store.docstore
-                    if hasattr(docstore, '_dict'):
-                        # 收集属于这个文档的所有chunk IDs
-                        for chunk_id, chunk_doc in docstore._dict.items():
-                            chunk_metadata = chunk_doc.metadata if hasattr(chunk_doc, 'metadata') else {}
-                            if chunk_metadata.get('document_id') == doc_id:
-                                chunk_ids.append(chunk_id)
-                                chunk_count += 1
-                
+
                 # 更新索引：添加文件信息
                 file_index_manager.add_file(
                     file_id=doc_id,
@@ -516,43 +604,45 @@ async def get_document_status(doc_id: str):
 async def list_global_documents():
     """列出所有全局文档（只从JSON文件，快速返回）"""
     try:
-        # 只从JSON文件加载（快速，不会超时）
-        rag_service = get_global_rag_service()
-        vector_store = rag_service._load_vector_store("global")
-        
+        # 从 LlamaIndex 向量库加载（新格式）
         vector_documents = []
-        if vector_store and hasattr(vector_store, 'docstore'):
-            docstore = vector_store.docstore
-            if hasattr(docstore, '_dict'):
-                # 按文件名分组（优化版：快速返回）
-                file_groups = {}
-                max_items = 500  # 限制处理数量，避免超时
-                count = 0
+        try:
+            llamaindex_storage_dir = Path("llamaindex_storage/global")
+            docstore_file = llamaindex_storage_dir / "docstore.json"
+            
+            if docstore_file.exists():
+                import json
+                with open(docstore_file, 'r', encoding='utf-8') as f:
+                    docstore_data = json.load(f)
                 
-                for chunk_id, doc in list(docstore._dict.items())[:max_items]:
-                    if count >= max_items:
-                        break
-                    count += 1
+                # 解析 LlamaIndex 格式的 docstore
+                file_groups = {}
+                nodes = docstore_data.get('docstore/data', {})
+                
+                for node_id, node_data in nodes.items():
+                    data = node_data.get('__data__', {})
+                    metadata = data.get('metadata', {})
                     
-                    metadata = doc.metadata if hasattr(doc, 'metadata') else {}
-                    original_filename = metadata.get('original_filename') or metadata.get('source', f"文档_{chunk_id[:8]}")
+                    original_filename = metadata.get('original_filename') or metadata.get('file_name', f"文档_{node_id[:8]}")
                     
                     if original_filename not in file_groups:
                         file_groups[original_filename] = {
-                            "id": chunk_id,
+                            "id": node_id,
                             "filename": original_filename,
                             "original_filename": original_filename,
                             "file_size": metadata.get('file_size', 0),
-                            "file_type": metadata.get('file_type', ''),
+                            "file_type": metadata.get('file_type', metadata.get('mime_type', '')),
                             "status": "completed",
-                            "created_at": metadata.get('upload_time', ''),
+                            "created_at": metadata.get('upload_time', metadata.get('creation_date', '')),
                             "chunk_count": 1
                         }
                     else:
                         file_groups[original_filename]["chunk_count"] += 1
                 
                 vector_documents = list(file_groups.values())
-                logger.info(f"快速从向量数据库加载了 {len(vector_documents)} 个文档（处理了{count}个chunk）")
+                logger.info(f"✅ 从 LlamaIndex 向量库加载了 {len(vector_documents)} 个文档")
+        except Exception as e:
+            logger.warning(f"⚠️ 从 LlamaIndex 加载失败: {e}，使用备用方法")
         
         # 从JSON文件加载
         json_documents = load_global_documents()
@@ -986,59 +1076,87 @@ async def delete_global_document(doc_id: str):
     try:
         logger.info(f"收到删除全局文档请求: {doc_id}")
         
-        # 首先尝试从向量数据库中找到文件信息
-        rag_service = get_global_rag_service()
-        vector_store = rag_service._load_vector_store("global")
-        
+        # 从 LlamaIndex 向量库中查找匹配的文档
         original_filename = None
-        file_groups = {}
-        all_chunk_ids = []
+        all_node_ids = []
+        file_path = None
         
-        # 从向量数据库中查找匹配的文档
-        if vector_store and hasattr(vector_store, 'docstore'):
-            docstore = vector_store.docstore
-            if hasattr(docstore, '_dict'):
-                for chunk_id, doc in docstore._dict.items():
-                    # 如果 doc_id 是一个 chunk_id
-                    if chunk_id == doc_id:
-                        metadata = doc.metadata if hasattr(doc, 'metadata') else {}
-                        original_filename = metadata.get('original_filename', '未知文档')
+        llamaindex_storage_dir = Path("llamaindex_storage/global")
+        docstore_file = llamaindex_storage_dir / "docstore.json"
+        
+        if docstore_file.exists():
+            import json
+            with open(docstore_file, 'r', encoding='utf-8') as f:
+                docstore_data = json.load(f)
+            
+            nodes = docstore_data.get('docstore/data', {})
+            
+            # 查找匹配的文档
+            for node_id, node_data in nodes.items():
+                data = node_data.get('__data__', {})
+                metadata = data.get('metadata', {})
+                
+                # 检查是否为匹配的节点
+                if node_id == doc_id or metadata.get('document_id') == doc_id:
+                    original_filename = metadata.get('original_filename') or metadata.get('file_name', '未知文档')
+                    file_path = metadata.get('file_path', '')
+                    
+                    # 找到所有属于这个文档的节点
+                    for nid, ndata in nodes.items():
+                        nd = ndata.get('__data__', {})
+                        nmeta = nd.get('metadata', {})
+                        nfilename = nmeta.get('original_filename') or nmeta.get('file_name', '')
                         
-                        # 找到所有属于这个文档的 chunks
-                        for cid, cdoc in docstore._dict.items():
-                            cmetadata = cdoc.metadata if hasattr(cdoc, 'metadata') else {}
-                            cfilename = cmetadata.get('original_filename', '')
-                            if cfilename == original_filename:
-                                all_chunk_ids.append(cid)
-                                file_groups[cfilename] = {
-                                    "chunk_ids": all_chunk_ids if cfilename == original_filename else file_groups.get(cfilename, {}).get("chunk_ids", []) + [cid],
-                                    "file_path": cmetadata.get('file_path', '')
-                                }
-                        break
+                        if nfilename == original_filename:
+                            all_node_ids.append(nid)
+                    break
         
-        logger.info(f"找到文件: {original_filename}, chunks: {len(all_chunk_ids)}")
+        logger.info(f"找到文件: {original_filename}, nodes: {len(all_node_ids)}")
         
         if not original_filename:
             logger.warning(f"文档 {doc_id} 在向量数据库中未找到")
             raise HTTPException(status_code=404, detail="文档未找到")
         
-        # 在删除chunks之前，保存文件路径
-        file_path = None
-        if all_chunk_ids and vector_store and hasattr(vector_store, 'docstore'):
-            docstore = vector_store.docstore
-            if hasattr(docstore, '_dict'):
-                first_chunk = docstore._dict.get(all_chunk_ids[0])
-                if first_chunk and hasattr(first_chunk, 'metadata'):
-                    file_path = first_chunk.metadata.get('file_path')
-        
-        # 从向量存储中删除所有相关 chunks
+        # 从 LlamaIndex 向量存储中删除所有相关节点
         deleted_count = 0
-        for chunk_id in all_chunk_ids:
-            if rag_service.delete_document_efficient("global", chunk_id):
-                deleted_count += 1
-                logger.debug(f"删除chunk: {chunk_id}")
-            else:
-                logger.warning(f"删除chunk失败: {chunk_id}")
+        try:
+            # 加载 LlamaIndex 索引
+            from app.services.llamaindex_retriever import LlamaIndexRetriever
+            retriever = LlamaIndexRetriever("global")
+            
+            # 获取向量存储
+            vector_store = retriever.index._vector_store if hasattr(retriever.index, '_vector_store') else None
+            
+            # 删除所有相关节点
+            for node_id in all_node_ids:
+                # 从 docstore 删除
+                if hasattr(retriever.index, '_docstore') and retriever.index._docstore:
+                    retriever.index._docstore.delete_document(node_id, raise_error=False)
+                    deleted_count += 1
+                    logger.debug(f"删除节点: {node_id}")
+                
+                # 从向量存储删除
+                if vector_store and hasattr(vector_store, '_data'):
+                    if node_id in vector_store._data.embedding_dict:
+                        del vector_store._data.embedding_dict[node_id]
+                        logger.debug(f"从向量存储删除节点: {node_id}")
+                    if node_id in vector_store._data.text_id_to_ref_doc_id:
+                        del vector_store._data.text_id_to_ref_doc_id[node_id]
+                    if node_id in vector_store._data.metadata_dict:
+                        del vector_store._data.metadata_dict[node_id]
+                
+                # 从 index_store 删除
+                if hasattr(retriever.index, '_index_struct') and hasattr(retriever.index._index_struct, 'nodes_dict'):
+                    if node_id in retriever.index._index_struct.nodes_dict:
+                        del retriever.index._index_struct.nodes_dict[node_id]
+            
+            # 持久化更改
+            retriever.index.storage_context.persist(persist_dir=str(retriever.storage_dir))
+            logger.info(f"成功删除 {deleted_count} 个节点并持久化")
+        except Exception as e:
+            logger.error(f"删除节点失败: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
         
         # 删除物理文件
         if file_path and os.path.exists(file_path):

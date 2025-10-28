@@ -50,9 +50,14 @@ class HybridRetriever:
     def _initialize_components(self):
         """初始化检索组件"""
         try:
-            # 初始化BGE嵌入模型
+            # 初始化BGE嵌入模型（强制本地优先）
+            local_model_dir = os.getenv('LOCAL_BGE_MODEL_DIR', '')
+            model_name = local_model_dir if local_model_dir else os.getenv('BGE_MODEL_NAME', 'BAAI/bge-large-zh-v1.5')
+            if local_model_dir:
+                os.environ['HF_HUB_OFFLINE'] = '1'
+                os.environ['HF_DATASETS_OFFLINE'] = '1'
             self.embeddings = HuggingFaceEmbeddings(
-                model_name='BAAI/bge-large-zh-v1.5',
+                model_name=model_name,
                 model_kwargs={'device': 'cuda' if os.getenv('CUDA_VISIBLE_DEVICES') else 'cpu'},
                 encode_kwargs={'normalize_embeddings': True}
             )

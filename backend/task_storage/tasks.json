@@ -2441,5 +2441,890 @@
       "success": true
     },
     "workspace_id": "7c9f9ec9-9207-4c85-9364-627cfe3dbe01"
+  },
+  {
+    "id": "9003f490-a9d2-4a6d-ab09-ad5e320804cb",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761649864.115141,
+    "started_at": 1761649864.128939,
+    "completed_at": 1761650255.0892613,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "3695053.3731080.pdf",
+      "file_path": "uploads/global/82a53465-c20b-4d24-88a1-cb88ee612480.pdf",
+      "file_size": 9706900,
+      "document_id": "82a53465-c20b-4d24-88a1-cb88ee612480",
+      "chunk_count": 115
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "06359455-a8ae-4e07-89d9-6b52f41bfc68",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761651899.082366,
+    "started_at": 1761651899.0983694,
+    "completed_at": 1761651900.1712055,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "RTG-SLAM_arxiv.pdf",
+      "file_path": "uploads/global/05d42a49-61fa-4e96-8e1a-955ee6fe17f8.pdf",
+      "file_size": 9858513,
+      "document_id": "05d42a49-61fa-4e96-8e1a-955ee6fe17f8"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "ade512fa-3029-4a14-8849-57ac6d869815",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761651989.4091618,
+    "started_at": 1761651989.4230947,
+    "completed_at": 1761651990.4978433,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "TTPS Online Application.pdf",
+      "file_path": "uploads/global/012eab7c-1835-4eeb-a01f-99c168c95fd5.pdf",
+      "file_size": 1786901,
+      "document_id": "012eab7c-1835-4eeb-a01f-99c168c95fd5"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "ca6b04aa-737e-4773-bd66-1b415e69a6a7",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: cannot import name 'VectorStoreIndex' from 'llama_index.core' (unknown location)",
+      "details": null
+    },
+    "created_at": 1761652403.9493253,
+    "started_at": 1761652403.9632149,
+    "completed_at": 1761652405.0385063,
+    "error_message": "cannot import name 'VectorStoreIndex' from 'llama_index.core' (unknown location)",
+    "metadata": {
+      "original_filename": "TTPS Online Application.pdf",
+      "file_path": "uploads/global/99f4f1a6-2c40-4acd-bf35-8d7cdbacda58.pdf",
+      "file_size": 1786901,
+      "document_id": "99f4f1a6-2c40-4acd-bf35-8d7cdbacda58"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "5636d375-bdb5-488b-a6e5-d0e0d59a7a2d",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 无法导入 LlamaIndex 模块，请检查安装",
+      "details": null
+    },
+    "created_at": 1761652586.7326288,
+    "started_at": 1761652586.7491014,
+    "completed_at": 1761652587.8244846,
+    "error_message": "无法导入 LlamaIndex 模块，请检查安装",
+    "metadata": {
+      "original_filename": "附件_赴港工作同意書.pdf",
+      "file_path": "uploads/global/5d9662fb-f656-44b3-bdf8-e09401d53be5.pdf",
+      "file_size": 395930,
+      "document_id": "5d9662fb-f656-44b3-bdf8-e09401d53be5"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "7295fbed-8038-4eef-8d04-9e8d1932116f",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 无法导入 LlamaIndex 模块，请检查安装",
+      "details": null
+    },
+    "created_at": 1761654211.4672678,
+    "started_at": 1761654211.4832275,
+    "completed_at": 1761654213.5328016,
+    "error_message": "无法导入 LlamaIndex 模块，请检查安装",
+    "metadata": {
+      "original_filename": "实验指导书_无人机仿真.pdf",
+      "file_path": "uploads/global/1e8a406d-88d5-49c2-99be-64d668050761.pdf",
+      "file_size": 761594,
+      "document_id": "1e8a406d-88d5-49c2-99be-64d668050761"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "11d735f7-3f33-42ae-b9ad-6f23cc99e836",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 无法导入 LlamaIndex 模块，请检查安装",
+      "details": null
+    },
+    "created_at": 1761655127.5642552,
+    "started_at": 1761655127.5844796,
+    "completed_at": 1761655129.4699328,
+    "error_message": "无法导入 LlamaIndex 模块，请检查安装",
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/799ead64-6cdc-41b2-b4e9-9c13d4aca66d.pdf",
+      "file_size": 485706,
+      "document_id": "799ead64-6cdc-41b2-b4e9-9c13d4aca66d"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "5a00b7de-0691-4ebc-a577-f01385ccee40",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 无法导入 LlamaIndex 模块，请检查安装",
+      "details": null
+    },
+    "created_at": 1761655568.8304946,
+    "started_at": 1761655568.8449275,
+    "completed_at": 1761655570.6455731,
+    "error_message": "无法导入 LlamaIndex 模块，请检查安装",
+    "metadata": {
+      "original_filename": "ID(C)1026.pdf",
+      "file_path": "uploads/global/a8c46963-47b2-42da-b4b1-192a2d06881d.pdf",
+      "file_size": 932258,
+      "document_id": "a8c46963-47b2-42da-b4b1-192a2d06881d"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "5bd554fd-d00c-4e17-84bd-91db75ffc447",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 无法导入 LlamaIndex 模块，请检查安装",
+      "details": null
+    },
+    "created_at": 1761655673.8125043,
+    "started_at": 1761655673.8270638,
+    "completed_at": 1761655675.607478,
+    "error_message": "无法导入 LlamaIndex 模块，请检查安装",
+    "metadata": {
+      "original_filename": "实验指导书_无人机仿真.pdf",
+      "file_path": "uploads/global/d0c89988-cf8f-4a13-b3fa-987ec191d183.pdf",
+      "file_size": 761594,
+      "document_id": "d0c89988-cf8f-4a13-b3fa-987ec191d183"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "9de240df-eabb-41b2-89e9-0ef6b64db668",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761656330.5636683,
+    "started_at": 1761656330.586224,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/a756f1ab-47b8-474a-9024-c70c7f1cfd13.pdf",
+      "file_size": 485706,
+      "document_id": "a756f1ab-47b8-474a-9024-c70c7f1cfd13"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "ae3bb080-09af-42e9-b8cd-899b51523ddb",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.\nCheck your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+      "details": null
+    },
+    "created_at": 1761660253.0642898,
+    "started_at": 1761660253.0789814,
+    "completed_at": 1761660255.3641493,
+    "error_message": "We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.\nCheck your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/6b935878-190a-4890-988f-148dd3f3d9e4.pdf",
+      "file_size": 485706,
+      "document_id": "6b935878-190a-4890-988f-148dd3f3d9e4"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "cb1e7400-c76d-49c7-90c2-03205fe25751",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761660665.301594,
+    "started_at": 1761660665.3189964,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "实验指导书_无人机仿真.pdf",
+      "file_path": "uploads/global/027c1d82-ffe2-4157-aefd-b6327db11e6e.pdf",
+      "file_size": 761594,
+      "document_id": "027c1d82-ffe2-4157-aefd-b6327db11e6e"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "7dc51499-4f0c-4b52-b8f3-36e55a72f046",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.\nCheck your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+      "details": null
+    },
+    "created_at": 1761662967.2156878,
+    "started_at": 1761662967.2319186,
+    "completed_at": 1761662969.3558161,
+    "error_message": "We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.\nCheck your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+    "metadata": {
+      "original_filename": "附件_赴港工作同意書.pdf",
+      "file_path": "uploads/global/0e185820-957e-4aef-b28f-00d82e3fc68d.pdf",
+      "file_size": 395930,
+      "document_id": "0e185820-957e-4aef-b28f-00d82e3fc68d"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "b1abb27f-fdf6-4511-892e-5197d113b19a",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.\nCheck your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+      "details": null
+    },
+    "created_at": 1761663018.116896,
+    "started_at": 1761663018.1318479,
+    "completed_at": 1761663019.2133067,
+    "error_message": "We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.\nCheck your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+    "metadata": {
+      "original_filename": "实验指导书_无人机仿真.pdf",
+      "file_path": "uploads/global/3a3b3863-a01d-4200-9702-212453794bb8.pdf",
+      "file_size": 761594,
+      "document_id": "3a3b3863-a01d-4200-9702-212453794bb8"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "6cfcbdfe-5592-479c-ad0b-bdfcfe54def5",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.\nCheck your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+      "details": null
+    },
+    "created_at": 1761663710.6371536,
+    "started_at": 1761663710.6524372,
+    "completed_at": 1761663712.8004904,
+    "error_message": "We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.\nCheck your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+    "metadata": {
+      "original_filename": "实验指导书_无人机仿真.pdf",
+      "file_path": "uploads/global/c7316a73-2375-484a-a9be-0697af480773.pdf",
+      "file_size": 761594,
+      "document_id": "c7316a73-2375-484a-a9be-0697af480773"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "f027d637-41f2-4711-ad04-e9fb48f918b2",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.\nCheck your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+      "details": null
+    },
+    "created_at": 1761663728.0113595,
+    "started_at": 1761663728.0264032,
+    "completed_at": 1761663729.1111653,
+    "error_message": "We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.\nCheck your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/e1f30921-624c-4409-a67b-23337992d8a4.pdf",
+      "file_size": 485706,
+      "document_id": "e1f30921-624c-4409-a67b-23337992d8a4"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "ad7daab8-31d0-4ab3-992f-24f53c74f45a",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: LOCAL_BGE_MODEL_DIR 未设置或目录不存在: \n请设置环境变量 LOCAL_BGE_MODEL_DIR 指向本地BGE模型目录，或确保该目录存在。",
+      "details": null
+    },
+    "created_at": 1761664313.9658802,
+    "started_at": 1761664313.9899662,
+    "completed_at": 1761664316.1756935,
+    "error_message": "LOCAL_BGE_MODEL_DIR 未设置或目录不存在: \n请设置环境变量 LOCAL_BGE_MODEL_DIR 指向本地BGE模型目录，或确保该目录存在。",
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/74d35fef-4f02-4696-a85a-3d8f4b79d19b.pdf",
+      "file_size": 485706,
+      "document_id": "74d35fef-4f02-4696-a85a-3d8f4b79d19b"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "71e518c0-48c5-4e8e-8657-49c12338dd6b",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: LOCAL_BGE_MODEL_DIR 未设置或目录不存在: \n请设置环境变量 LOCAL_BGE_MODEL_DIR 指向本地BGE模型目录，或确保该目录存在。",
+      "details": null
+    },
+    "created_at": 1761664489.6936655,
+    "started_at": 1761664489.7093267,
+    "completed_at": 1761664492.2563632,
+    "error_message": "LOCAL_BGE_MODEL_DIR 未设置或目录不存在: \n请设置环境变量 LOCAL_BGE_MODEL_DIR 指向本地BGE模型目录，或确保该目录存在。",
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/8df39f47-33c2-4c7f-8c75-11a1681cd3a3.pdf",
+      "file_size": 485706,
+      "document_id": "8df39f47-33c2-4c7f-8c75-11a1681cd3a3"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "f24e6bed-a724-40b7-bc0b-a18cab22003c",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: LOCAL_BGE_MODEL_DIR 未设置或目录不存在: \n请设置环境变量 LOCAL_BGE_MODEL_DIR 指向本地BGE模型目录，或确保该目录存在。",
+      "details": null
+    },
+    "created_at": 1761665117.3541594,
+    "started_at": 1761665117.3714933,
+    "completed_at": 1761665119.5665498,
+    "error_message": "LOCAL_BGE_MODEL_DIR 未设置或目录不存在: \n请设置环境变量 LOCAL_BGE_MODEL_DIR 指向本地BGE模型目录，或确保该目录存在。",
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/f698e2a6-ea85-4ba5-af7d-d3b74a719351.pdf",
+      "file_size": 485706,
+      "document_id": "f698e2a6-ea85-4ba5-af7d-d3b74a719351"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "faf0db61-4a4f-4703-9465-b97cacec15f5",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761665552.95159,
+    "started_at": 1761665552.967405,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/5c345bec-70cc-4032-b4b5-cbab10c8e089.pdf",
+      "file_size": 485706,
+      "document_id": "5c345bec-70cc-4032-b4b5-cbab10c8e089"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "e3c26a7b-5877-4c21-bbbe-3fca500ee59b",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761666494.6735303,
+    "started_at": 1761666494.6895754,
+    "completed_at": 1761666896.503517,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/214a0147-560b-4365-8a5e-6bb6deb070da.pdf",
+      "file_size": 485706,
+      "document_id": "214a0147-560b-4365-8a5e-6bb6deb070da",
+      "chunk_count": 6
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "1ce1f230-b214-4c26-9144-319b277ab48e",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761668731.673394,
+    "started_at": 1761668731.6906679,
+    "completed_at": 1761668741.2481573,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/f7033ad5-acf1-47c7-a9e4-4e06326c1b3e.pdf",
+      "file_size": 485706,
+      "document_id": "f7033ad5-acf1-47c7-a9e4-4e06326c1b3e"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "c6d03ca0-0903-4124-9ed1-a4fe3052b636",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761668946.5570607,
+    "started_at": 1761668946.5744076,
+    "completed_at": 1761668956.0582056,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/ace2863a-fa4a-4fce-b305-340c47be17f9.pdf",
+      "file_size": 485706,
+      "document_id": "ace2863a-fa4a-4fce-b305-340c47be17f9"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "6cb93ca8-b894-4446-a275-a41c9e939aff",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761669850.7608526,
+    "started_at": 1761669850.7780635,
+    "completed_at": 1761669859.7933064,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/e3c3f6f0-6da2-4cb2-80dd-66793ece84f7.pdf",
+      "file_size": 485706,
+      "document_id": "e3c3f6f0-6da2-4cb2-80dd-66793ece84f7"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "f61a67b6-4465-4da1-b7fa-c18e93a8c4a4",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761670321.3914654,
+    "started_at": 1761670321.415836,
+    "completed_at": 1761670330.5665479,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/2124f881-570f-4245-89ae-0b53fc86f2d0.pdf",
+      "file_size": 485706,
+      "document_id": "2124f881-570f-4245-89ae-0b53fc86f2d0"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "ace8111e-91f5-479e-b584-a6fb68a96446",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761670421.3346982,
+    "started_at": 1761670421.352301,
+    "completed_at": 1761670430.695992,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/b03b39d2-4f69-4d35-90d8-c7edb61428ec.pdf",
+      "file_size": 485706,
+      "document_id": "b03b39d2-4f69-4d35-90d8-c7edb61428ec"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "5f1f9fda-3cd0-4397-81bd-22dd95ced91b",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761670516.4844608,
+    "started_at": 1761670516.5020318,
+    "completed_at": 1761670526.0325274,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/95a68c26-4c95-4ad6-9714-680a99925596.pdf",
+      "file_size": 485706,
+      "document_id": "95a68c26-4c95-4ad6-9714-680a99925596"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "271043de-100f-435e-85b2-408c7ba57619",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761670637.4553964,
+    "started_at": 1761670637.4731781,
+    "completed_at": 1761670646.4927866,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/7c68b3de-53a3-475a-8258-a75499308797.pdf",
+      "file_size": 485706,
+      "document_id": "7c68b3de-53a3-475a-8258-a75499308797"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "003da39d-791c-4c74-baba-b89422d5c840",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761670746.046436,
+    "started_at": 1761670746.064162,
+    "completed_at": 1761670756.7629173,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/779b993b-2b29-4842-b378-265463cf5db0.pdf",
+      "file_size": 485706,
+      "document_id": "779b993b-2b29-4842-b378-265463cf5db0",
+      "chunk_count": 6
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "175a36c7-ed78-4423-8d67-0bf785733f47",
+    "task_type": "global_archive_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761671752.9962614,
+    "started_at": null,
+    "completed_at": 1761671850.840401,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "企业服务（政策申报）-智造未来.rar",
+      "file_path": "uploads/global/cb1cdb8e-88df-4fff-91c8-7df3b7850057.rar",
+      "file_size": 18765849,
+      "document_id": "cb1cdb8e-88df-4fff-91c8-7df3b7850057",
+      "file_type": ".rar",
+      "success": true,
+      "total_files": 17,
+      "successful": 16,
+      "failed": 1,
+      "results": [
+        {
+          "filename": "【定稿版】前海香港人才房申请.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "a99e169d-a20e-4ca9-bfa6-38f1f6fcbcd5",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/人才配租房申报/【定稿版】前海香港人才房申请.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/人才配租房申报/【定稿版】前海香港人才房申请.pdf",
+            "file_size": 1231046,
+            "file_type": ".pdf",
+            "original_filename": "【定稿版】前海香港人才房申请.pdf"
+          }
+        },
+        {
+          "filename": "前海香港人才配租房申请攻略.pptx",
+          "success": false,
+          "file_type": ".pptx",
+          "file_id": null,
+          "file_info": null
+        },
+        {
+          "filename": "人社局-创业补贴.xlsx",
+          "success": true,
+          "file_type": ".xlsx",
+          "file_id": "cc6c79dc-fda6-4c7d-a9de-67ba17eb32fe",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/人社局创业补贴/人社局-创业补贴.xlsx",
+            "relative_path": "企业服务（政策申报）-智造未来/人社局创业补贴/人社局-创业补贴.xlsx",
+            "file_size": 182462,
+            "file_type": ".xlsx",
+            "original_filename": "人社局-创业补贴.xlsx"
+          }
+        },
+        {
+          "filename": "南山区众创空间备案申请.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "2067917c-988b-4b45-91a7-928241f5a31b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/众创空间认定/南山区众创空间备案申请.docx",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/南山区众创空间备案申请.docx",
+            "file_size": 19882,
+            "file_type": ".docx",
+            "original_filename": "南山区众创空间备案申请.docx"
+          }
+        },
+        {
+          "filename": "智造未来-营业执照（盖章）.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "f98688ec-4aba-4137-822d-49502304fcec",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/智造未来-营业执照（盖章）.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/智造未来-营业执照（盖章）.pdf",
+            "file_size": 1898626,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-营业执照（盖章）.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-1：在孵企业清单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "983b8de6-d911-411e-8117-aeefe53a5968",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-1：在孵企业清单.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-1：在孵企业清单.pdf",
+            "file_size": 258974,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-1：在孵企业清单.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-2：近三年毕业企业清单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "7185362c-1052-47f9-84c6-60afac1ca22b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-2：近三年毕业企业清单.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-2：近三年毕业企业清单.pdf",
+            "file_size": 82371,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-2：近三年毕业企业清单.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-3：孵化载体聘任创业导师名单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "5e5980ad-407a-4906-bf63-60ff71b67985",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-3：孵化载体聘任创业导师名单.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-3：孵化载体聘任创业导师名单.pdf",
+            "file_size": 187943,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-3：孵化载体聘任创业导师名单.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-4：在孵企业基本信息情况表.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "defc139a-8c2c-40a0-a12d-15656f1f13cc",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-4：在孵企业基本信息情况表.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-4：在孵企业基本信息情况表.pdf",
+            "file_size": 644359,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-4：在孵企业基本信息情况表.pdf"
+          }
+        },
+        {
+          "filename": "附件3：南山区科技企业孵化载体备案申请表.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "433201a3-2e5a-437a-845b-f989438deac0",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件3：南山区科技企业孵化载体备案申请表.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件3：南山区科技企业孵化载体备案申请表.pdf",
+            "file_size": 378938,
+            "file_type": ".pdf",
+            "original_filename": "附件3：南山区科技企业孵化载体备案申请表.pdf"
+          }
+        },
+        {
+          "filename": "深圳市众创空间认定申请.doc",
+          "success": true,
+          "file_type": ".doc",
+          "file_id": "e3c99011-ddcf-42c0-8625-2087b2bc70a6",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/众创空间认定/深圳市众创空间认定申请.doc",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/深圳市众创空间认定申请.doc",
+            "file_size": 34304,
+            "file_type": ".doc",
+            "original_filename": "深圳市众创空间认定申请.doc"
+          }
+        },
+        {
+          "filename": "渠道合作协议.doc",
+          "success": true,
+          "file_type": ".doc",
+          "file_id": "f064a1d5-91da-46f0-a4e9-b2c22af82d65",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/众创空间认定/渠道合作协议.doc",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/渠道合作协议.doc",
+            "file_size": 111569,
+            "file_type": ".doc",
+            "original_filename": "渠道合作协议.doc"
+          }
+        },
+        {
+          "filename": "港澳青年创业发展扶持补贴.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "c496afd3-fbeb-4b51-93cf-e67a34b02785",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/前海十二条之BUD一比一补贴/港澳青年创业发展扶持补贴.docx",
+            "relative_path": "企业服务（政策申报）-智造未来/前海十二条之BUD一比一补贴/港澳青年创业发展扶持补贴.docx",
+            "file_size": 14087,
+            "file_type": ".docx",
+            "original_filename": "港澳青年创业发展扶持补贴.docx"
+          }
+        },
+        {
+          "filename": "数码港培育计划.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "ed4ea7fe-2710-4d0b-a910-0937b2a45612",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/数码港/数码港培育计划.docx",
+            "relative_path": "企业服务（政策申报）-智造未来/数码港/数码港培育计划.docx",
+            "file_size": 14782,
+            "file_type": ".docx",
+            "original_filename": "数码港培育计划.docx"
+          }
+        },
+        {
+          "filename": "HKSTP intro SC 7.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "7ffcccd8-b3c3-4190-9fb3-22dfd9bb70c6",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/科学园/HKSTP intro SC 7.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/科学园/HKSTP intro SC 7.pdf",
+            "file_size": 2994424,
+            "file_type": ".pdf",
+            "original_filename": "HKSTP intro SC 7.pdf"
+          }
+        },
+        {
+          "filename": "bud资料清单.xlsx",
+          "success": true,
+          "file_type": ".xlsx",
+          "file_id": "afa31457-5d4b-4e6f-b903-28582963dc67",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/香港BUD/bud资料清单.xlsx",
+            "relative_path": "企业服务（政策申报）-智造未来/香港BUD/bud资料清单.xlsx",
+            "file_size": 14560,
+            "file_type": ".xlsx",
+            "original_filename": "bud资料清单.xlsx"
+          }
+        },
+        {
+          "filename": "高企信息采集表.xlsx",
+          "success": true,
+          "file_type": ".xlsx",
+          "file_id": "64159b8e-d4f4-4ab1-8d36-ba2b9a348413",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_175a36c7-ed78-4423-8d67-0bf785733f47_yd_gm1af/企业服务（政策申报）-智造未来/高新技术企业申请/高企信息采集表.xlsx",
+            "relative_path": "企业服务（政策申报）-智造未来/高新技术企业申请/高企信息采集表.xlsx",
+            "file_size": 12554,
+            "file_type": ".xlsx",
+            "original_filename": "高企信息采集表.xlsx"
+          }
+        }
+      ]
+    },
+    "workspace_id": "global"
   }
 ]

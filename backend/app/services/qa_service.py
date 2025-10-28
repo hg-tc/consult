@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.llm_service import LLMService
 from app.services.vector_service import VectorService
+from app.services.llamaindex_retriever import LlamaIndexRetriever
 from app.services.context_service import ContextService
 
 logger = logging.getLogger(__name__)
@@ -73,13 +74,22 @@ class QAService:
                         conversation_id=conversation_id, db=db
                     )
 
-            # 2. 检索相关文档片段
-            relevant_chunks = await self.vector_service.search_similar(
-                workspace_id=workspace_id,
+            # 2. 使用 LlamaIndex 检索相关文档片段
+            retriever = LlamaIndexRetriever(workspace_id)
+            retrieved = await retriever.retrieve(
                 query=question,
-                top_k=max_references * 2,  # 多检索一些以便筛选
-                threshold=0.5
+                top_k=max_references * 2,
+                use_hybrid=True,
+                use_compression=True
             )
+            # 统一结构为下游兼容格式
+            relevant_chunks = []
+            for item in retrieved:
+                relevant_chunks.append({
+                    "content": item.get("content", ""),
+                    "metadata": item.get("metadata", {}),
+                    "similarity": float(item.get("score", 0.0))
+                })
 
             if not relevant_chunks:
                 return QAResult(

@@ -61,7 +61,8 @@ install_system_dependencies() {
     fi
     
     # 安装系统依赖
-    apt-get install -y build-essential libffi-dev libssl-dev
+    apt-get install -y build-essential libffi-dev libssl-dev \
+        libmagic1 tesseract-ocr poppler-utils libgl1
     
     print_message $GREEN "✅ 系统依赖安装完成"
 }
@@ -81,11 +82,22 @@ install_backend_dependencies() {
     source venv/bin/activate
     
     # 升级pip
-    pip install --upgrade pip
+    pip install --no-cache-dir --upgrade pip
     
-    # 安装依赖
+    # 优先安装与 CUDA 11.8 匹配的 PyTorch（GPU 版）
+    print_message $BLUE "⚙️  安装 PyTorch (CUDA 11.8) ..."
+    pip install --no-cache-dir --prefer-binary \
+        torch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1 \
+        --index-url https://download.pytorch.org/whl/cu118 || {
+        print_message $YELLOW "⚠️  安装 GPU 版 PyTorch 失败，回退安装 CPU 版"
+        pip install --no-cache-dir --prefer-binary torch==2.2.1
+    }
+    
+    # 安装其余依赖（使用国内镜像与二进制优先，降低回溯与编译时间）
     if [ -f "requirements.txt" ]; then
-        pip install -r requirements.txt
+        pip install --no-cache-dir --prefer-binary \
+            -r requirements.txt \
+            -i https://pypi.tuna.tsinghua.edu.cn/simple
     else
         print_message $RED "❌ requirements.txt 不存在"
         exit 1

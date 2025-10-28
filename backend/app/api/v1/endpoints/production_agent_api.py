@@ -40,10 +40,15 @@ def get_production_workflow():
         llm = rag_service.llm
         
         if llm is None:
-            # 初始化 LLM
+            # 初始化 LLM（第三方兼容）
+            import os
+            api_key = os.getenv('THIRD_PARTY_API_KEY') or os.getenv('OPENAI_API_KEY')
+            api_base = os.getenv('THIRD_PARTY_API_BASE') or os.getenv('OPENAI_BASE_URL', 'https://api.openai.com/v1')
             llm = ChatOpenAI(
                 model="gpt-3.5-turbo",
-                temperature=0.1
+                temperature=0.1,
+                openai_api_key=api_key,
+                openai_api_base=api_base
             )
         
         from app.workflows.production_workflow import ProductionWorkflow

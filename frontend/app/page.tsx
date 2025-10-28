@@ -7,6 +7,8 @@ import { GlobalDatabasePanel } from "@/components/global-database-panel"
 import { WorkspacePanel } from "@/components/workspace-panel"
 import { StatusPanel } from "@/components/enhanced-status-panel"
 import { OutputPanel } from "@/components/output-panel"
+import { DocumentGeneratorPanel } from "@/components/document-generator-panel"
+import { LangGraphChatPanel } from "@/components/langgraph-chat-panel"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("database")
@@ -23,6 +25,10 @@ export default function Home() {
         return <StatusPanel />
       case "output":
         return <OutputPanel />
+      case "langgraph":
+        return <LangGraphChatPanel />
+      case "doc-generator":
+        return <DocumentGeneratorPanel />
       default:
         return (
           <div className="text-center">

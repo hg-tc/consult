@@ -343,6 +343,44 @@ export const agentApi = {
   },
 }
 
+// LangGraph 智能问答 API
+export const langgraphApi = {
+  async chat(question: string, workspaceId: string = 'global') {
+    return fetchApi("/chat/langgraph", {
+      method: "POST",
+      body: JSON.stringify({ 
+        question,
+        workspace_id: workspaceId
+      })
+    })
+  }
+}
+
+// DeepResearch 文档生成 API
+export const deepresearchApi = {
+  async generateDocument(
+    taskDescription: string, 
+    workspaceId: string = 'global',
+    docRequirements: {
+      target_words?: number
+      writing_style?: string
+    } = {}
+  ) {
+    return fetchApi("/document/generate-deepresearch", {
+      method: "POST",
+      body: JSON.stringify({
+        task_description: taskDescription,
+        workspace_id: workspaceId,
+        doc_requirements: {
+          target_words: 5000,
+          writing_style: '专业、严谨、客观',
+          ...docRequirements
+        }
+      })
+    })
+  }
+}
+
 // WebSocket连接用于实时状态更新
 export class StatusWebSocket {
   private ws: WebSocket | null = null

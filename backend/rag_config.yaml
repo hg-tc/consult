@@ -1,0 +1,128 @@
+# RAG 系统配置文件
+# 配置 LlamaIndex + LangGraph RAG 系统的各项参数
+
+# LlamaIndex 检索配置
+llamaindex:
+  # 嵌入模型配置
+  embedding:
+    model_name: "BAAI/bge-large-zh-v1.5"
+    device: "cpu"  # cpu 或 cuda
+    batch_size: 32
+  
+  # 语义分块配置
+  chunking:
+    chunk_size: 512
+    chunk_overlap: 50
+    use_semantic_chunking: true
+    buffer_size: 1
+    breakpoint_percentile_threshold: 95
+  
+  # 混合检索配置
+  retrieval:
+    use_hybrid: true  # 是否使用混合检索（BM25 + Vector）
+    top_k: 5  # 默认返回结果数
+    similarity_threshold: 0.7  # 相似度阈值
+  
+  # 重排序配置
+  reranking:
+    use_reranking: true
+    model: "BAAI/bge-reranker-v2-m3"
+    top_n: 10  # 重排序后保留的文档数
+  
+  # 上下文压缩配置
+  compression:
+    use_compression: true
+    percentile_cutoff: 0.5
+    threshold_cutoff: 0.7
+    use_context_reorder: true
+
+# LangGraph 工作流配置
+langgraph:
+  # RAG 工作流配置
+  rag_workflow:
+    enable_intent_analysis: true
+    enable_quality_check: true
+    max_refinement_iterations: 2  # 最多改进次数
+    quality_threshold: 0.7  # 质量分数阈值
+  
+  # 长文档生成工作流配置
+  doc_generation:
+    default_target_words: 5000
+    min_words_per_section: 500
+    max_words_per_section: 800
+    enable_web_search: true  # 是否启用网络搜索
+    max_sections: 50  # 最大段落数
+    enable_conflict_detection: true
+    enable_length_expansion: true
+
+# 工作流选择配置
+workflow_selection:
+  # 默认工作流
+  default: "langgraph"  # simple, langgraph, deepresearch
+  
+  # 自动选择规则
+  auto_select:
+    enabled: true
+    rules:
+      - condition: "question_length < 50 and no_complex_keywords"
+        workflow: "simple"
+      - condition: "is_document_generation"
+        workflow: "deepresearch"
+      - condition: "contains_multi_hop_question"
+        workflow: "langgraph"
+
+# 性能优化配置
+performance:
+  # 并行处理配置
+  parallel:
+    max_concurrent_retrievals: 10  # 最大并发检索数
+    max_concurrent_generations: 5  # 最大并发生成数
+  
+  # 缓存配置
+  cache:
+    enabled: true
+    ttl: 3600  # 缓存时间（秒）
+    max_size: 1000  # 最大缓存条目数
+  
+  # 超时配置
+  timeouts:
+    retrieval_timeout: 30  # 检索超时（秒）
+    generation_timeout: 60  # 生成超时（秒）
+    workflow_timeout: 300  # 整个工作流超时（秒）
+
+# 日志配置
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  log_processing_steps: true
+  log_metadata: true
+  
+# LLM 配置
+llm:
+  provider: "third_party"  # openai, third_party
+  model: "gpt-3.5-turbo"
+  temperature: 0.1
+  max_tokens: 2000
+  
+# 监控配置
+monitoring:
+  enable_langsmith: true
+  langsmith_api_key: ""  # 如果需要 LangSmith 监控
+  langsmith_project: "rag-system"
+
+# 存储配置
+storage:
+  # 向量数据库存储
+  vector_db:
+    base_path: "llamaindex_storage"
+    persist: true
+  
+  # 全局数据库
+  global_db:
+    enabled: true
+    path: "llamaindex_storage/global"
+  
+  # 工作区数据库
+  workspace_db:
+    enabled: true
+    path: "llamaindex_storage/{workspace_id}"
+

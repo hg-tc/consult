@@ -169,11 +169,20 @@ async def global_chat(
 ):
     """全局问答"""
     try:
-        _, rag_service = get_global_services()
-        
-        result = await rag_service.ask_question(question, workspace_id, top_k)
-        
-        return result
+        # 改为 LlamaIndex 检索
+        from app.services.llamaindex_retriever import LlamaIndexRetriever
+        workspace = workspace_id or "global"
+        retriever = LlamaIndexRetriever(workspace)
+        results = await retriever.retrieve(query=question, top_k=top_k, use_hybrid=True, use_compression=True)
+        return {
+            "answer": "",
+            "sources": results,
+            "metadata": {
+                "retriever": "llamaindex",
+                "workspace_id": workspace,
+                "top_k": top_k
+            }
+        }
         
     except Exception as e:
         logger.error(f"全局问答失败: {str(e)}")

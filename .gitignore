@@ -81,6 +81,7 @@ lerna-debug.log*
 vector_db/
 *.chroma
 qdrant_storage/
+llamaindex_storage/
 
 # ==================== 环境变量和配置 ====================
 .env

@@ -55,6 +55,8 @@ class LangChainRAGService:
         self.text_splitter = None
         self.vector_stores = {}  # 按工作区存储向量数据库
         self.cache_manager = get_cache_manager()  # 缓存管理器
+        # 迁移到 LlamaIndex：禁用旧的 LangChain 向量读写
+        self.disable_vector_ops = True
         
         self._initialize_components()
     
@@ -120,14 +122,15 @@ class LangChainRAGService:
             logger.info("强制启用完全离线模式")
             logger.info(f"使用HuggingFace镜像站: {os.environ['HF_ENDPOINT']}")
             
-            # 检查本地模型
-            local_model_path = Path("/root/consult/backend/models/bge-large-zh-v1.5")
+            # 检查本地模型（允许通过环境变量覆盖路径）
+            local_model_env = os.getenv('LOCAL_BGE_MODEL_DIR', '')
+            local_model_path = Path(local_model_env) if local_model_env else Path("/root/consult/backend/models/bge-large-zh-v1.5")
             if local_model_path.exists():
                 logger.info(f"使用本地模型: {local_model_path}")
                 model_name = str(local_model_path)
             else:
                 logger.info("本地模型不存在，使用在线模型")
-                model_name = 'BAAI/bge-large-zh-v1.5'
+                model_name = os.getenv('BGE_MODEL_NAME', 'BAAI/bge-large-zh-v1.5')
             
             try:
                 logger.info(f"正在加载BGE模型: {model_name}")
@@ -172,27 +175,57 @@ class LangChainRAGService:
         return self.vector_db_path / f"workspace_{workspace_id}"
     
     def _load_vector_store(self, workspace_id: str) -> Optional[FAISS]:
-        """加载向量存储"""
+        """加载向量存储 - 已禁用（迁移至 LlamaIndex）"""
         try:
+            if getattr(self, 'disable_vector_ops', False):
+                logger.info("已禁用 LangChain 向量存储加载（使用 LlamaIndex 替代）")
+                return None
             store_path = self._get_vector_store_path(workspace_id)
             if store_path.exists():
-                vector_store = FAISS.load_local(
-                    str(store_path),
-                    self.embeddings,
-                    allow_dangerous_deserialization=True
-                )
-                logger.info(f"成功加载向量存储: {workspace_id}")
-                return vector_store
+                try:
+                    vector_store = FAISS.load_local(
+                        str(store_path),
+                        self.embeddings,
+                        allow_dangerous_deserialization=True
+                    )
+                    logger.info(f"成功加载向量存储: {workspace_id}")
+                    return vector_store
+                except (AttributeError, KeyError) as e:
+                    # Pydantic 兼容性问题：__fields_set__ 错误
+                    if '__fields_set__' in str(e) or 'fields_set' in str(e):
+                        logger.warning(f"向量存储格式不兼容（Pydantic 版本问题）: {workspace_id}")
+                        logger.warning("建议：删除旧的向量存储并重新上传文档")
+                        logger.warning(f"存储路径: {store_path}")
+                        # 尝试自动清理并重建
+                        try:
+                            import shutil
+                            backup_path = store_path.parent / f"{store_path.name}_backup"
+                            if backup_path.exists():
+                                shutil.rmtree(backup_path)
+                            shutil.move(str(store_path), str(backup_path))
+                            logger.info(f"已备份旧向量存储到: {backup_path}")
+                            logger.info("可以手动恢复或删除备份")
+                            return None
+                        except Exception as cleanup_error:
+                            logger.error(f"自动清理失败: {cleanup_error}")
+                            return None
+                    else:
+                        raise
             else:
                 logger.info(f"向量存储不存在: {workspace_id}")
                 return None
         except Exception as e:
             logger.error(f"加载向量存储失败: {str(e)}")
+            import traceback
+            logger.error(traceback.format_exc())
             return None
     
     def _save_vector_store(self, workspace_id: str, vector_store: FAISS):
-        """保存向量存储 - 智能重建索引"""
+        """保存向量存储 - 已禁用（迁移至 LlamaIndex）"""
         try:
+            if getattr(self, 'disable_vector_ops', False):
+                logger.info("已禁用 LangChain 向量存储保存（使用 LlamaIndex 持久化）")
+                return
             store_path = self._get_vector_store_path(workspace_id)
             
             # 检查是否需要重建索引
@@ -493,8 +526,11 @@ class LangChainRAGService:
         return split_documents
     
     async def add_document(self, workspace_id: str, file_path: str, metadata: Dict[str, Any] = None) -> bool:
-        """添加文档到向量数据库"""
+        """添加文档到向量数据库 - 已禁用（迁移至 LlamaIndex）"""
         try:
+            if getattr(self, 'disable_vector_ops', False):
+                logger.info("已禁用 LangChain 文档入库；请使用 LlamaIndex 导入并 persist")
+                return False
             # 加载文档
             documents = self._load_document(file_path)
             
@@ -561,8 +597,11 @@ class LangChainRAGService:
             return False
     
     async def search_documents(self, workspace_id: str, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
-        """搜索相关文档"""
+        """搜索相关文档 - 已禁用（迁移至 LlamaIndex）"""
         try:
+            if getattr(self, 'disable_vector_ops', False):
+                logger.info("已禁用 LangChain 文档搜索；请使用 LlamaIndex 检索器")
+                return []
             vector_store = self._load_vector_store(workspace_id)
             
             if vector_store is None:
@@ -594,8 +633,10 @@ class LangChainRAGService:
             return []
     
     async def ask_question(self, workspace_id: str, question: str, top_k: int = 5) -> Dict[str, Any]:
-        """使用RAG回答问题"""
+        """使用RAG回答问题 - 已禁用（迁移至 LlamaIndex）"""
         try:
+            if getattr(self, 'disable_vector_ops', False):
+                raise Exception("已禁用 LangChain RAG；请通过 LangGraph + LlamaIndex 调用")
             # 检查缓存
             cached_result = self.cache_manager.get_cached_query_result(question, workspace_id)
             if cached_result:
@@ -732,8 +773,14 @@ class LangChainRAGService:
                 }
     
     def get_workspace_stats(self, workspace_id: str) -> Dict[str, Any]:
-        """获取工作区统计信息"""
+        """获取工作区统计信息 - 已禁用（迁移至 LlamaIndex）"""
         try:
+            if getattr(self, 'disable_vector_ops', False):
+                return {
+                    "workspace_id": workspace_id,
+                    "document_count": 0,
+                    "status": "disabled"
+                }
             vector_store = self._load_vector_store(workspace_id)
             
             if vector_store is None:

@@ -6,6 +6,11 @@ import os
 import sys
 import uvicorn
 
+# 设置环境变量（BGE模型本地离线加载）
+os.environ['LOCAL_BGE_MODEL_DIR'] = '/root/consult/backend/models/bge-large-zh-v1.5'
+os.environ['HF_HUB_OFFLINE'] = '1'
+os.environ['HF_DATASETS_OFFLINE'] = '1'
+
 # 添加路径
 sys.path.insert(0, '/root/consult/backend')
 
