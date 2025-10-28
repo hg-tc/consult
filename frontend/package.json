@@ -7,7 +7,7 @@
     "build": "next build",
     "dev": "next dev --port 3000",
     "lint": "eslint .",
-    "start": "next start --port 13000"
+    "start": "next start --port 3000"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

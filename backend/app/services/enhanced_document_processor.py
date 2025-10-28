@@ -368,8 +368,86 @@ class EnhancedDocumentProcessor:
                 'metadata': metadata
             }
             
+        except ImportError as e:
+            logger.warning(f"PPT高级处理所需库未安装，回退到基础处理: {e}")
+            # 回退到基础文本处理
+            return await self._process_ppt_basic(file_path)
         except Exception as e:
             logger.error(f"PPT处理失败: {e}")
+            # 回退到基础处理
+            try:
+                return await self._process_ppt_basic(file_path)
+            except Exception as basic_error:
+                logger.error(f"PPT基础处理也失败: {basic_error}")
+                raise
+    
+    async def _process_ppt_basic(self, file_path: str) -> Dict:
+        """基础PPT处理（回退方案）"""
+        try:
+            # 尝试使用 python-pptx 库
+            try:
+                from pptx import Presentation
+                
+                presentation = Presentation(file_path)
+                content_lines = []
+                
+                # 提取每张幻灯片的内容
+                for slide_num, slide in enumerate(presentation.slides, 1):
+                    slide_text = f"幻灯片 {slide_num}:"
+                    for shape in slide.shapes:
+                        if hasattr(shape, "text") and shape.text:
+                            slide_text += f"\n{shape.text}"
+                    content_lines.append(slide_text)
+                
+                # 创建简单的文本元素
+                from unstructured.documents.elements import NarrativeText
+                element = NarrativeText("\n".join(content_lines))
+                element.metadata = {
+                    "page_number": 1,
+                    "file_type": "ppt",
+                    "file_size": os.path.getsize(file_path)
+                }
+                elements = [element]
+                
+                metadata = {
+                    'file_type': 'ppt',
+                    'file_size': os.path.getsize(file_path),
+                    'element_count': len(elements),
+                    'has_tables': False,
+                    'has_images': False,
+                    'slide_count': len(presentation.slides)
+                }
+                
+                logger.info(f"使用基础PPT处理，提取了 {len(presentation.slides)} 张幻灯片")
+                return {
+                    'elements': elements,
+                    'metadata': metadata
+                }
+                
+            except ImportError:
+                # 如果没有 python-pptx，返回空内容
+                logger.warning("python-pptx 未安装，PPT文件将无法处理")
+                from unstructured.documents.elements import NarrativeText
+                element = NarrativeText("PPT文件无法解析：缺少必要的依赖库。请安装 python-pptx。")
+                element.metadata = {
+                    "file_type": "ppt",
+                    "file_size": os.path.getsize(file_path),
+                    "error": "missing_dependencies"
+                }
+                
+                return {
+                    'elements': [element],
+                    'metadata': {
+                        'file_type': 'ppt',
+                        'file_size': os.path.getsize(file_path),
+                        'element_count': 1,
+                        'has_tables': False,
+                        'has_images': False,
+                        'processing_error': 'missing_dependencies'
+                    }
+                }
+        except Exception as e:
+            logger.error(f"基础PPT处理失败: {e}")
             raise
     
     async def _process_text_advanced(self, file_path: str) -> Dict:

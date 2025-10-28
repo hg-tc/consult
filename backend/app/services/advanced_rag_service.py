@@ -191,8 +191,27 @@ class AdvancedRAGService:
                 loader = TextLoader(str(file_path), encoding='utf-8')
             elif file_extension == '.pdf':
                 loader = PyPDFLoader(str(file_path))
-            elif file_extension in ['.docx', '.doc']:
+            elif file_extension == '.docx':
                 loader = Docx2txtLoader(str(file_path))
+            elif file_extension == '.doc':
+                # 旧版.doc文件使用unstructured库
+                try:
+                    from unstructured.partition.doc import partition_doc
+                    elements = partition_doc(filename=str(file_path))
+                    text_parts = []
+                    for element in elements:
+                        if hasattr(element, 'text') and element.text:
+                            text_parts.append(element.text)
+                    text = '\n\n'.join(text_parts)
+                except ImportError:
+                    # 回退到docx2txt
+                    import docx2txt
+                    text = docx2txt.process(str(file_path))
+                
+                from langchain_core.documents import Document as LangchainDocument
+                documents = [LangchainDocument(page_content=text, metadata={'source': str(file_path)})]
+                logger.info(f"成功处理旧版Word文件: {file_path}")
+                return documents
             elif file_extension in ['.xlsx', '.xls']:
                 loader = UnstructuredExcelLoader(str(file_path))
             elif file_extension in ['.pptx', '.ppt']:

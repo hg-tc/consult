@@ -25,7 +25,8 @@ def get_global_rag_service():
     """获取全局RAG服务实例（单例模式）"""
     global _global_rag_service
     if _global_rag_service is None:
-        _global_rag_service = LangChainRAGService(vector_db_path="global_vector_db")
+        # 使用global_db目录，is_global=True标记这不是一个工作区
+        _global_rag_service = LangChainRAGService(vector_db_path="global_db", is_global=True)
     return _global_rag_service
 
 logger = logging.getLogger(__name__)
@@ -102,7 +103,7 @@ async def upload_global_document(
             raise HTTPException(status_code=400, detail="文件名不能为空")
         
         file_ext = os.path.splitext(file.filename)[1].lower()
-        allowed_extensions = ['.pdf', '.docx', '.doc', '.txt', '.md']
+        allowed_extensions = ['.pdf', '.docx', '.doc', '.txt', '.md', '.zip', '.rar']
         
         if file_ext not in allowed_extensions:
             raise HTTPException(status_code=400, detail=f"不支持的文件类型: {file_ext}")
@@ -139,6 +140,50 @@ async def upload_global_document(
             'chunk_count': 0,
             'quality_score': 0.0
         }
+        
+        # 如果是ZIP或RAR文件，使用专门的归档处理
+        if file_ext in ['.zip', '.rar']:
+            # 创建归档处理任务
+            from app.services.task_queue import get_task_queue, TaskStage
+            
+            task_queue = get_task_queue()
+            task_id = task_queue.create_task(
+                task_type="global_archive_processing",
+                metadata={
+                    'original_filename': file.filename,
+                    'file_path': str(file_path),
+                    'file_size': file_size,
+                    'document_id': file_id,
+                    'file_type': file_ext
+                },
+                workspace_id="global"
+            )
+            
+            # 归档文件不保存到JSON，只由内部文件记录保存
+            # 更新进度
+            task_queue.update_task_progress(
+                task_id=task_id,
+                stage=TaskStage.UPLOADING,
+                progress=100,
+                message="归档文件上传完成"
+            )
+            logger.info(f"还没开始process_zip_async函数")
+            # 使用app_simple.py中的process_zip_async函数
+            from app_simple import process_zip_async
+            import asyncio
+            asyncio.create_task(process_zip_async(task_id, str(file_path), "global"))
+            logger.info(f"已经完成了process_zip_async函数")
+            return {
+                "id": file_id,
+                "task_id": task_id,
+                "filename": filename,
+                "original_filename": file.filename,
+                "file_size": file_size,
+                "status": "uploaded",
+                "file_type": file_ext,
+                "message": f"{'ZIP' if file_ext == '.zip' else 'RAR'}文件上传成功，正在解压并处理...",
+                "processing_status": "queued"
+            }
         
         # 保存文档记录到JSON文件
         documents = load_global_documents()
@@ -469,38 +514,87 @@ async def get_document_status(doc_id: str):
 
 @router.get("/documents")
 async def list_global_documents():
-    """列出所有全局文档（使用JSON文件存储）"""
+    """列出所有全局文档（只从JSON文件，快速返回）"""
     try:
-        # 直接从JSON文件加载
-        documents = load_global_documents()
+        # 只从JSON文件加载（快速，不会超时）
+        rag_service = get_global_rag_service()
+        vector_store = rag_service._load_vector_store("global")
         
-        # 如果文件为空或没有记录，返回空列表
-        if not documents:
-            logger.info("全局文档文件为空，返回空列表")
-            return {
-                "documents": [],
-                "total_count": 0,
-                "message": "暂无全局文档"
-            }
+        vector_documents = []
+        if vector_store and hasattr(vector_store, 'docstore'):
+            docstore = vector_store.docstore
+            if hasattr(docstore, '_dict'):
+                # 按文件名分组（优化版：快速返回）
+                file_groups = {}
+                max_items = 500  # 限制处理数量，避免超时
+                count = 0
+                
+                for chunk_id, doc in list(docstore._dict.items())[:max_items]:
+                    if count >= max_items:
+                        break
+                    count += 1
+                    
+                    metadata = doc.metadata if hasattr(doc, 'metadata') else {}
+                    original_filename = metadata.get('original_filename') or metadata.get('source', f"文档_{chunk_id[:8]}")
+                    
+                    if original_filename not in file_groups:
+                        file_groups[original_filename] = {
+                            "id": chunk_id,
+                            "filename": original_filename,
+                            "original_filename": original_filename,
+                            "file_size": metadata.get('file_size', 0),
+                            "file_type": metadata.get('file_type', ''),
+                            "status": "completed",
+                            "created_at": metadata.get('upload_time', ''),
+                            "chunk_count": 1
+                        }
+                    else:
+                        file_groups[original_filename]["chunk_count"] += 1
+                
+                vector_documents = list(file_groups.values())
+                logger.info(f"快速从向量数据库加载了 {len(vector_documents)} 个文档（处理了{count}个chunk）")
         
-        # 转换格式（如果需要）
-        result_documents = []
-        for doc in documents:
-            result_documents.append({
-                "id": doc.get('id', ''),
-                "filename": doc.get('filename', ''),
-                "original_filename": doc.get('original_filename', ''),
-                "file_size": doc.get('file_size', 0),
-                "file_type": doc.get('file_type', ''),
-                "status": doc.get('status', 'completed'),
-                "created_at": doc.get('created_at', ''),
-                "chunk_count": doc.get('chunk_count', 0)
-            })
+        # 从JSON文件加载
+        json_documents = load_global_documents()
+        
+        # 合并两个数据源，去重（优先使用向量数据库的数据）
+        result_map = {}
+        
+        # 先添加向量数据库中的文档
+        for doc in vector_documents:
+            key = doc.get('original_filename', '')
+            if key not in result_map:
+                result_map[key] = doc
+        
+        # 再添加JSON文件中不存在于向量数据库的文档
+        for doc in json_documents:
+            # 跳过归档文件记录（兼容历史数据，新上传的归档文件不会写入JSON）
+            if doc.get('is_archive', False):
+                continue
+                
+            key = doc.get('original_filename', '')
+            if key not in result_map:
+                result_map[key] = {
+                    "id": doc.get('id', ''),
+                    "filename": doc.get('filename', ''),
+                    "original_filename": doc.get('original_filename', ''),
+                    "file_size": doc.get('file_size', 0),
+                    "file_type": doc.get('file_type', ''),
+                    "status": doc.get('status', 'completed'),
+                    "created_at": doc.get('created_at', ''),
+                    "chunk_count": doc.get('chunk_count', 0),
+                    # 添加chunk_ids字段，使用id作为第一个chunk ID
+                    "chunk_ids": [doc.get('id', '')]
+                }
+        
+        result_documents = list(result_map.values())
+        
+        logger.info(f"全局文档列表: 向量数据库 {len(vector_documents)} 个，JSON文件 {len(json_documents)} 个，合并后 {len(result_documents)} 个")
         
         return {
             "documents": result_documents,
             "total_count": len(result_documents),
-            "message": "全局文档列表"
+            "message": f"全局文档列表（向量数据库: {len(vector_documents)}, JSON: {len(json_documents)}）"
         }
     except Exception as e:
         logger.error(f"获取全局文档列表失败: {str(e)}")
@@ -823,7 +917,7 @@ async def optimize_performance():
     """执行性能优化"""
     try:
         # 优化向量索引
-        vector_db_path = "/root/consult/backend/langchain_vector_db"
+        vector_db_path = "/root/consult/backend/global_db"
         optimization_result = performance_optimizer.optimize_vector_index(vector_db_path)
         
         # 清理过期缓存
@@ -892,44 +986,59 @@ async def delete_global_document(doc_id: str):
     try:
         logger.info(f"收到删除全局文档请求: {doc_id}")
         
-        # 从documents.json中查找并删除文档
-        documents = load_global_documents()
-        document_to_delete = None
+        # 首先尝试从向量数据库中找到文件信息
+        rag_service = get_global_rag_service()
+        vector_store = rag_service._load_vector_store("global")
         
-        for idx, doc in enumerate(documents):
-            if doc.get('id') == doc_id:
-                document_to_delete = doc
-                # 从列表中删除
-                documents.pop(idx)
-                break
+        original_filename = None
+        file_groups = {}
+        all_chunk_ids = []
         
-        if not document_to_delete:
-            logger.warning(f"文档 {doc_id} 在文档列表中未找到")
+        # 从向量数据库中查找匹配的文档
+        if vector_store and hasattr(vector_store, 'docstore'):
+            docstore = vector_store.docstore
+            if hasattr(docstore, '_dict'):
+                for chunk_id, doc in docstore._dict.items():
+                    # 如果 doc_id 是一个 chunk_id
+                    if chunk_id == doc_id:
+                        metadata = doc.metadata if hasattr(doc, 'metadata') else {}
+                        original_filename = metadata.get('original_filename', '未知文档')
+                        
+                        # 找到所有属于这个文档的 chunks
+                        for cid, cdoc in docstore._dict.items():
+                            cmetadata = cdoc.metadata if hasattr(cdoc, 'metadata') else {}
+                            cfilename = cmetadata.get('original_filename', '')
+                            if cfilename == original_filename:
+                                all_chunk_ids.append(cid)
+                                file_groups[cfilename] = {
+                                    "chunk_ids": all_chunk_ids if cfilename == original_filename else file_groups.get(cfilename, {}).get("chunk_ids", []) + [cid],
+                                    "file_path": cmetadata.get('file_path', '')
+                                }
+                        break
+        
+        logger.info(f"找到文件: {original_filename}, chunks: {len(all_chunk_ids)}")
+        
+        if not original_filename:
+            logger.warning(f"文档 {doc_id} 在向量数据库中未找到")
             raise HTTPException(status_code=404, detail="文档未找到")
         
-        original_filename = document_to_delete.get('original_filename', doc_id)
-        file_path = document_to_delete.get('file_path')
+        # 在删除chunks之前，保存文件路径
+        file_path = None
+        if all_chunk_ids and vector_store and hasattr(vector_store, 'docstore'):
+            docstore = vector_store.docstore
+            if hasattr(docstore, '_dict'):
+                first_chunk = docstore._dict.get(all_chunk_ids[0])
+                if first_chunk and hasattr(first_chunk, 'metadata'):
+                    file_path = first_chunk.metadata.get('file_path')
+        
+        # 从向量存储中删除所有相关 chunks
         deleted_count = 0
-        
-        logger.info(f"准备删除文档: {original_filename}")
-        
-        # 尝试从向量存储中删除（如果存在）
-        try:
-            file_info = file_index_manager.get_file_info(doc_id)
-            if file_info:
-                chunk_ids = file_info.get("chunk_ids", [])
-                # 使用高效的删除方法
-                rag_service = get_global_rag_service()
-                for chunk_id in chunk_ids:
-                    if rag_service.delete_document_efficient("global", chunk_id):
-                        deleted_count += 1
-                        logger.debug(f"删除chunk: {chunk_id}")
-                    else:
-                        logger.warning(f"删除chunk失败: {chunk_id}")
-                # 从索引中删除文件记录
-                file_index_manager.remove_file(doc_id)
-        except Exception as e:
-            logger.warning(f"从向量存储删除失败: {str(e)}")
+        for chunk_id in all_chunk_ids:
+            if rag_service.delete_document_efficient("global", chunk_id):
+                deleted_count += 1
+                logger.debug(f"删除chunk: {chunk_id}")
+            else:
+                logger.warning(f"删除chunk失败: {chunk_id}")
         
         # 删除物理文件
         if file_path and os.path.exists(file_path):
@@ -938,6 +1047,29 @@ async def delete_global_document(doc_id: str):
                 logger.info(f"成功删除物理文件: {file_path}")
             except Exception as e:
                 logger.warning(f"删除物理文件失败: {str(e)}")
+        
+        # 从 file_index_manager 中删除（如果存在）
+        try:
+            # 查找文档的原始 ID
+            documents = load_global_documents()
+            for doc in documents:
+                if doc.get('original_filename') == original_filename:
+                    file_index_manager.remove_file(doc.get('id'))
+                    break
+        except Exception as e:
+            logger.warning(f"从索引删除失败: {str(e)}")
+        
+        # 从 JSON 文件中删除记录
+        documents = load_global_documents()
+        documents_before = len(documents)
+        
+        # 删除所有同名文件记录
+        documents = [doc for doc in documents if doc.get('original_filename') != original_filename]
+        
+        documents_after = len(documents)
+        removed_from_json = documents_before - documents_after
+        
+        logger.info(f"从JSON中删除了 {removed_from_json} 条记录")
         
         # 保存更新后的文档列表
         save_global_documents(documents)

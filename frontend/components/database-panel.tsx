@@ -166,7 +166,7 @@ export function DatabasePanel() {
               id="database-upload"
               type="file"
               className="hidden"
-              accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt,.md"
+              accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt,.md,.zip,.rar"
               disabled={isUploading}
             />
           </div>
@@ -174,7 +174,7 @@ export function DatabasePanel() {
           {uploadStatus === "success" && (
             <div className="flex items-center gap-2 text-sm text-accent">
               <Check className="w-4 h-4" />
-              上传成功
+              上传成功，正在后台处理中...
             </div>
           )}
 
@@ -182,6 +182,13 @@ export function DatabasePanel() {
             <div className="flex items-center gap-2 text-sm text-destructive">
               <AlertCircle className="w-4 h-4" />
               上传失败，请重试
+            </div>
+          )}
+
+          {isUploading && (
+            <div className="flex items-center gap-2 text-sm text-blue-600">
+              <Spinner className="w-4 h-4" />
+              上传中...
             </div>
           )}
         </div>

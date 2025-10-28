@@ -17,7 +17,7 @@ async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise
 
   // 创建AbortController用于超时控制
   const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 120000) // 2分钟超时
+  const timeoutId = setTimeout(() => controller.abort(), 180000) // 3分钟超时
 
   try {
     const response = await fetch(url, {

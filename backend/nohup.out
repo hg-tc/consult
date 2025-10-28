@@ -1,0 +1,41 @@
+2025-10-27 22:50:35,906 - app_simple - INFO - 日志系统已配置为DEBUG级别
+2025-10-27 22:50:42,037 - datasets - DEBUG - PyTorch version 2.9.0 available.
+2025-10-27 22:50:43,068 - app.services.file_index_manager - INFO - 加载文件索引: 0 个文件
+2025-10-27 22:50:43,088 - app.services.task_queue - INFO - 加载了 21 个任务
+INFO:     Started server process [173547]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     127.0.0.1:36798 - "GET /api/v1/global/documents HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:57300 - "GET /api/v1/global/documents HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:57304 - "GET /api/v1/global/documents HTTP/1.1" 404 Not Found
+2025-10-27 22:51:21,288 - app.services.smart_cache_manager - INFO - LRU缓存初始化: 最大条目=500, 最大内存=50MB
+2025-10-27 22:51:21,288 - app.services.smart_cache_manager - INFO - LRU缓存初始化: 最大条目=200, 最大内存=100MB
+2025-10-27 22:51:21,289 - app.services.smart_cache_manager - INFO - LRU缓存初始化: 最大条目=1000, 最大内存=200MB
+2025-10-27 22:51:21,289 - app.services.smart_cache_manager - INFO - LRU缓存初始化: 最大条目=1000, 最大内存=10MB
+2025-10-27 22:51:21,290 - app.services.smart_cache_manager - INFO - 智能缓存管理器初始化完成
+2025-10-27 22:51:21,290 - app.services.langchain_rag_service - INFO - 强制启用完全离线模式
+2025-10-27 22:51:21,290 - app.services.langchain_rag_service - INFO - 使用HuggingFace镜像站: https://hf-mirror.com
+2025-10-27 22:51:21,290 - app.services.langchain_rag_service - INFO - 使用本地模型: /root/consult/backend/models/bge-large-zh-v1.5
+2025-10-27 22:51:21,290 - app.services.langchain_rag_service - INFO - 正在加载BGE模型: /root/consult/backend/models/bge-large-zh-v1.5
+2025-10-27 22:51:21,364 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cuda:0
+2025-10-27 22:51:21,365 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: /root/consult/backend/models/bge-large-zh-v1.5
+/root/consult/backend/app/services/langchain_rag_service.py:138: LangChainDeprecationWarning: The class `HuggingFaceEmbeddings` was deprecated in LangChain 0.2.2 and will be removed in 1.0. An updated version of the class exists in the `langchain-huggingface package and should be used instead. To use it run `pip install -U `langchain-huggingface` and import as `from `langchain_huggingface import HuggingFaceEmbeddings``.
+  embeddings = HuggingFaceEmbeddings(
+2025-10-27 22:51:22,979 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: /root/consult/backend/models/bge-large-zh-v1.5
+2025-10-27 22:51:23,786 - app.services.langchain_rag_service - INFO - ✅ 成功加载BGE模型: /root/consult/backend/models/bge-large-zh-v1.5
+2025-10-27 22:51:24,163 - app.services.langchain_rag_service - INFO -    维度: 1024
+2025-10-27 22:51:24,163 - app.services.langchain_rag_service - INFO - 使用API Base: https://api.qingyuntop.top/v1
+2025-10-27 22:51:24,541 - app.services.langchain_rag_service - INFO - LLM初始化成功
+2025-10-27 22:51:24,541 - app.services.langchain_rag_service - INFO - LangChain组件初始化成功
+2025-10-27 22:51:24,542 - faiss.loader - DEBUG - Environment variable FAISS_OPT_LEVEL is not set, so let's pick the instruction set according to the current CPU
+2025-10-27 22:51:24,543 - faiss.loader - INFO - Loading faiss with AVX512 support.
+2025-10-27 22:51:24,563 - faiss.loader - INFO - Successfully loaded faiss with AVX512 support.
+2025-10-27 22:51:24,575 - app.services.langchain_rag_service - INFO - 成功加载向量存储: global
+2025-10-27 22:51:24,576 - app.api.v1.endpoints.global_api - INFO - 快速从向量数据库加载了 15 个文档（处理了500个chunk）
+2025-10-27 22:51:24,576 - app.api.v1.endpoints.global_api - INFO - 全局文档列表: 向量数据库 15 个，JSON文件 16 个（归档记录 1 个，普通文件 15 个），合并后 15 个
+INFO:     127.0.0.1:54288 - "GET /api/global/documents HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [173547]

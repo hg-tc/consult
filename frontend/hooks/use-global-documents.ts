@@ -1,7 +1,7 @@
 "use client"
 
 // 全局文档操作的自定义Hook（用于数据库管理页面）
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import useSWR, { mutate as globalMutate } from "swr"
 import { globalDocumentApi } from "@/lib/api-client"
 
@@ -14,6 +14,31 @@ export function useGlobalDocuments() {
     fallbackData: { documents: [] },
   })
 
+  // 添加定时刷新，当有上传任务时自动刷新文档列表
+  useEffect(() => {
+    // 检查是否有上传中的任务
+    const hasUploadingTasks = localStorage.getItem('has_uploading_tasks') === 'true'
+    
+    if (hasUploadingTasks) {
+      // 每3秒刷新一次，直到没有上传任务
+      const interval = setInterval(async () => {
+        await mutate()
+        
+        // 检查是否还有上传任务
+        const stillHasTasks = Array.from({ length: localStorage.length }, (_, i) => 
+          localStorage.key(i)
+        ).some(key => key?.startsWith('upload_task_'))
+        
+        if (!stillHasTasks) {
+          localStorage.setItem('has_uploading_tasks', 'false')
+          clearInterval(interval)
+        }
+      }, 3000)
+      
+      return () => clearInterval(interval)
+    }
+  }, [mutate])
+
   const uploadDocument = async (file: File) => {
     console.log("[v0] uploadGlobalDocument called with file:", file.name)
     setIsUploading(true)
@@ -25,8 +50,9 @@ export function useGlobalDocuments() {
       // 保存task_id用于状态追踪
       if (result.task_id) {
         console.log("[v0] 文档上传任务ID:", result.task_id)
-        // 可以存储到localStorage或状态管理
+        // 存储任务ID并标记有上传任务
         localStorage.setItem(`upload_task_${result.id}`, result.task_id)
+        localStorage.setItem('has_uploading_tasks', 'true')
       }
       
       console.log("[v0] Refreshing data after upload...")

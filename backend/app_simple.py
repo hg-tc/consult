@@ -75,7 +75,8 @@ def get_rag_service():
     global _rag_service_instance
     if _rag_service_instance is None:
         from app.services.langchain_rag_service import LangChainRAGService
-        _rag_service_instance = LangChainRAGService(vector_db_path="global_vector_db")
+        # 使用global_db目录，is_global=True标记这不是一个工作区
+        _rag_service_instance = LangChainRAGService(vector_db_path="global_db", is_global=True)
     return _rag_service_instance
 
 def get_workspace_rag_service(workspace_id: str):
@@ -86,7 +87,8 @@ def get_workspace_rag_service(workspace_id: str):
 def get_global_rag_service():
     """获取全局RAG服务实例"""
     from app.services.langchain_rag_service import LangChainRAGService
-    return LangChainRAGService(vector_db_path="global_vector_db")
+    # 使用global_db目录，is_global=True标记这不是一个工作区
+    return LangChainRAGService(vector_db_path="global_db", is_global=True)
 
 app = FastAPI(
     title="Agent Service Platform API",
@@ -200,7 +202,7 @@ async def upload_database(file: UploadFile = File(...)):
             raise HTTPException(status_code=400, detail="文件名不能为空")
         
         file_ext = os.path.splitext(file.filename)[1].lower()
-        allowed_extensions = ['.pdf', '.docx', '.doc', '.txt', '.md', '.xlsx', '.xls', '.pptx', '.ppt', '.csv', '.json', '.sql']
+        allowed_extensions = ['.pdf', '.docx', '.doc', '.txt', '.md', '.xlsx', '.xls', '.pptx', '.ppt', '.csv', '.json', '.sql', '.zip', '.rar']
         
         if file_ext not in allowed_extensions:
             raise HTTPException(status_code=400, detail=f"不支持的文件类型: {file_ext}")
@@ -250,7 +252,27 @@ async def upload_database(file: UploadFile = File(...)):
             message="文件上传完成"
         )
         
-        # 启动后台处理任务
+        # 如果是归档文件（ZIP或RAR），进行特殊处理
+        if file_ext == '.zip' or file_ext == '.rar':
+            archive_type = "RAR" if file_ext == '.rar' else "ZIP"
+            # 启动归档文件处理任务
+            asyncio.create_task(process_zip_async(task_id, str(file_path), "global"))
+            
+            logger.info(f"[DEBUG] 全局数据库{archive_type}任务创建成功: {task_id}")
+            
+            return {
+                "status": "success",
+                "message": f"{archive_type}文件 {file.filename} 上传到全局数据库成功，正在解压并处理",
+                "task_id": task_id,
+                "workspace_id": "global",
+                "file_type": file_ext,
+                "file_size": file_size,
+                "processing_info": {
+                    "note": f"{archive_type}文件正在后台解压并处理，包含多个文件"
+                }
+            }
+        
+        # 启动普通文档后台处理任务
         asyncio.create_task(process_global_document_async(task_id, str(file_path)))
         
         logger.info(f"[DEBUG] 全局数据库任务创建成功: {task_id}")
@@ -1119,13 +1141,18 @@ async def process_document_async(task_id: str, file_path: str, workspace_id: str
             message="正在解析文档内容"
         )
         
+        # 获取任务元数据
+        task = task_queue.get_task(task_id)
+        task_metadata = task.metadata if task else {}
+        original_filename = task_metadata.get('original_filename', Path(file_path).name)
+        
         # 添加到RAG系统
         success = await rag_service.add_document(
             workspace_id=workspace_id,
             file_path=file_path,
             metadata={
                 "task_id": task_id,
-                "original_filename": Path(file_path).name,
+                "original_filename": original_filename,
                 "file_size": Path(file_path).stat().st_size,
                 "upload_time": datetime.now().isoformat(),
                 "source": "async_processing"
@@ -1133,6 +1160,42 @@ async def process_document_async(task_id: str, file_path: str, workspace_id: str
         )
         
         if success:
+            # 保存到JSON文件（全局和工作区都保存）
+            try:
+                doc_id = str(uuid.uuid4())
+                document_data = {
+                    'id': doc_id,
+                    'filename': Path(file_path).name,
+                    'original_filename': original_filename,
+                    'file_size': Path(file_path).stat().st_size,
+                    'file_path': file_path,
+                    'status': 'completed',
+                    'created_at': datetime.now().isoformat(),
+                    'processing_started': datetime.now().isoformat(),
+                    'processing_completed': datetime.now().isoformat(),
+                    'chunk_count': 0,
+                    'quality_score': 0.8
+                }
+                
+                if workspace_id == "global":
+                    # 保存到全局JSON
+                    from app.api.v1.endpoints.global_api import load_global_documents, save_global_documents
+                    
+                    documents = load_global_documents()
+                    documents.append(document_data)
+                    save_global_documents(documents)
+                    logger.info(f"[DEBUG] 已保存全局文档记录到JSON")
+                else:
+                    # 保存到工作区JSON
+                    from app.services.workspace_document_manager import add_workspace_document
+                    
+                    add_workspace_document(workspace_id, document_data)
+                    logger.info(f"[DEBUG] 已保存工作区文档记录到JSON: {workspace_id}")
+            except Exception as json_error:
+                logger.warning(f"[DEBUG] 保存到JSON失败: {json_error}")
+                import traceback
+                logger.error(f"[DEBUG] 详细错误: {traceback.format_exc()}")
+            
             # 更新进度：完成
             task_queue.update_task_progress(
                 task_id=task_id,
@@ -1216,6 +1279,203 @@ async def process_global_document_async(task_id: str, file_path: str):
         logger.error(f"[DEBUG] 文件路径: {file_path}")
         import traceback
         logger.error(f"[DEBUG] 堆栈跟踪:\n{traceback.format_exc()}")
+
+async def process_zip_async(task_id: str, zip_path: str, workspace_id: str = "global"):
+    """异步处理ZIP文件"""
+    from app.services.task_queue import get_task_queue, TaskStage
+    from app.services.langchain_rag_service import LangChainRAGService
+    from app.services.zip_processor import ZipProcessor
+    import tempfile
+    
+    task_queue = get_task_queue()
+    extract_dir = None
+    
+    try:
+        logger.info(f"[ZIP] 开始处理ZIP文件: {zip_path}")
+        
+        # 阶段1: 解压ZIP文件
+        task_queue.update_task_progress(
+            task_id=task_id,
+            stage=TaskStage.UPLOADING,
+            progress=10,
+            message="ZIP文件上传完成，开始解压"
+        )
+        
+        # 创建临时解压目录
+        extract_dir = tempfile.mkdtemp(prefix=f"zip_extract_{task_id}_")
+        logger.info(f"[ZIP] 临时解压目录: {extract_dir}")
+        
+        # 解压归档文件（ZIP或RAR）
+        extracted_files = await ZipProcessor.extract_archive(zip_path, extract_dir)
+        
+        if not extracted_files:
+            task_queue.fail_task(task_id, "ZIP文件中没有找到支持的文件")
+            return
+        
+        # 阶段2: 更新进度
+        task_queue.update_task_progress(
+            task_id=task_id,
+            stage=TaskStage.PARSING,
+            progress=20,
+            message=f"已解压 {len(extracted_files)} 个文件，开始并行处理"
+        )
+        
+        # 阶段3: 并行处理文件
+        rag_service = LangChainRAGService()
+        
+        total_files = len(extracted_files)
+        results = []
+        
+        # 使用并行处理
+        async def process_single_file(file_info: dict, index: int):
+            """处理单个文件"""
+            try:
+                logger.info(f"[ZIP] 处理文件 ({index+1}/{total_files}): {file_info['original_filename']}")
+                
+                # 添加到RAG系统
+                success = await rag_service.add_document(
+                    workspace_id=workspace_id,
+                    file_path=file_info['file_path'],
+                    metadata={
+                        "task_id": task_id,
+                        "original_filename": file_info['original_filename'],
+                        "file_size": file_info['file_size'],
+                        "upload_time": datetime.now().isoformat(),
+                        "source": "zip_batch_processing",
+                        "zip_file": Path(zip_path).name,
+                        "file_type": file_info['file_type']
+                    }
+                )
+                
+                # 为每个内部文件生成唯一ID（用于后续保存到JSON）
+                internal_file_id = str(uuid.uuid4())
+                
+                return {
+                    "filename": file_info['original_filename'],
+                    "success": success,
+                    "file_type": file_info['file_type'],
+                    "file_id": internal_file_id if success else None,
+                    "file_info": file_info if success else None
+                }
+            except Exception as e:
+                logger.error(f"[ZIP] 处理文件失败: {file_info['original_filename']}, 错误: {e}")
+                return {
+                    "filename": file_info['original_filename'],
+                    "success": False,
+                    "error": str(e),
+                    "file_id": None,
+                    "file_info": None
+                }
+        
+        # 并发处理所有文件（限制并发数为5）
+        semaphore = asyncio.Semaphore(5)
+        
+        async def process_with_semaphore(file_info, index):
+            async with semaphore:
+                return await process_single_file(file_info, index)
+        
+        # 创建所有任务
+        tasks = [process_with_semaphore(file_info, idx) for idx, file_info in enumerate(extracted_files)]
+        
+        # 等待所有任务完成
+        results = await asyncio.gather(*tasks)
+        
+        # 统计结果
+        successful = sum(1 for r in results if r['success'])
+        failed = total_files - successful
+        
+        # 批量保存成功的文件到JSON（全局和工作区都保存）
+        if successful > 0:
+            try:
+                from app.services.workspace_document_manager import add_workspace_document
+                
+                if workspace_id == "global":
+                    # 全局数据库
+                    from app.api.v1.endpoints.global_api import load_global_documents, save_global_documents
+                    
+                    # 加载现有文档
+                    documents = load_global_documents()
+                else:
+                    documents = []
+                
+                # 为每个成功处理的文件创建记录
+                for result in results:
+                    if result['success'] and result.get('file_id'):
+                        file_info = result.get('file_info', {})
+                        internal_document = {
+                            'id': result['file_id'],
+                            'filename': result['filename'],
+                            'original_filename': result['filename'],
+                            'file_size': file_info.get('file_size', 0),
+                            'file_path': file_info.get('file_path', ''),
+                            'file_type': result.get('file_type', ''),
+                            'status': 'completed',
+                            'created_at': datetime.now().isoformat(),
+                            'processing_started': datetime.now().isoformat(),
+                            'processing_completed': datetime.now().isoformat(),
+                            'chunk_count': 0,
+                            'quality_score': 0.8,
+                            'is_archive': False,
+                            'source_archive': Path(zip_path).name
+                        }
+                        
+                        # 根据工作区类型保存
+                        if workspace_id == "global":
+                            documents.append(internal_document)
+                        else:
+                            # 保存到工作区JSON
+                            add_workspace_document(workspace_id, internal_document)
+                
+                # 如果是全局数据库，批量保存所有文档
+                if workspace_id == "global":
+                    save_global_documents(documents)
+                    logger.info(f"[ZIP] 已批量保存 {successful} 个内部文件记录到全局JSON")
+                else:
+                    logger.info(f"[ZIP] 已保存 {successful} 个内部文件记录到工作区 {workspace_id} JSON")
+            except Exception as json_error:
+                logger.warning(f"[ZIP] 批量保存到JSON失败: {json_error}")
+                import traceback
+                logger.error(f"[ZIP] 详细错误: {traceback.format_exc()}")
+        
+        # 阶段4: 清理临时文件
+        try:
+            if extract_dir:
+                await ZipProcessor.cleanup_extracted_files(extract_dir)
+                logger.info(f"[ZIP] 临时文件已清理: {extract_dir}")
+        except Exception as e:
+            logger.warning(f"[ZIP] 清理临时文件失败: {e}")
+        
+        # 阶段5: 完成任务
+        if successful > 0:
+            task_queue.update_task_progress(
+                task_id=task_id,
+                stage=TaskStage.INDEXING,
+                progress=100,
+                message=f"处理完成: 成功 {successful}/{total_files}"
+            )
+            task_queue.complete_task(task_id, {
+                "success": True,
+                "total_files": total_files,
+                "successful": successful,
+                "failed": failed,
+                "results": results
+            })
+            logger.info(f"[ZIP] ZIP文件处理完成: 成功 {successful}/{total_files}")
+        else:
+            task_queue.fail_task(task_id, "所有文件处理失败")
+            
+    except Exception as e:
+        task_queue.fail_task(task_id, str(e))
+        logger.error(f"[ZIP] ZIP文件处理异常: {str(e)}")
+        import traceback
+        logger.error(f"[ZIP] 详细错误信息:\n{traceback.format_exc()}")
+        
+        # 确保清理临时文件
+        try:
+            if extract_dir:
+                await ZipProcessor.cleanup_extracted_files(extract_dir)
+        except:
+            pass
 
 # 任务状态API
 @app.get("/api/tasks")
@@ -1737,21 +1997,24 @@ async def get_workspaces_api():
         
         try:
             from app.services.langchain_rag_service import LangChainRAGService
-            rag_service = LangChainRAGService()
             
             # 检查向量数据库目录，找出所有工作区
             vector_db_path = Path("/root/consult/backend/langchain_vector_db")
             if vector_db_path.exists():
-                # 查找所有工作区目录
+                # 查找所有工作区目录（排除workspace_global，它应该已经被迁移到global_db）
                 for item in vector_db_path.iterdir():
-                    if item.is_dir() and item.name.startswith("workspace_"):
+                    if item.is_dir() and item.name.startswith("workspace_") and item.name != "workspace_global":
                         workspace_id = item.name.replace("workspace_", "")
+                        
+                        # 使用工作区特定的RAG服务获取统计
+                        rag_service = LangChainRAGService(vector_db_path=f"langchain_vector_db/workspace_{workspace_id}")
                         
                         try:
                             stats = rag_service.get_workspace_stats(workspace_id)
+                            logger.info(f"[DEBUG] 工作区 {workspace_id} 统计: {stats}")
                             workspaces.append({
                                 "id": workspace_id,
-                                "name": f"工作区 {workspace_id}",
+                                "name": f"工作区 {workspace_id[:8]}",
                                 "files": stats.get('document_count', 0),
                                 "document_count": stats.get('document_count', 0),
                                 "status": stats.get('status', 'active'),
@@ -1760,13 +2023,25 @@ async def get_workspaces_api():
                             })
                             logger.info(f"[DEBUG] 找到工作区: {workspace_id}")
                         except Exception as e:
-                            logger.debug(f"[DEBUG] 工作区 {workspace_id} 统计失败: {e}")
-                            continue
+                            logger.warning(f"[DEBUG] 工作区 {workspace_id} 统计失败: {e}")
+                            # 即使统计失败，也添加空工作区
+                            workspaces.append({
+                                "id": workspace_id,
+                                "name": f"工作区 {workspace_id[:8]}",
+                                "files": 0,
+                                "document_count": 0,
+                                "status": "error",
+                                "created": datetime.now().strftime("%Y-%m-%d"),
+                                "created_at": datetime.now().isoformat()
+                            })
+                            logger.info(f"[DEBUG] 添加失败工作区: {workspace_id}")
             
-            logger.info(f"[DEBUG] 找到 {len(workspaces)} 个工作区")
+            logger.info(f"[DEBUG] 找到 {len(workspaces)} 个工作区: {[w['id'] for w in workspaces]}")
             
         except Exception as e:
             logger.warning(f"[DEBUG] 获取工作区失败: {e}")
+            import traceback
+            logger.error(f"详细错误:\n{traceback.format_exc()}")
         
         # 如果没有找到任何工作区，返回空列表
         if not workspaces:
@@ -1849,58 +2124,101 @@ async def update_workspace_api(workspace_id: str, data: dict):
 
 @app.delete("/api/workspaces/{workspace_id}")
 async def delete_workspace_api(workspace_id: str):
-    """删除工作区API - 前端调用"""
+    """删除工作区API - 前端调用（真正删除工作区目录）"""
     try:
-        return {"status": "deleted", "id": workspace_id}
+        import shutil
+        
+        logger.info(f"[DEBUG] 删除工作区请求: {workspace_id}")
+        
+        # 删除工作区目录
+        workspace_dir = Path(f"/root/consult/backend/langchain_vector_db/workspace_{workspace_id}")
+        
+        if workspace_dir.exists():
+            # 删除整个工作区目录
+            shutil.rmtree(workspace_dir)
+            logger.info(f"[DEBUG] 成功删除工作区目录: {workspace_dir}")
+            
+            # 尝试删除工作区JSON文件
+            from app.services.workspace_document_manager import get_workspace_documents_file
+            json_file = get_workspace_documents_file(workspace_id)
+            if json_file.exists():
+                json_file.unlink()
+                logger.info(f"[DEBUG] 成功删除工作区JSON文件: {json_file}")
+            
+            return {
+                "status": "deleted", 
+                "id": workspace_id,
+                "message": "工作区已成功删除"
+            }
+        else:
+            logger.warning(f"[DEBUG] 工作区目录不存在: {workspace_dir}")
+            return {
+                "status": "not_found",
+                "id": workspace_id,
+                "message": "工作区不存在"
+            }
+            
     except Exception as e:
         logger.error(f"删除工作区失败: {str(e)}")
+        import traceback
+        logger.error(f"堆栈跟踪:\n{traceback.format_exc()}")
         return {"error": f"删除失败: {str(e)}"}
 
 # 工作区文档管理API
 @app.get("/api/workspaces/{workspace_id}/documents")
 async def get_workspace_documents_api(workspace_id: str):
-    """获取工作区文档列表API"""
+    """获取工作区文档列表API（从JSON快速返回）"""
     try:
-        from app.services.langchain_rag_service import LangChainRAGService
-        rag_service = LangChainRAGService()
+        # 优先从JSON文件加载（快速）
+        from app.services.workspace_document_manager import load_workspace_documents
         
-        # 获取工作区统计信息
-        stats = rag_service.get_workspace_stats(workspace_id)
+        json_documents = load_workspace_documents(workspace_id)
         
-        # 获取文档列表（从向量存储中提取）
-        documents = []
-        try:
-            vector_store = rag_service._load_vector_store(workspace_id)
-            if vector_store and hasattr(vector_store, 'docstore'):
-                docstore = vector_store.docstore
-                if hasattr(docstore, '_dict'):
-                    # 按文件名分组
-                    file_groups = {}
-                    for chunk_id, doc in docstore._dict.items():
-                        metadata = doc.metadata if hasattr(doc, 'metadata') else {}
-                        original_filename = metadata.get('original_filename') or metadata.get('source', f"文档_{chunk_id[:8]}")
-                        
-                        if original_filename not in file_groups:
-                            file_groups[original_filename] = {
-                                "filename": original_filename,
-                                "chunk_count": 1,
-                                "file_size": metadata.get('file_size', 0),
-                                "upload_time": metadata.get('upload_time', ''),
-                                "file_type": metadata.get('file_type', ''),
-                                "chunk_ids": [chunk_id]
-                            }
-                        else:
-                            file_groups[original_filename]["chunk_count"] += 1
-                            file_groups[original_filename]["chunk_ids"].append(chunk_id)
-                    
-                    documents = list(file_groups.values())
-        except Exception as e:
-            logger.warning(f"获取工作区 {workspace_id} 文档列表失败: {str(e)}")
+        # 如果JSON中有数据，直接返回
+        if json_documents:
+            result_documents = []
+            for doc in json_documents:
+                result_documents.append({
+                    "id": doc.get('id', ''),
+                    "filename": doc.get('filename', ''),
+                    "original_filename": doc.get('original_filename', ''),
+                    "file_size": doc.get('file_size', 0),
+                    "file_type": doc.get('file_type', ''),
+                    "status": doc.get('status', 'completed'),
+                    "created_at": doc.get('created_at', ''),
+                    "chunk_count": doc.get('chunk_count', 0),
+                    # 添加chunk_ids字段，使用id作为第一个chunk ID
+                    "chunk_ids": [doc.get('id', '')]
+                })
+            
+            logger.info(f"工作区 {workspace_id} 从JSON加载 {len(result_documents)} 个文档")
+            
+            # 获取统计信息（使用JSON文档的数量）
+            stats = {
+                "workspace_id": workspace_id,
+                "document_count": len(result_documents),
+                "status": "active" if len(result_documents) > 0 else "empty"
+            }
+            
+            # 返回统一格式
+            return {
+                "workspace_id": workspace_id,
+                "documents": result_documents,
+                "stats": stats
+            }
         
+        # 如果JSON为空，返回空列表（文档列表应该从JSON管理，向量数据库只用于检索）
+        logger.info(f"工作区 {workspace_id} JSON为空，返回空列表")
+        
+        # 返回空列表
         return {
             "workspace_id": workspace_id,
-            "documents": documents,
-            "stats": stats
+            "documents": [],
+            "stats": {
+                "workspace_id": workspace_id,
+                "document_count": 0,
+                "status": "empty"
+            }
         }
         
     except Exception as e:
@@ -1945,7 +2263,22 @@ async def upload_workspace_document_api(
             }
         )
         
-        # 启动异步处理
+        # 如果是归档文件（ZIP或RAR），进行特殊处理
+        if file_extension == '.zip' or file_extension == '.rar':
+            # 启动ZIP处理任务
+            archive_type = "RAR" if file_extension == '.rar' else "ZIP"
+            asyncio.create_task(process_zip_async(task_id, str(file_path), workspace_id))
+            
+            return {
+                "status": "success",
+                "message": f"{archive_type}文件 {file.filename} 上传到工作区成功，正在解压并处理",
+                "task_id": task_id,
+                "workspace_id": workspace_id,
+                "file_type": file_extension,
+                "file_size": len(content)
+            }
+        
+        # 启动普通文档异步处理
         from app_simple import process_document_async
         asyncio.create_task(process_document_async(task_id, str(file_path), workspace_id))
         
@@ -1967,69 +2300,68 @@ async def delete_workspace_document_api(workspace_id: str, doc_id: str):
     """删除工作区文档API"""
     try:
         from app.services.langchain_rag_service import LangChainRAGService
-        rag_service = LangChainRAGService()
+        from app.services.workspace_document_manager import load_workspace_documents, save_workspace_documents
         
         logger.info(f"收到删除工作区文档请求: {workspace_id}/{doc_id}")
         
-        # 查找文档
-        vector_store = rag_service._load_vector_store(workspace_id)
-        if vector_store and hasattr(vector_store, 'docstore'):
-            docstore = vector_store.docstore
-            if hasattr(docstore, '_dict'):
-                # 查找包含目标文档ID的文件组
-                file_groups = {}
-                for chunk_id, doc in docstore._dict.items():
-                    metadata = doc.metadata if hasattr(doc, 'metadata') else {}
-                    original_filename = metadata.get('original_filename') or metadata.get('source', f"文档_{chunk_id[:8]}")
-                    
-                    if original_filename not in file_groups:
-                        file_groups[original_filename] = {
-                            "chunk_ids": [chunk_id]
-                        }
-                    else:
-                        file_groups[original_filename]["chunk_ids"].append(chunk_id)
-                
-                # 找到包含目标文档ID的文件组
-                target_filename = None
-                for fname, group in file_groups.items():
-                    if doc_id in group["chunk_ids"]:
-                        target_filename = fname
-                        break
-                
-                if not target_filename:
-                    logger.warning(f"文档 {doc_id} 在工作区 {workspace_id} 中未找到")
-                    return {
-                        "status": "not_found",
-                        "id": doc_id,
-                        "message": "文档未找到"
-                    }
-                
-                # 删除该文件的所有块
-                deleted_chunks = 0
-                for chunk_id in file_groups[target_filename]["chunk_ids"]:
-                    try:
-                        if rag_service.delete_document(workspace_id, chunk_id):
-                            deleted_chunks += 1
-                    except Exception as e:
-                        logger.warning(f"删除块 {chunk_id} 失败: {str(e)}")
-                
-                logger.info(f"成功删除文件 {target_filename} 的 {deleted_chunks} 个块")
-                
-                return {
-                    "status": "deleted", 
-                    "id": doc_id,
-                    "filename": target_filename,
-                    "workspace_id": workspace_id,
-                    "deleted_chunks": deleted_chunks,
-                    "message": f"文件 {target_filename} 已成功删除（{deleted_chunks} 个块）"
-                }
+        # 首先从JSON删除
+        json_documents = load_workspace_documents(workspace_id)
+        filtered_documents = [doc for doc in json_documents if doc.get('id') != doc_id]
         
-        logger.warning(f"工作区 {workspace_id} 的docstore不存在")
-        return {
-            "status": "not_found",
-            "id": doc_id,
-            "message": "工作区不存在"
-        }
+        deleted = False
+        if len(filtered_documents) < len(json_documents):
+            # JSON中有此文档，获取要删除的文档的原始文件名
+            deleted_doc = [doc for doc in json_documents if doc.get('id') == doc_id][0]
+            deleted_filename = deleted_doc.get('original_filename')
+            
+            # 保存过滤后的JSON
+            save_workspace_documents(workspace_id, filtered_documents)
+            logger.info(f"从JSON中删除了文档: {doc_id}, 文件名: {deleted_filename}")
+            deleted = True
+            
+            # 尝试从向量数据库删除相关chunks（通过文件名匹配）
+            try:
+                rag_service = LangChainRAGService(vector_db_path="langchain_vector_db")
+                vector_store = rag_service._load_vector_store(workspace_id)
+                
+                if vector_store and hasattr(vector_store, 'docstore'):
+                    docstore = vector_store.docstore
+                    if hasattr(docstore, '_dict'):
+                        # 查找并删除匹配文件名的所有chunks
+                        deleted_chunks = 0
+                        chunks_to_delete = []
+                        for chunk_id, doc in docstore._dict.items():
+                            metadata = doc.metadata if hasattr(doc, 'metadata') else {}
+                            original_filename = metadata.get('original_filename') or metadata.get('source', '')
+                            # 通过文件名匹配
+                            if original_filename == deleted_filename:
+                                chunks_to_delete.append(chunk_id)
+                        
+                        # 删除匹配的chunks
+                        for chunk_id in chunks_to_delete:
+                            try:
+                                if rag_service.delete_document(workspace_id, chunk_id):
+                                    deleted_chunks += 1
+                            except Exception as e:
+                                logger.warning(f"删除块 {chunk_id} 失败: {str(e)}")
+                        
+                        if deleted_chunks > 0:
+                            logger.info(f"从向量数据库删除了 {deleted_chunks} 个块（文件名: {deleted_filename}）")
+            except Exception as vec_error:
+                logger.warning(f"从向量数据库删除失败: {vec_error}")
+            
+            return {
+                "status": "deleted",
+                "id": doc_id,
+                "message": "文档已成功删除"
+            }
+        else:
+            logger.warning(f"文档 {doc_id} 在工作区 {workspace_id} 的JSON中未找到")
+            return {
+                "status": "not_found",
+                "id": doc_id,
+                "message": "文档未找到"
+            }
                     
     except Exception as e:
         logger.error(f"删除工作区文档失败: {str(e)}")
@@ -2077,18 +2409,29 @@ async def get_all_status_api():
     """获取所有工作区状态API - 前端调用"""
     try:
         from app.services.langchain_rag_service import LangChainRAGService
-        rag_service = LangChainRAGService()
         
+        # 找出所有工作区
         statuses = []
-        for ws_id in ["1", "2", "3"]:
-            stats = rag_service.get_workspace_stats(ws_id)
-            statuses.append({
-                "workspace_id": ws_id,
-                "status": stats.get('status', 'empty'),
-                "document_count": stats.get('document_count', 0),
-                "rag_available": stats.get('status') == 'active',
-                "last_updated": datetime.now().isoformat()
-            })
+        vector_db_path = Path("/root/consult/backend/langchain_vector_db")
+        if vector_db_path.exists():
+            rag_service = LangChainRAGService(vector_db_path="langchain_vector_db")
+            
+            for item in vector_db_path.iterdir():
+                if item.is_dir() and item.name.startswith("workspace_") and item.name != "workspace_global":
+                    workspace_id = item.name.replace("workspace_", "")
+                    try:
+                        stats = rag_service.get_workspace_stats(workspace_id)
+                        # 返回正确的格式给status-panel
+                        statuses.append({
+                            "id": workspace_id,
+                            "workspace": f"工作区 {workspace_id[:8]}",
+                            "status": stats.get('status', 'empty'),
+                            "progress": 100 if stats.get('status') == 'active' else 0,
+                            "message": "工作区正常运行" if stats.get('status') == 'active' else "工作区无文档",
+                            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M")
+                        })
+                    except Exception as e:
+                        logger.warning(f"获取工作区 {workspace_id} 状态失败: {e}")
         
         return {"statuses": statuses}
         
@@ -2256,117 +2599,12 @@ async def download_document_api(doc_id: str):
             "doc_id": doc_id
         }
 
-@app.get("/api/status")
-async def get_statuses():
-    """获取所有工作区的处理状态"""
-    # 根据文档状态生成处理状态
-    statuses = []
-    for doc in documents_db:
-        # 根据文档状态确定处理进度
-        status = "completed"
-        progress = 100
-        message = "文档处理完成"
-
-        if doc["is_vectorized"]:
-            status = "vectorized"
-            message = "文档已向量化"
-        elif doc["status"] == "processing":
-            status = "processing"
-            progress = 50
-            message = "文档解析中..."
-        elif doc["status"] == "vectorizing":
-            status = "vectorizing"
-            progress = 75
-            message = "文档向量化中..."
-        elif doc["status"] == "failed":
-            status = "error"
-            progress = 0
-            message = "文档处理失败"
-
-        status_info = {
-            "id": doc["id"],
-            "workspace_id": doc["workspace_id"],
-            "workspace_name": f"工作区 {doc['workspace_id']}",
-            "status": status,
-            "progress": progress,
-            "message": message,
-            "timestamp": doc["created_at"],
-            "file_name": doc.get("original_filename", ""),
-            "file_type": doc.get("file_type", "")
-        }
-        statuses.append(status_info)
-
-    return statuses
 
 @app.get("/api/status/{workspace_id}")
 async def get_workspace_status(workspace_id: str):
-    """获取特定工作区的处理状态"""
-    # 根据工作区的文档生成状态
-    workspace_docs = [doc for doc in documents_db if str(doc["workspace_id"]) == workspace_id]
-
-    if not workspace_docs:
-        return {
-            "workspace_id": workspace_id,
-            "workspace_name": f"工作区 {workspace_id}",
-            "status": "idle",
-            "progress": 0,
-            "message": "工作区无文档",
-            "documents": 0
-        }
-
-    # 计算整体状态
-    total_docs = len(workspace_docs)
-    completed_docs = sum(1 for doc in workspace_docs if doc["status"] == "completed")
-    vectorized_docs = sum(1 for doc in workspace_docs if doc.get("is_vectorized", False))
-    processing_docs = sum(1 for doc in workspace_docs if doc["status"] == "processing")
-    vectorizing_docs = sum(1 for doc in workspace_docs if doc["status"] == "vectorizing")
-
-    if vectorizing_docs > 0:
-        status = "vectorizing"
-        progress = min(90, 50 + (vectorized_docs / total_docs) * 40)
-        message = f"正在向量化的文档: {vectorizing_docs}"
-    elif processing_docs > 0:
-        status = "processing"
-        progress = min(50, (completed_docs / total_docs) * 50)
-        message = f"正在处理的文档: {processing_docs}"
-    elif vectorized_docs == total_docs:
-        status = "vectorized"
-        progress = 100
-        message = "所有文档已向量化"
-    elif completed_docs == total_docs:
-        status = "completed"
-        progress = 90
-        message = "所有文档处理完成，等待向量化"
-    else:
-        status = "partial"
-        progress = min(80, (completed_docs / total_docs) * 80)
-        message = f"已完成 {completed_docs}/{total_docs} 个文档"
-
-    return {
-        "workspace_id": workspace_id,
-        "workspace_name": f"工作区 {workspace_id}",
-        "status": status,
-        "progress": progress,
-        "message": message,
-        "timestamp": max(doc["created_at"] for doc in workspace_docs),
-        "documents": {
-            "total": total_docs,
-            "completed": completed_docs,
-            "vectorized": vectorized_docs,
-            "processing": processing_docs,
-            "vectorizing": vectorizing_docs
-        }
-    }
-
-@app.post("/api/status/{workspace_id}/start")
-async def start_processing(workspace_id: str):
-    """启动处理任务"""
-    return {"message": f"开始处理工作区 {workspace_id}"}
-
-@app.post("/api/status/{workspace_id}/stop")
-async def stop_processing(workspace_id: str):
-    """停止处理任务"""
-    return {"message": f"停止处理工作区 {workspace_id}"}
+    """获取特定工作区的处理状态（重定向到新API）"""
+    # 直接调用新的API
+    return await get_workspace_status_api(workspace_id)
 
 @app.post("/api/agent/generate-document")
 async def generate_document_api(data: dict):

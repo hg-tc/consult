@@ -44,8 +44,9 @@ logger = logging.getLogger(__name__)
 class LangChainRAGService:
     """基于LangChain和FAISS的RAG服务"""
     
-    def __init__(self, vector_db_path: str = "langchain_vector_db"):
+    def __init__(self, vector_db_path: str = "langchain_vector_db", is_global: bool = False):
         self.vector_db_path = Path(vector_db_path)
+        self.is_global = is_global  # 标记是否为全局数据库（不是工作区）
         self.vector_db_path.mkdir(exist_ok=True)
         
         # 初始化组件
@@ -164,6 +165,10 @@ class LangChainRAGService:
     
     def _get_vector_store_path(self, workspace_id: str) -> Path:
         """获取向量存储路径"""
+        # 如果是全局数据库或者workspace_id为"global"，直接使用vector_db_path
+        if self.is_global or workspace_id == "global":
+            return self.vector_db_path
+        # 否则是工作区，使用workspace_前缀
         return self.vector_db_path / f"workspace_{workspace_id}"
     
     def _load_vector_store(self, workspace_id: str) -> Optional[FAISS]:
@@ -328,8 +333,42 @@ class LangChainRAGService:
                     logger.warning(f"PyPDFLoader失败，尝试OCR: {str(e)}")
                     return self._load_document_with_ocr(file_path)
                     
-            elif file_extension in ['.docx', '.doc']:
+            elif file_extension == '.docx':
                 loader = Docx2txtLoader(str(file_path))
+            elif file_extension == '.doc':
+                # 旧版.doc文件使用unstructured库处理
+                try:
+                    from unstructured.partition.doc import partition_doc
+                    
+                    elements = partition_doc(filename=str(file_path))
+                    
+                    # 提取文本内容
+                    text_parts = []
+                    for element in elements:
+                        if hasattr(element, 'text') and element.text:
+                            text_parts.append(element.text)
+                    
+                    if not text_parts:
+                        raise ValueError("unstructured提取到空内容")
+                    
+                    text = '\n\n'.join(text_parts)
+                    
+                    # 创建Document对象
+                    documents = [Document(page_content=text, metadata={'source': str(file_path)})]
+                    logger.info(f"unstructured成功处理旧版Word文件: {file_path}, 元素数: {len(elements)}")
+                    return documents
+                    
+                except ImportError:
+                    logger.warning("unstructured不支持.doc，回退到docx2txt")
+                    # 回退到docx2txt
+                    import docx2txt
+                    text = docx2txt.process(str(file_path))
+                    documents = [Document(page_content=text, metadata={'source': str(file_path)})]
+                    logger.info(f"docx2txt成功处理旧版Word文件: {file_path}")
+                    return documents
+                except Exception as doc_error:
+                    logger.error(f".doc文件处理失败: {doc_error}")
+                    raise ValueError(f"无法处理旧版.doc文件: {doc_error}")
             elif file_extension in ['.xlsx', '.xls']:
                 loader = UnstructuredExcelLoader(str(file_path))
             elif file_extension in ['.pptx', '.ppt']:

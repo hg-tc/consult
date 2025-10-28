@@ -1,8 +1,6 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Plus, FolderOpen, Upload, Edit2, Trash2, AlertCircle, ChevronDown, ChevronRight, FileText, Download, Eye } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -16,12 +14,20 @@ interface WorkspaceDocumentListProps {
   workspaceName: string
   isExpanded: boolean
   onToggle: () => void
+  onStatsUpdate?: (count: number) => void
 }
 
-function WorkspaceDocumentList({ workspaceId, workspaceName, isExpanded, onToggle }: WorkspaceDocumentListProps) {
+function WorkspaceDocumentList({ workspaceId, workspaceName, isExpanded, onToggle, onStatsUpdate }: WorkspaceDocumentListProps) {
   const { documents, stats, isLoading, error, uploadDocument, deleteDocument, downloadDocument } = useWorkspaceDocuments(workspaceId)
   const [uploading, setUploading] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  
+  // 当stats更新时，通知父组件
+  useEffect(() => {
+    if (onStatsUpdate && stats) {
+      onStatsUpdate(stats.document_count)
+    }
+  }, [stats, onStatsUpdate])
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -116,6 +122,7 @@ function WorkspaceDocumentList({ workspaceId, workspaceName, isExpanded, onToggl
             type="file"
             className="hidden"
             multiple
+            accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt,.md,.zip,.rar"
             onChange={handleFileUpload}
             disabled={uploading}
           />
@@ -143,7 +150,7 @@ function WorkspaceDocumentList({ workspaceId, workspaceName, isExpanded, onToggl
           )}
 
           {!isLoading && !error && documents.map((doc) => (
-            <div key={doc.chunk_ids[0]} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+            <div key={doc.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <FileText className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                 <div className="flex-1 min-w-0">
@@ -161,7 +168,7 @@ function WorkspaceDocumentList({ workspaceId, workspaceName, isExpanded, onToggl
                   variant="ghost"
                   size="icon"
                   className="h-7 w-7"
-                  onClick={() => handleDownloadDocument(doc.chunk_ids[0], doc.filename)}
+                  onClick={() => handleDownloadDocument(doc.id, doc.filename)}
                   title="下载文档"
                 >
                   <Download className="w-3 h-3" />
@@ -170,11 +177,11 @@ function WorkspaceDocumentList({ workspaceId, workspaceName, isExpanded, onToggl
                   variant="ghost"
                   size="icon"
                   className="h-7 w-7 text-destructive hover:text-destructive"
-                  onClick={() => handleDeleteDocument(doc.chunk_ids[0])}
-                  disabled={deletingId === doc.chunk_ids[0]}
+                  onClick={() => handleDeleteDocument(doc.id)}
+                  disabled={deletingId === doc.id}
                   title="删除文档"
                 >
-                  {deletingId === doc.chunk_ids[0] ? (
+                  {deletingId === doc.id ? (
                     <Spinner className="w-3 h-3" />
                   ) : (
                     <Trash2 className="w-3 h-3" />
@@ -190,11 +197,14 @@ function WorkspaceDocumentList({ workspaceId, workspaceName, isExpanded, onToggl
 }
 
 export function WorkspacePanel() {
-  const { workspaces, isLoading, isError, isCreating, createWorkspace, updateWorkspace, deleteWorkspace } =
+  const { workspaces, isLoading, isError, isCreating, createWorkspace, updateWorkspace, deleteWorkspace, refresh } =
     useWorkspaces()
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editName, setEditName] = useState("")
   const [expandedWorkspaces, setExpandedWorkspaces] = useState<Set<string>>(new Set())
+  
+  // 存储每个工作区的实时文档数量
+  const [workspaceStats, setWorkspaceStats] = useState<Record<string, number>>({})
 
   const toggleWorkspaceExpansion = (workspaceId: string) => {
     const newExpanded = new Set(expandedWorkspaces)
@@ -208,14 +218,22 @@ export function WorkspacePanel() {
 
   const addWorkspace = async () => {
     try {
-      const result = await createWorkspace("新工作区")
+      const result = await createWorkspace("新工作区") as any
       setEditingId(result.id)
       setEditName(result.name)
+      // 刷新工作区列表
+      refresh()
     } catch (error) {
       console.error("[v0] Workspace creation error:", error)
       // 可以添加用户友好的错误提示
     }
   }
+  
+  // 接收子组件返回的文件数量
+  const updateWorkspaceStats = (workspaceId: string, count: number) => {
+    setWorkspaceStats((prev) => ({ ...prev, [workspaceId]: count }))
+  }
+  
 
   const startEdit = (workspace: any) => {
     setEditingId(workspace.id)
@@ -302,7 +320,7 @@ export function WorkspacePanel() {
                         <h3 className="font-medium text-foreground truncate">{workspace.name}</h3>
                       )}
                       <p className="text-sm text-muted-foreground mt-1">
-                        {workspace.files || 0} 个文件 · 创建于 {workspace.created}
+                        {workspaceStats[workspace.id] ?? workspace.files ?? 0} 个文件 · 创建于 {workspace.created}
                       </p>
                     </div>
                   </div>
@@ -326,6 +344,7 @@ export function WorkspacePanel() {
                   workspaceName={workspace.name}
                   isExpanded={expandedWorkspaces.has(workspace.id)}
                   onToggle={() => toggleWorkspaceExpansion(workspace.id)}
+                  onStatsUpdate={(count) => updateWorkspaceStats(workspace.id, count)}
                 />
               </div>
             </Card>

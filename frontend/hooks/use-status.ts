@@ -17,6 +17,9 @@ export function useStatus() {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     fallbackData: { statuses: [] },
+    // 禁用自动刷新
+    refreshInterval: 0,
+    dedupingInterval: 60000, // 1分钟内不重复请求
   })
 
   useEffect(() => {
@@ -28,6 +31,7 @@ export function useStatus() {
 
     // 监听状态更新
     const handleStatusUpdate = (data: any) => {
+      // 只有在收到WebSocket消息时才刷新
       mutate()
     }
 
@@ -37,7 +41,7 @@ export function useStatus() {
       ws.off("status_update", handleStatusUpdate)
       ws.disconnect()
     }
-  }, [ws])
+  }, [ws, mutate])
 
   const startProcessing = async (workspaceId: string) => {
     await statusApi.startProcessing(workspaceId)

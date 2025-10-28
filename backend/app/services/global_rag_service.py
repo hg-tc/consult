@@ -29,7 +29,8 @@ class GlobalRAGService:
         self.db_service = db_service
         self.embeddings = None
         self.global_vector_store = None
-        self.vector_index_path = Path("global_vector_db")
+        # 使用global_db目录作为全局向量索引路径
+        self.vector_index_path = Path("global_db")
         self.vector_index_path.mkdir(exist_ok=True)
         
         self._initialize_components()
@@ -141,9 +142,41 @@ class GlobalRAGService:
             if file_extension == '.pdf':
                 from langchain_community.document_loaders import PyPDFLoader
                 loader = PyPDFLoader(str(file_path))
-            elif file_extension in ['.docx', '.doc']:
+            elif file_extension == '.docx':
                 from langchain_community.document_loaders import Docx2txtLoader
                 loader = Docx2txtLoader(str(file_path))
+            elif file_extension == '.doc':
+                # 旧版.doc文件使用unstructured库
+                try:
+                    from unstructured.partition.doc import partition_doc
+                    elements = partition_doc(filename=str(file_path))
+                    text_parts = []
+                    for element in elements:
+                        if hasattr(element, 'text') and element.text:
+                            text_parts.append(element.text)
+                    text = '\n\n'.join(text_parts)
+                except ImportError:
+                    # 回退到docx2txt
+                    import docx2txt
+                    text = docx2txt.process(str(file_path))
+                
+                from langchain_core.documents import Document as LangchainDocument
+                documents = [LangchainDocument(page_content=text, metadata={'source': str(file_path)})]
+                # 智能分割
+                text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+                split_documents = text_splitter.split_documents(documents)
+                
+                original_filename = file_path.name
+                for doc in split_documents:
+                    doc.page_content = f"文件名: {original_filename}\n\n{doc.page_content}"
+                    doc.metadata.update({
+                        'file_path': str(file_path),
+                        'file_type': 'doc',
+                        'original_filename': original_filename
+                    })
+                
+                logger.info(f"旧版Word文件加载完成: {file_path}, 块数: {len(split_documents)}")
+                return split_documents
             elif file_extension in ['.txt', '.md']:
                 from langchain_community.document_loaders import TextLoader
                 loader = TextLoader(str(file_path), encoding='utf-8')
