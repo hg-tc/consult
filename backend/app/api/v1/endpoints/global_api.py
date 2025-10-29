@@ -36,13 +36,15 @@ router = APIRouter(prefix="/api/global", tags=["global"])
 # 简化的全局服务实例
 performance_optimizer = get_performance_optimizer()  # 性能优化器
 
-# 持久化存储路径
-GLOBAL_DATA_DIR = Path("/root/consult/backend/global_data")
+# 持久化存储路径（从配置中获取）
+from app.core.config import settings
+
+GLOBAL_DATA_DIR = Path(settings.GLOBAL_DATA_PATH)
 GLOBAL_DOCUMENTS_FILE = GLOBAL_DATA_DIR / "documents.json"
 GLOBAL_WORKSPACES_FILE = GLOBAL_DATA_DIR / "workspaces.json"
 
 # 确保目录存在
-GLOBAL_DATA_DIR.mkdir(exist_ok=True)
+GLOBAL_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 def load_global_documents():
     """从文件加载全局文档"""
@@ -613,7 +615,8 @@ async def list_global_documents():
         # 从 LlamaIndex 向量库加载（新格式）
         vector_documents = []
         try:
-            llamaindex_storage_dir = Path("llamaindex_storage/global")
+            from app.core.config import settings
+            llamaindex_storage_dir = Path(settings.LLAMAINDEX_STORAGE_PATH) / "global"
             docstore_file = llamaindex_storage_dir / "docstore.json"
             
             if docstore_file.exists():
@@ -1013,7 +1016,8 @@ async def optimize_performance():
     """执行性能优化"""
     try:
         # 优化向量索引
-        vector_db_path = "/root/consult/backend/global_db"
+        from app.core.config import settings
+        vector_db_path = settings.LANGCHAIN_VECTOR_DB_PATH
         optimization_result = performance_optimizer.optimize_vector_index(vector_db_path)
         
         # 清理过期缓存
@@ -1087,7 +1091,8 @@ async def delete_global_document(doc_id: str):
         all_node_ids = []
         file_path = None
         
-        llamaindex_storage_dir = Path("llamaindex_storage/global")
+        from app.core.config import settings
+        llamaindex_storage_dir = Path(settings.LLAMAINDEX_STORAGE_PATH) / "global"
         docstore_file = llamaindex_storage_dir / "docstore.json"
         
         if docstore_file.exists():

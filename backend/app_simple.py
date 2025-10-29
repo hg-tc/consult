@@ -97,19 +97,22 @@ def get_rag_service():
     if _rag_service_instance is None:
         from app.services.langchain_rag_service import LangChainRAGService
         # 使用global_db目录，is_global=True标记这不是一个工作区
-        _rag_service_instance = LangChainRAGService(vector_db_path="global_db", is_global=True)
+        from app.core.config import settings
+        _rag_service_instance = LangChainRAGService(vector_db_path=settings.LANGCHAIN_VECTOR_DB_PATH, is_global=True)
     return _rag_service_instance
 
 def get_workspace_rag_service(workspace_id: str):
     """获取工作区RAG服务实例"""
     from app.services.langchain_rag_service import LangChainRAGService
-    return LangChainRAGService(vector_db_path=f"langchain_vector_db/workspace_{workspace_id}")
+    from app.core.config import settings
+    return LangChainRAGService(vector_db_path=str(Path(settings.LANGCHAIN_VECTOR_DB_PATH) / f"workspace_{workspace_id}"))
 
 def get_global_rag_service():
     """获取全局RAG服务实例"""
     from app.services.langchain_rag_service import LangChainRAGService
-    # 使用global_db目录，is_global=True标记这不是一个工作区
-    return LangChainRAGService(vector_db_path="global_db", is_global=True)
+    from app.core.config import settings
+    # 使用配置的路径，is_global=True标记这不是一个工作区
+    return LangChainRAGService(vector_db_path=settings.LANGCHAIN_VECTOR_DB_PATH, is_global=True)
 
 app = FastAPI(
     title="Agent Service Platform API",
@@ -133,7 +136,8 @@ app.add_middleware(
 async def llamaindex_health(workspace_id: str = "global"):
     try:
         from pathlib import Path
-        base = Path(f"llamaindex_storage/{workspace_id}")
+        from app.core.config import settings
+        base = Path(settings.LLAMAINDEX_STORAGE_PATH) / workspace_id
         docstore = base / "docstore"
         index_store = base / "index_store"
         vector_store = base / "vector_store"
@@ -425,7 +429,8 @@ async def chat_with_langgraph(data: dict):
         
         # 获取 LLM
         from app.services.langchain_rag_service import LangChainRAGService
-        rag_service = LangChainRAGService(vector_db_path="langchain_vector_db")
+        from app.core.config import settings
+        rag_service = LangChainRAGService(vector_db_path=settings.LANGCHAIN_VECTOR_DB_PATH)
         
         # 创建工作流
         workflow = LangGraphRAGWorkflow(
@@ -472,7 +477,8 @@ async def generate_deepresearch_document(data: dict):
         
         # 获取 LLM 和网络搜索服务
         from app.services.langchain_rag_service import LangChainRAGService
-        rag_service = LangChainRAGService(vector_db_path="langchain_vector_db")
+        from app.core.config import settings
+        rag_service = LangChainRAGService(vector_db_path=settings.LANGCHAIN_VECTOR_DB_PATH)
         web_search_service = get_web_search_service()
         
         # 创建文档生成工作流
@@ -538,7 +544,8 @@ async def ask_question(data: dict):
         # 使用LangChain RAG服务 - 使用正确的路径
         from app.services.langchain_rag_service import LangChainRAGService
         # 使用langchain_vector_db作为基础路径，以支持工作区查询
-        rag_service = LangChainRAGService(vector_db_path="langchain_vector_db")
+        from app.core.config import settings
+        rag_service = LangChainRAGService(vector_db_path=settings.LANGCHAIN_VECTOR_DB_PATH)
         
         # 初始化意图分类器
         intent_classifier = IntentClassifier(rag_service.llm)
@@ -2083,7 +2090,8 @@ async def get_workspaces_api():
             from app.services.langchain_rag_service import LangChainRAGService
             
             # 检查向量数据库目录，找出所有工作区
-            vector_db_path = Path("/root/consult/backend/langchain_vector_db")
+            from app.core.config import settings
+            vector_db_path = Path(settings.LANGCHAIN_VECTOR_DB_PATH)
             if vector_db_path.exists():
                 # 查找所有工作区目录（排除workspace_global，它应该已经被迁移到global_db）
                 for item in vector_db_path.iterdir():
@@ -2091,7 +2099,8 @@ async def get_workspaces_api():
                         workspace_id = item.name.replace("workspace_", "")
                         
                         # 使用工作区特定的RAG服务获取统计
-                        rag_service = LangChainRAGService(vector_db_path=f"langchain_vector_db/workspace_{workspace_id}")
+                        from app.core.config import settings
+                        rag_service = LangChainRAGService(vector_db_path=str(Path(settings.LANGCHAIN_VECTOR_DB_PATH) / f"workspace_{workspace_id}"))
                         
                         try:
                             stats = rag_service.get_workspace_stats(workspace_id)
@@ -2162,14 +2171,16 @@ async def create_workspace_api(data: dict):
         workspace_id = str(uuid.uuid4())
         
         # 创建工作区目录
-        workspace_dir = Path(f"/root/consult/backend/langchain_vector_db/workspace_{workspace_id}")
+        from app.core.config import settings
+        workspace_dir = Path(settings.LANGCHAIN_VECTOR_DB_PATH) / f"workspace_{workspace_id}"
         workspace_dir.mkdir(parents=True, exist_ok=True)
         
         logger.info(f"[DEBUG] 创建工作区目录: {workspace_dir}")
         
         # 初始化RAG服务
         from app.services.langchain_rag_service import LangChainRAGService
-        rag_service = LangChainRAGService(vector_db_path=f"langchain_vector_db/workspace_{workspace_id}")
+        from app.core.config import settings
+        rag_service = LangChainRAGService(vector_db_path=str(Path(settings.LANGCHAIN_VECTOR_DB_PATH) / f"workspace_{workspace_id}"))
         
         # 返回前端期望的格式
         result = {
@@ -2215,7 +2226,8 @@ async def delete_workspace_api(workspace_id: str):
         logger.info(f"[DEBUG] 删除工作区请求: {workspace_id}")
         
         # 删除工作区目录
-        workspace_dir = Path(f"/root/consult/backend/langchain_vector_db/workspace_{workspace_id}")
+        from app.core.config import settings
+        workspace_dir = Path(settings.LANGCHAIN_VECTOR_DB_PATH) / f"workspace_{workspace_id}"
         
         if workspace_dir.exists():
             # 删除整个工作区目录
@@ -2475,7 +2487,8 @@ async def delete_workspace_document_api(workspace_id: str, doc_id: str):
             
             # 尝试从向量数据库删除相关chunks（通过文件名匹配）
             try:
-                rag_service = LangChainRAGService(vector_db_path="langchain_vector_db")
+                from app.core.config import settings
+                rag_service = LangChainRAGService(vector_db_path=settings.LANGCHAIN_VECTOR_DB_PATH)
                 vector_store = rag_service._load_vector_store(workspace_id)
                 
                 if vector_store and hasattr(vector_store, 'docstore'):
@@ -2566,9 +2579,10 @@ async def get_all_status_api():
         
         # 找出所有工作区
         statuses = []
-        vector_db_path = Path("/root/consult/backend/langchain_vector_db")
+        from app.core.config import settings
+        vector_db_path = Path(settings.LANGCHAIN_VECTOR_DB_PATH)
         if vector_db_path.exists():
-            rag_service = LangChainRAGService(vector_db_path="langchain_vector_db")
+            rag_service = LangChainRAGService(vector_db_path=settings.LANGCHAIN_VECTOR_DB_PATH)
             
             for item in vector_db_path.iterdir():
                 if item.is_dir() and item.name.startswith("workspace_") and item.name != "workspace_global":

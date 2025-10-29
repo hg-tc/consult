@@ -2,6 +2,7 @@
 文件名索引管理器
 用于快速查找文件名对应的所有数据块
 """
+import os
 import json
 import logging
 from pathlib import Path
@@ -13,9 +14,13 @@ logger = logging.getLogger(__name__)
 class FileIndexManager:
     """文件名索引管理器"""
     
-    def __init__(self, index_file: str = "global_data/file_index.json"):
+    def __init__(self, index_file: str = None):
+        # 如果未指定，使用配置的全局数据路径
+        if index_file is None:
+            from app.core.config import settings
+            index_file = os.path.join(settings.GLOBAL_DATA_PATH, "file_index.json")
         self.index_file = Path(index_file)
-        self.index_file.parent.mkdir(exist_ok=True)
+        self.index_file.parent.mkdir(parents=True, exist_ok=True)
         self._index: Dict[str, Dict] = {}
         self._load_index()
     

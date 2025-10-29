@@ -203,7 +203,11 @@ class LlamaIndexRetriever:
             use_cache: 是否使用缓存的嵌入模型（内部使用）
         """
         self.workspace_id = workspace_id
-        self.storage_dir = Path(f"llamaindex_storage/{workspace_id}")
+        
+        # 从配置中获取存储路径
+        from app.core.config import settings
+        storage_base = Path(settings.LLAMAINDEX_STORAGE_PATH)
+        self.storage_dir = storage_base / workspace_id
         
         # 使用共享的嵌入模型（避免重复加载）
         if use_cache:

@@ -12,9 +12,11 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
-# 工作区数据目录
-WORKSPACE_DATA_DIR = Path("/root/consult/backend/workspace_data")
-WORKSPACE_DATA_DIR.mkdir(exist_ok=True)
+# 工作区数据目录（从配置中获取）
+from app.core.config import settings
+
+WORKSPACE_DATA_DIR = Path(settings.WORKSPACE_DATA_PATH)
+WORKSPACE_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def get_workspace_documents_file(workspace_id: str) -> Path:

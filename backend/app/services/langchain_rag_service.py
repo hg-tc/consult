@@ -44,10 +44,14 @@ logger = logging.getLogger(__name__)
 class LangChainRAGService:
     """基于LangChain和FAISS的RAG服务"""
     
-    def __init__(self, vector_db_path: str = "langchain_vector_db", is_global: bool = False):
+    def __init__(self, vector_db_path: str = None, is_global: bool = False):
+        # 如果未指定路径，从配置中获取
+        if vector_db_path is None:
+            from app.core.config import settings
+            vector_db_path = settings.LANGCHAIN_VECTOR_DB_PATH
         self.vector_db_path = Path(vector_db_path)
         self.is_global = is_global  # 标记是否为全局数据库（不是工作区）
-        self.vector_db_path.mkdir(exist_ok=True)
+        self.vector_db_path.mkdir(parents=True, exist_ok=True)
         
         # 初始化组件
         self.embeddings = None

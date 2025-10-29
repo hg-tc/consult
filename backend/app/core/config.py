@@ -51,6 +51,40 @@ class Settings(BaseSettings):
     VECTOR_DB_PATH: str = "vector_db"
     CHUNK_SIZE: int = 1000
     CHUNK_OVERLAP: int = 200
+    
+    # 存储路径配置（支持环境变量，默认使用 /home 目录）
+    # 先获取基础路径
+    _storage_base = os.getenv(
+        "STORAGE_BASE_PATH",
+        "/home/consult_storage"  # 默认使用 /home 目录
+    )
+    STORAGE_BASE_PATH: str = _storage_base
+    
+    # LlamaIndex 存储路径
+    LLAMAINDEX_STORAGE_PATH: str = os.getenv(
+        "LLAMAINDEX_STORAGE_PATH",
+        os.path.join(_storage_base, "llamaindex_storage")
+    )
+    # LangChain 向量数据库路径
+    LANGCHAIN_VECTOR_DB_PATH: str = os.getenv(
+        "LANGCHAIN_VECTOR_DB_PATH",
+        os.path.join(_storage_base, "langchain_vector_db")
+    )
+    # 缓存存储路径
+    CACHE_STORAGE_PATH: str = os.getenv(
+        "CACHE_STORAGE_PATH",
+        os.path.join(_storage_base, "cache_storage")
+    )
+    # 全局数据目录（JSON文件存储）
+    GLOBAL_DATA_PATH: str = os.getenv(
+        "GLOBAL_DATA_PATH",
+        os.path.join(_storage_base, "global_data")
+    )
+    # 工作区数据目录（JSON文件存储）
+    WORKSPACE_DATA_PATH: str = os.getenv(
+        "WORKSPACE_DATA_PATH",
+        os.path.join(_storage_base, "workspace_data")
+    )
 
     # Redis配置（可选）
     REDIS_URL: Optional[str] = os.getenv("REDIS_URL")
@@ -77,6 +111,7 @@ class Settings(BaseSettings):
     class Config:
         case_sensitive = True
         env_file = ".env"
+        extra = "ignore"  # 忽略未定义的环境变量字段
 
 
 settings = Settings()

@@ -275,46 +275,46 @@ def parse_excel_to_markdown(file_path: str) -> Dict[str, Any]:
     final_md = "\n\n".join(md_parts)
 
     # 保存中间 Markdown 以便调试（默认启用）
-    try:
-        debug_flag = str(os.getenv("EXCEL_DEBUG_SAVE", "1")).lower() in ("1", "true", "yes", "on")
-        if debug_flag:
-            debug_root = os.getenv("EXCEL_DEBUG_DIR", "debug_outputs/excel")
-            debug_dir = Path(debug_root)
-            debug_dir.mkdir(parents=True, exist_ok=True)
+    # try:
+    #     debug_flag = str(os.getenv("EXCEL_DEBUG_SAVE", "1")).lower() in ("1", "true", "yes", "on")
+    #     if debug_flag:
+    #         debug_root = os.getenv("EXCEL_DEBUG_DIR", "debug_outputs/excel")
+    #         debug_dir = Path(debug_root)
+    #         debug_dir.mkdir(parents=True, exist_ok=True)
 
-            src = Path(file_path)
-            # 使用文件名（不含路径）作为基础
-            base = src.stem
-            timestamp = None
-            try:
-                from datetime import datetime
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            except:
-                pass
+    #         src = Path(file_path)
+    #         # 使用文件名（不含路径）作为基础
+    #         base = src.stem
+    #         timestamp = None
+    #         try:
+    #             from datetime import datetime
+    #             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    #         except:
+    #             pass
             
-            # 保存整合后的 Markdown
-            combined_filename = f"{base}__combined.md"
-            if timestamp:
-                combined_filename = f"{base}__{timestamp}__combined.md"
-            combined_path = debug_dir / combined_filename
-            combined_path.write_text(final_md, encoding="utf-8")
-            logger.info(f"💾 保存合并 Markdown: {combined_path}")
+    #         # 保存整合后的 Markdown
+    #         combined_filename = f"{base}__combined.md"
+    #         if timestamp:
+    #             combined_filename = f"{base}__{timestamp}__combined.md"
+    #         combined_path = debug_dir / combined_filename
+    #         combined_path.write_text(final_md, encoding="utf-8")
+    #         logger.info(f"💾 保存合并 Markdown: {combined_path}")
 
-            # 分 sheet 保存
-            for sheet in result_sheets:
-                sheet_md = sheet.get("markdown", "")
-                sheet_name = sheet.get("sheet_name", "sheet")
-                safe_sheet = "".join(ch if ch.isalnum() or ch in ("_", "-", ".") else "_" for ch in sheet_name)
-                sheet_filename = f"{base}__{safe_sheet}.md"
-                if timestamp:
-                    sheet_filename = f"{base}__{timestamp}__{safe_sheet}.md"
-                sheet_path = debug_dir / sheet_filename
-                sheet_path.write_text(f"### 工作表: {sheet_name}\n\n{sheet_md}\n", encoding="utf-8")
-                logger.debug(f"💾 保存工作表 Markdown: {sheet_path}")
+    #         # 分 sheet 保存
+    #         for sheet in result_sheets:
+    #             sheet_md = sheet.get("markdown", "")
+    #             sheet_name = sheet.get("sheet_name", "sheet")
+    #             safe_sheet = "".join(ch if ch.isalnum() or ch in ("_", "-", ".") else "_" for ch in sheet_name)
+    #             sheet_filename = f"{base}__{safe_sheet}.md"
+    #             if timestamp:
+    #                 sheet_filename = f"{base}__{timestamp}__{safe_sheet}.md"
+    #             sheet_path = debug_dir / sheet_filename
+    #             sheet_path.write_text(f"### 工作表: {sheet_name}\n\n{sheet_md}\n", encoding="utf-8")
+    #             logger.debug(f"💾 保存工作表 Markdown: {sheet_path}")
             
-            logger.info(f"✅ Excel 调试 Markdown 已保存至: {debug_dir} (共 {len(result_sheets) + 1} 个文件)")
-    except Exception as e:
-        logger.warning(f"⚠️ Excel 调试 Markdown 保存失败: {e}", exc_info=True)
+    #         logger.info(f"✅ Excel 调试 Markdown 已保存至: {debug_dir} (共 {len(result_sheets) + 1} 个文件)")
+    # except Exception as e:
+    #     logger.warning(f"⚠️ Excel 调试 Markdown 保存失败: {e}", exc_info=True)
 
     return {
         "file_type": "excel",
