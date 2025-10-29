@@ -11,7 +11,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.llm_service import LLMService
 from app.services.vector_service import VectorService
-from app.services.llamaindex_retriever import LlamaIndexRetriever
+from app.utils.import_with_timeout import import_symbol_with_timeout
+LlamaIndexRetriever = import_symbol_with_timeout(
+    "app.services.llamaindex_retriever", "LlamaIndexRetriever", timeout_seconds=5.0
+)
 from app.services.context_service import ContextService
 
 logger = logging.getLogger(__name__)

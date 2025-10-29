@@ -42,7 +42,11 @@ class QuestionnaireBuilderApp(BaseApp):
                 }
 
                 # 依赖注入：检索器、LLM、Web 搜索
-                from app.services.llamaindex_retriever import LlamaIndexRetriever
+                # 安全导入检索器，超过5秒直接报错
+                from app.utils.import_with_timeout import import_symbol_with_timeout
+                LlamaIndexRetriever = import_symbol_with_timeout(
+                    "app.services.llamaindex_retriever", "LlamaIndexRetriever", timeout_seconds=5.0
+                )
                 from app.services.langchain_rag_service import LangChainRAGService
                 from app.core.config import settings
                 from app.services.web_search_service import get_web_search_service

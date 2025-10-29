@@ -14,7 +14,10 @@ os.environ.setdefault("OPENAI_API_KEY", "test-key")
 @pytest.mark.asyncio
 async def test_llamaindex_retriever_initialization():
     """测试 LlamaIndex 检索器初始化"""
-    from app.services.llamaindex_retriever import LlamaIndexRetriever
+    from app.utils.import_with_timeout import import_symbol_with_timeout
+    LlamaIndexRetriever = import_symbol_with_timeout(
+        "app.services.llamaindex_retriever", "LlamaIndexRetriever", timeout_seconds=5.0
+    )
     
     try:
         retriever = LlamaIndexRetriever(workspace_id="test")

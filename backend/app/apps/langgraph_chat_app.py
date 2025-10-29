@@ -34,7 +34,10 @@ class LangGraphChatApp(BaseApp):
                     raise HTTPException(status_code=400, detail="question 或 message 不能为空")
                 
                 # 导入新组件
-                from app.services.llamaindex_retriever import LlamaIndexRetriever
+                from app.utils.import_with_timeout import import_symbol_with_timeout
+                LlamaIndexRetriever = import_symbol_with_timeout(
+                    "app.services.llamaindex_retriever", "LlamaIndexRetriever", timeout_seconds=5.0
+                )
                 from app.workflows.langgraph_rag_workflow import LangGraphRAGWorkflow
                 
                 # 获取或创建检索器

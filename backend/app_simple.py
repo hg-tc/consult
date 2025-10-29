@@ -434,7 +434,10 @@ async def chat_with_langgraph_legacy(data: dict):
     """LangGraph 智能 RAG API（向后兼容，已迁移到 /api/apps/langgraph-chat/chat）"""
     try:
         # 调用新应用的处理逻辑
-        from app.services.llamaindex_retriever import LlamaIndexRetriever
+        from app.utils.import_with_timeout import import_symbol_with_timeout
+        LlamaIndexRetriever = import_symbol_with_timeout(
+            "app.services.llamaindex_retriever", "LlamaIndexRetriever", timeout_seconds=5.0
+        )
         from app.workflows.langgraph_rag_workflow import LangGraphRAGWorkflow
         
         question = data.get("question") or data.get("message", "")
@@ -480,7 +483,10 @@ async def generate_deepresearch_document_legacy(data: dict):
             "writing_style": "专业、严谨、客观"
         })
         
-        from app.services.llamaindex_retriever import LlamaIndexRetriever
+        from app.utils.import_with_timeout import import_symbol_with_timeout
+        LlamaIndexRetriever = import_symbol_with_timeout(
+            "app.services.llamaindex_retriever", "LlamaIndexRetriever", timeout_seconds=5.0
+        )
         from app.workflows.deepresearch_doc_workflow import DeepResearchDocWorkflow
         from app.services.web_search_service import get_web_search_service
         
@@ -1134,7 +1140,10 @@ async def upload_document_for_rag(
 ):
     """上传文档到RAG系统（切换为 LlamaIndex 导入并持久化）"""
     try:
-        from app.services.llamaindex_retriever import LlamaIndexRetriever
+        from app.utils.import_with_timeout import import_symbol_with_timeout
+        LlamaIndexRetriever = import_symbol_with_timeout(
+            "app.services.llamaindex_retriever", "LlamaIndexRetriever", timeout_seconds=5.0
+        )
         
         # 读取文件内容并检查大小
         content = await file.read()
@@ -1238,7 +1247,10 @@ async def process_document_async(task_id: str, file_path: str, workspace_id: str
         original_filename = task_metadata.get('original_filename', Path(file_path).name)
         
         # 使用 LlamaIndex 导入并持久化
-        from app.services.llamaindex_retriever import LlamaIndexRetriever
+        from app.utils.import_with_timeout import import_symbol_with_timeout
+        LlamaIndexRetriever = import_symbol_with_timeout(
+            "app.services.llamaindex_retriever", "LlamaIndexRetriever", timeout_seconds=5.0
+        )
         retriever_async = LlamaIndexRetriever.get_instance(workspace_id)
         logger.info(f"LlamaIndexRetriever创建完成")
         added_cnt = await retriever_async.add_document(
@@ -1345,7 +1357,10 @@ async def process_global_document_async(task_id: str, file_path: str):
         )
         
         # 添加到全局RAG系统
-        from app.services.llamaindex_retriever import LlamaIndexRetriever
+        from app.utils.import_with_timeout import import_symbol_with_timeout
+        LlamaIndexRetriever = import_symbol_with_timeout(
+            "app.services.llamaindex_retriever", "LlamaIndexRetriever", timeout_seconds=5.0
+        )
         retriever_global = LlamaIndexRetriever.get_instance("global")
         added_cnt = await retriever_global.add_document(
             file_path=file_path,

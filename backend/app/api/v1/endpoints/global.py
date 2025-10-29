@@ -170,7 +170,10 @@ async def global_chat(
     """全局问答"""
     try:
         # 改为 LlamaIndex 检索
-        from app.services.llamaindex_retriever import LlamaIndexRetriever
+        from app.utils.import_with_timeout import import_symbol_with_timeout
+        LlamaIndexRetriever = import_symbol_with_timeout(
+            "app.services.llamaindex_retriever", "LlamaIndexRetriever", timeout_seconds=5.0
+        )
         workspace = workspace_id or "global"
         retriever = LlamaIndexRetriever.get_instance(workspace)
         results = await retriever.retrieve(query=question, top_k=top_k, use_hybrid=True, use_compression=True)

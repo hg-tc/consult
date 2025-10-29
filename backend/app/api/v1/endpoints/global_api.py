@@ -300,7 +300,10 @@ async def process_global_document_with_progress(
         
         # 使用 LlamaIndex 导入（增加超时、心跳与细粒度日志）
         logger.info(f"import 之前")
-        from app.services.llamaindex_retriever import LlamaIndexRetriever
+        from app.utils.import_with_timeout import import_symbol_with_timeout
+        LlamaIndexRetriever = import_symbol_with_timeout(
+            "app.services.llamaindex_retriever", "LlamaIndexRetriever", timeout_seconds=5.0
+        )
         logger.info(f"import 之后")
         import asyncio as _asyncio
         retriever = LlamaIndexRetriever.get_instance("global")
@@ -446,7 +449,10 @@ async def process_global_document_step_by_step(file_path: str, document_data: Di
         
         # 第二步：使用 LlamaIndex 处理文档
         try:
-            from app.services.llamaindex_retriever import LlamaIndexRetriever
+            from app.utils.import_with_timeout import import_symbol_with_timeout
+            LlamaIndexRetriever = import_symbol_with_timeout(
+                "app.services.llamaindex_retriever", "LlamaIndexRetriever", timeout_seconds=5.0
+            )
             logger.info(f"📄 开始解析文档: {document_data['original_filename']}")
 
             retriever = LlamaIndexRetriever.get_instance("global")
@@ -1174,7 +1180,10 @@ async def delete_global_document(doc_id: str):
         deleted_count = 0
         try:
             # 加载 LlamaIndex 索引
-            from app.services.llamaindex_retriever import LlamaIndexRetriever
+            from app.utils.import_with_timeout import import_symbol_with_timeout
+            LlamaIndexRetriever = import_symbol_with_timeout(
+                "app.services.llamaindex_retriever", "LlamaIndexRetriever", timeout_seconds=5.0
+            )
             retriever = LlamaIndexRetriever.get_instance("global")
             
             # 获取向量存储
