@@ -171,37 +171,75 @@ class LlamaIndexRetriever:
             return []
     
     async def add_document(self, file_path: str, metadata: Dict = None):
-        """添加文档（使用语义分块并生成向量）"""
+        """添加文档：对常见格式先转换为 Markdown，再写入索引；其他格式回退 SimpleDirectoryReader。"""
         try:
-            from llama_index.core import SimpleDirectoryReader
             import traceback
-            
-            logger.info(f"📄 开始加载文档: {file_path}")
-            documents = SimpleDirectoryReader(input_files=[file_path]).load_data()
-            logger.info(f"✅ 文档加载完成，页数: {len(documents)}")
-            
-            if metadata:
-                for doc in documents:
-                    doc.metadata.update(metadata)
-            
-            logger.info(f"📝 开始插入文档到索引...")
-            # 使用 insert 逐个插入文档，索引会自动处理分块和向量化
+            from pathlib import Path as _Path
+            from llama_index.core.schema import Document as LIDocument
+
+            suffix = _Path(file_path).suffix.lower()
+            text: Optional[str] = None
+            md_meta: Dict = {}
+
+            try:
+                if suffix in [".xlsx", ".xls"]:
+                    from app.services.excel_parser import parse_excel_to_markdown
+                    res = parse_excel_to_markdown(file_path)
+                    text = res.get("content", "")
+                    md_meta.update(res.get("metadata", {}))
+                    md_meta["file_type"] = "excel"
+                elif suffix in [".pptx", ".ppt"]:
+                    from app.services.ppt_processor import process_ppt_to_markdown
+                    res = process_ppt_to_markdown(file_path)
+                    text = res.get("content", "")
+                    md_meta.update(res.get("metadata", {}))
+                    md_meta["file_type"] = "powerpoint"
+                elif suffix in [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff"]:
+                    from app.services.file_processor import FileProcessor
+                    fp = FileProcessor()
+                    res = fp._process_image(file_path)
+                    text = res.get("content", "")
+                    md_meta.update(res.get("metadata", {}))
+                    md_meta["file_type"] = "image"
+                else:
+                    # PDF/WORD 等优先尝试现有处理器（若已增强则输出 Markdown）
+                    from app.services.file_processor import FileProcessor
+                    fp = FileProcessor()
+                    try:
+                        res = fp.process_file(file_path)
+                        text = res.get("content", "")
+                        md_meta.update(res.get("metadata", {}))
+                        md_meta["file_type"] = res.get("file_type", suffix.lstrip('.'))
+                    except Exception:
+                        text = None
+            except Exception as proc_err:
+                logger.warning(f"自定义处理器失败，回退默认读取: {proc_err}")
+                text = None
+
+            documents = []
+            if text and text.strip():
+                # 使用 Markdown 文本创建 Document
+                doc_meta = metadata.copy() if metadata else {}
+                doc_meta.update(md_meta)
+                doc_meta.setdefault("original_path", str(file_path))
+                documents = [LIDocument(text=text, metadata=doc_meta)]
+            else:
+                # 回退 SimpleDirectoryReader
+                from llama_index.core import SimpleDirectoryReader
+                documents = SimpleDirectoryReader(input_files=[file_path]).load_data()
+                if metadata:
+                    for d in documents:
+                        d.metadata.update(metadata)
+
+            # 插入与持久化
             for doc in documents:
                 self.index.insert(doc)
-            
-            logger.info(f"💾 开始持久化索引...")
             self.index.storage_context.persist(persist_dir=str(self.storage_dir))
-            logger.info(f"✅ 索引持久化完成")
-            
-            # 从索引中获取节点数量
+
             if hasattr(self.index, '_docstore') and self.index._docstore:
-                node_count = len(self.index._docstore.docs)
-                logger.info(f"✅ 文档插入完成，总节点数: {node_count}")
-                return node_count
-            else:
-                logger.warning("⚠️ 无法获取节点数量")
-                return len(documents)  # 回退到文档数量
-            
+                return len(self.index._docstore.docs)
+            return len(documents)
+
         except Exception as e:
             logger.error(f"添加文档失败: {e}")
             logger.error(traceback.format_exc())

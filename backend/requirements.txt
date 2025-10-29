@@ -54,6 +54,11 @@ PyMuPDF>=1.20.0
 pdfminer.six>=20230101
 pdf2image>=1.16.0
 pikepdf>=8.0.0
+# Optional: PDF to Markdown converters (优先级从高到低)
+# marker-pdf  # AI驱动的PDF转Markdown，效果最好，需要单独安装: pip install marker-pdf
+# pymupdf4llm>=0.0.6  # 回退方案: pip install pymupdf4llm
+# camelot-py[cv]>=0.11.0  # PDF表格提取: pip install camelot-py[cv]
+# tabula-py>=2.5.0  # 另一个PDF表格提取方案: pip install tabula-py
 
 # Office document processing
 python-docx>=1.1.0

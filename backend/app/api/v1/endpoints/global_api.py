@@ -103,7 +103,11 @@ async def upload_global_document(
             raise HTTPException(status_code=400, detail="文件名不能为空")
         
         file_ext = os.path.splitext(file.filename)[1].lower()
-        allowed_extensions = ['.pdf', '.docx', '.doc', '.txt', '.md', '.zip', '.rar']
+        allowed_extensions = [
+            '.pdf', '.docx', '.doc', '.txt', '.md', '.zip', '.rar',
+            '.xlsx', '.xls', '.pptx', '.ppt',
+            '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'
+        ]
         
         if file_ext not in allowed_extensions:
             raise HTTPException(status_code=400, detail=f"不支持的文件类型: {file_ext}")

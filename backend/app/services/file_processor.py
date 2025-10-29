@@ -46,13 +46,41 @@ class FileProcessor:
 
         try:
             if file_ext == '.pdf':
-                return self._process_pdf(file_path)
+                # PDF -> Markdown（优先使用 marker-pdf）
+                try:
+                    from app.services.pdf_enhanced_processor import process_pdf_to_markdown
+                    return process_pdf_to_markdown(file_path)
+                except Exception as e:
+                    logger.warning(f"PDF增强处理器失败，使用基础处理: {e}")
+                    return self._process_pdf(file_path)
             elif file_ext in ['.docx', '.doc']:
-                return self._process_word(file_path)
+                # WORD -> Markdown（文本+表格+图片OCR）
+                if file_ext == '.docx':
+                    try:
+                        from app.services.word_enhanced_processor import process_word_to_markdown
+                        return process_word_to_markdown(file_path)
+                    except Exception as e:
+                        logger.warning(f"WORD增强处理器失败，使用基础处理: {e}")
+                        return self._process_word(file_path)
+                else:
+                    # 旧版.doc文件使用基础处理
+                    return self._process_word(file_path)
             elif file_ext in ['.xlsx', '.xls']:
-                return self._process_excel(file_path)
+                # Excel -> Markdown
+                try:
+                    from app.services.excel_parser import parse_excel_to_markdown
+                    return parse_excel_to_markdown(file_path)
+                except Exception:
+                    return self._process_excel(file_path)
             elif file_ext in ['.pptx', '.ppt']:
-                return self._process_powerpoint(file_path)
+                # PPT -> Markdown（含图片OCR）
+                try:
+                    from app.services.ppt_processor import process_ppt_to_markdown
+                    return process_ppt_to_markdown(file_path)
+                except Exception:
+                    return self._process_powerpoint(file_path)
+            elif file_ext in ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff']:
+                return self._process_image(file_path)
             elif file_ext in ['.txt', '.md']:
                 return self._process_text(file_path)
             else:
@@ -260,6 +288,33 @@ class FileProcessor:
             'file_type': 'text'
         }
 
+    def _process_image(self, file_path: str) -> Dict[str, Any]:
+        """处理图片文件，使用本地 Tesseract OCR 输出 Markdown。"""
+        try:
+            from app.services.ocr_service import OCRService
+            ocr = OCRService()
+            text = ""
+            if hasattr(ocr, 'extract_text_from_image'):
+                res = ocr.extract_text_from_image(file_path)
+                if isinstance(res, dict):
+                    text = res.get('text', '')
+                else:
+                    text = str(res)
+            md = f"### 图片OCR\n\n{text.strip()}" if text else ""
+            return {
+                'content': md,
+                'metadata': {
+                    'file_size': os.path.getsize(file_path),
+                    'image_path': file_path
+                },
+                'chunks': [{'content': text.strip(), 'type': 'ocr'}] if text else [],
+                'file_type': 'image'
+            }
+        except Exception as e:
+            logger.error(f"图片处理失败: {e}")
+            raise
+
     def get_supported_formats(self) -> List[str]:
         """获取支持的文件格式"""
-        return ['.pdf', '.docx', '.doc', '.xlsx', '.xls', '.pptx', '.ppt', '.txt', '.md']
+        return ['.pdf', '.docx', '.doc', '.xlsx', '.xls', '.pptx', '.ppt', '.txt', '.md',
+                '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff']

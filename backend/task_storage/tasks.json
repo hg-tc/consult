@@ -3349,5 +3349,50 @@
       "chunk_count": 9
     },
     "workspace_id": "global"
+  },
+  {
+    "id": "0274d73e-3dd5-456f-a7ba-604c8494467b",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761741347.032669,
+    "started_at": 1761741347.0574872,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/fcbeb3e4-29e5-48e3-aacc-b04dcfac2f19.xlsx",
+      "file_size": 14560,
+      "document_id": "fcbeb3e4-29e5-48e3-aacc-b04dcfac2f19"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "d9197d2b-ac1a-4233-8684-f6ccb162f80a",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761741658.9171033,
+    "started_at": 1761741658.9353936,
+    "completed_at": 1761741668.9489474,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/bf0412dc-b4be-4832-bcfb-4b761c8eac2d.pdf",
+      "file_size": 485706,
+      "document_id": "bf0412dc-b4be-4832-bcfb-4b761c8eac2d",
+      "chunk_count": 4
+    },
+    "workspace_id": "global"
   }
 ]
