@@ -123,7 +123,7 @@ function WorkspaceDocumentList({ workspaceId, workspaceName, isExpanded, onToggl
             type="file"
             className="hidden"
             multiple
-            accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt,.md,.zip,.rar"
+            accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt,.md,.zip,.rar,.jpg,.jpeg,.png,.gif,.bmp,.tiff"
             onChange={handleFileUpload}
             disabled={uploading}
           />

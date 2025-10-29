@@ -3394,5 +3394,393 @@
       "chunk_count": 4
     },
     "workspace_id": "global"
+  },
+  {
+    "id": "b263ecaf-2e76-42c6-b3ac-bcca50a29fe0",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761741988.5674262,
+    "started_at": 1761741988.591764,
+    "completed_at": 1761742013.4992795,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/1c271ded-2445-4367-a9fb-0476127a90db.xlsx",
+      "file_size": 14560,
+      "document_id": "1c271ded-2445-4367-a9fb-0476127a90db",
+      "chunk_count": 10
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "0c5191f9-39a4-44f7-9d52-73db6f7eda4e",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761742247.432698,
+    "started_at": 1761742247.4573896,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/00777d6f-c5d2-4979-8759-22ade680b2c0.xlsx",
+      "file_size": 14560,
+      "document_id": "00777d6f-c5d2-4979-8759-22ade680b2c0"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "dd0555d5-83f7-4f69-8fce-d2c6dd1cd4e7",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761742908.6085074,
+    "started_at": 1761742908.6354437,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/cccb07cc-20a2-4879-9d85-fda58c99a101.xlsx",
+      "file_size": 14560,
+      "document_id": "cccb07cc-20a2-4879-9d85-fda58c99a101"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "9aef8fa1-1184-42bf-9e00-618ce5a2c4d9",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761743192.508572,
+    "started_at": 1761743192.5334206,
+    "completed_at": 1761743202.376711,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/d634932f-563d-472e-bee9-0945d10cf7cb.xlsx",
+      "file_size": 14560,
+      "document_id": "d634932f-563d-472e-bee9-0945d10cf7cb",
+      "chunk_count": 4
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "10d9a706-b2bc-49e4-8036-c2673221b7b0",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761743281.3439744,
+    "started_at": 1761743281.3631818,
+    "completed_at": 1761743283.250591,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "【定稿】香港人才房申请.jpg",
+      "file_path": "uploads/global/45fc3547-3644-4e9d-a241-8cb631bc8a37.jpg",
+      "file_size": 4753785,
+      "document_id": "45fc3547-3644-4e9d-a241-8cb631bc8a37",
+      "chunk_count": 5
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "9101acc7-9388-44b1-b798-56719fcbc9d9",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761743543.5892096,
+    "started_at": 1761743543.6086106,
+    "completed_at": 1761743545.3238773,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "【定稿】香港人才房申请.jpg",
+      "file_path": "uploads/global/ea32f8c8-991f-4d2b-8db3-96c387755aaa.jpg",
+      "file_size": 4753785,
+      "document_id": "ea32f8c8-991f-4d2b-8db3-96c387755aaa",
+      "chunk_count": 1
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "9194e85d-6008-4b8a-be3b-a38e7fc4e1a3",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761743754.9288452,
+    "started_at": 1761743754.947999,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "【定稿】香港人才房申请.jpg",
+      "file_path": "uploads/global/e756f747-5982-49b9-aa59-5caf0255646d.jpg",
+      "file_size": 4753785,
+      "document_id": "e756f747-5982-49b9-aa59-5caf0255646d"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "7e846c21-4de2-42a5-a5df-a458f1c3fde5",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761743947.234624,
+    "started_at": 1761743947.254738,
+    "completed_at": 1761743961.9565074,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "【定稿】香港人才房申请.jpg",
+      "file_path": "uploads/global/d4beb78e-7dd7-4cad-a6fd-3137befa3016.jpg",
+      "file_size": 4753785,
+      "document_id": "d4beb78e-7dd7-4cad-a6fd-3137befa3016",
+      "chunk_count": 2
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "a41ff53a-3fa3-490e-8dae-6a6a86d29f1c",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761744042.9415748,
+    "started_at": 1761744042.9648862,
+    "completed_at": 1761744044.981557,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/7e5e404f-0496-47a4-b140-cb81e1fc0274.xlsx",
+      "file_size": 14560,
+      "document_id": "7e5e404f-0496-47a4-b140-cb81e1fc0274",
+      "chunk_count": 6
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "8e2ed001-ac4f-414f-9d6d-77e55b001e05",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761744589.9395254,
+    "started_at": 1761744589.9657185,
+    "completed_at": 1761744595.6895545,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/0c6819cb-8b06-4b14-a8f8-a43c11c94272.xlsx",
+      "file_size": 14560,
+      "document_id": "0c6819cb-8b06-4b14-a8f8-a43c11c94272",
+      "chunk_count": 6
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "7e89bec3-17f0-4ad9-8400-715bc01f9ddc",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761744889.6219506,
+    "started_at": 1761744889.6478744,
+    "completed_at": 1761744895.753878,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/ce303eb4-ff19-4470-98e2-5d62bed9b099.xlsx",
+      "file_size": 14560,
+      "document_id": "ce303eb4-ff19-4470-98e2-5d62bed9b099",
+      "chunk_count": 7
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "8b55c957-32e7-4b1d-ba3a-c25359403431",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761745884.9778023,
+    "started_at": 1761745884.9976714,
+    "completed_at": 1761745891.0051677,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/1d098984-345f-46ff-9852-f34b36392256.xlsx",
+      "file_size": 14560,
+      "document_id": "1d098984-345f-46ff-9852-f34b36392256",
+      "chunk_count": 7
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "de9e55b8-f17b-485c-bd8f-1b71b5957d5d",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761745985.3456266,
+    "started_at": 1761745985.3680294,
+    "completed_at": 1761745991.4075222,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/dbcdd2e5-8f17-4acb-a067-0280ad14cb95.xlsx",
+      "file_size": 14560,
+      "document_id": "dbcdd2e5-8f17-4acb-a067-0280ad14cb95",
+      "chunk_count": 7
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "c7bddb34-372a-4fa9-9719-3e1c025c04a7",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761746962.452467,
+    "started_at": 1761746962.4793909,
+    "completed_at": 1761746968.0507143,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/6e36c317-0c8e-497e-bdd5-9ed4fd572300.xlsx",
+      "file_size": 14560,
+      "document_id": "6e36c317-0c8e-497e-bdd5-9ed4fd572300",
+      "chunk_count": 6
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "e83aa6c1-acdd-41c6-81b0-fe909329fca2",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761747181.5053978,
+    "started_at": 1761747181.5325434,
+    "completed_at": 1761747191.7274249,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/6b836266-fd84-4b6f-8c50-5024d9bd765c.xlsx",
+      "file_size": 14560,
+      "document_id": "6b836266-fd84-4b6f-8c50-5024d9bd765c",
+      "chunk_count": 6
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "911f869b-055b-4a3f-a2c3-675660bf6eb9",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761747430.474461,
+    "started_at": 1761747430.5016744,
+    "completed_at": 1761747436.5373423,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/71f2f196-033f-4dec-8c69-f72565cbbfb9.xlsx",
+      "file_size": 14560,
+      "document_id": "71f2f196-033f-4dec-8c69-f72565cbbfb9",
+      "chunk_count": 6
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "e474439d-0533-4fbe-bf0c-ac18b3f048e9",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761750108.4832294,
+    "started_at": 1761750108.5036693,
+    "completed_at": 1761750850.8682399,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "【定稿版】前海香港人才房申请.pdf",
+      "file_path": "uploads/global/303c954a-b353-4b02-a164-b459f858d18d.pdf",
+      "file_size": 1231046,
+      "document_id": "303c954a-b353-4b02-a164-b459f858d18d",
+      "chunk_count": 10
+    },
+    "workspace_id": "global"
   }
 ]

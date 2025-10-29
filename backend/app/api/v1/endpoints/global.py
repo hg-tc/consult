@@ -172,7 +172,7 @@ async def global_chat(
         # 改为 LlamaIndex 检索
         from app.services.llamaindex_retriever import LlamaIndexRetriever
         workspace = workspace_id or "global"
-        retriever = LlamaIndexRetriever(workspace)
+        retriever = LlamaIndexRetriever.get_instance(workspace)
         results = await retriever.retrieve(query=question, top_k=top_k, use_hybrid=True, use_compression=True)
         return {
             "answer": "",

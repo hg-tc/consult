@@ -75,7 +75,7 @@ class QAService:
                     )
 
             # 2. 使用 LlamaIndex 检索相关文档片段
-            retriever = LlamaIndexRetriever(workspace_id)
+            retriever = LlamaIndexRetriever.get_instance(workspace_id)
             retrieved = await retriever.retrieve(
                 query=question,
                 top_k=max_references * 2,

@@ -123,7 +123,7 @@ export function DatabasePanel() {
 
           <div className="text-center">
             <h3 className="text-lg font-medium text-foreground mb-1">上传到全局数据库</h3>
-            <p className="text-sm text-muted-foreground">支持 PDF, Word, Excel, PowerPoint, TXT, MD 等格式</p>
+            <p className="text-sm text-muted-foreground">支持 PDF, Word, Excel, PowerPoint, TXT, MD, ZIP, RAR 和图片格式（JPG, PNG, GIF 等）</p>
             {!isLoading && !isError && (
               <p className="text-xs text-muted-foreground mt-1">
                 当前已有 {data.length} 个全局共享文档
@@ -166,7 +166,7 @@ export function DatabasePanel() {
               id="database-upload"
               type="file"
               className="hidden"
-              accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt,.md,.zip,.rar"
+              accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt,.md,.zip,.rar,.jpg,.jpeg,.png,.gif,.bmp,.tiff"
               disabled={isUploading}
             />
           </div>

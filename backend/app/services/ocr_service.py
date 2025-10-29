@@ -35,9 +35,9 @@ class OCRService:
             logger.error(f"Tesseract不可用: {e}")
             return False
     
-    async def extract_text_from_image(self, image_path: str) -> str:
+    def extract_text_from_image(self, image_path: str) -> str:
         """
-        从图片中提取文字
+        从图片中提取文字（同步版本）
         
         Args:
             image_path: 图片路径
@@ -46,16 +46,20 @@ class OCRService:
             str: 提取的文字
         """
         if not self.available:
+            logger.warning(f"OCR服务不可用，跳过图片: {image_path}")
             return ""
         
         try:
             import pytesseract
             from PIL import Image
             
+            logger.info(f"🔄 开始OCR处理图片: {image_path}")
+            
             # 图像预处理
             processed_image = self._preprocess_image(image_path)
             
-            # OCR识别
+            # OCR识别（耗时操作）
+            logger.debug(f"正在执行Tesseract OCR识别: {image_path}")
             text = pytesseract.image_to_string(
                 processed_image, 
                 config=self.tesseract_config
@@ -64,12 +68,30 @@ class OCRService:
             # 后处理清洗
             cleaned_text = self._clean_ocr_text(text)
             
-            logger.info(f"OCR提取完成: {image_path}, 文字长度: {len(cleaned_text)}")
+            logger.info(f"✅ OCR提取完成: {image_path}, 文字长度: {len(cleaned_text)}")
+            if cleaned_text:
+                logger.debug(f"OCR提取的文字预览（前50字符）: {cleaned_text[:50]}...")
+            else:
+                logger.warning(f"⚠️ OCR未提取到任何文字: {image_path}")
+            
             return cleaned_text
             
         except Exception as e:
-            logger.error(f"图片OCR失败 {image_path}: {e}")
+            logger.error(f"❌ 图片OCR失败 {image_path}: {e}", exc_info=True)
             return ""
+    
+    async def extract_text_from_image_async(self, image_path: str) -> str:
+        """
+        从图片中提取文字（异步版本，用于兼容旧的异步接口）
+        
+        Args:
+            image_path: 图片路径
+            
+        Returns:
+            str: 提取的文字
+        """
+        # 同步执行，但以异步方式返回
+        return self.extract_text_from_image(image_path)
     
     async def process_scanned_pdf(self, pdf_path: str) -> str:
         """
@@ -101,7 +123,7 @@ class OCRService:
                     page.save(tmp_file.name, 'PNG')
                     
                     # OCR识别
-                    page_text = await self.extract_text_from_image(tmp_file.name)
+                    page_text = self.extract_text_from_image(tmp_file.name)
                     
                     if page_text.strip():
                         all_text.append(f"第{i+1}页:\n{page_text}")
@@ -193,7 +215,7 @@ class OCRService:
         results = []
         
         for image_path in image_paths:
-            text = await self.extract_text_from_image(image_path)
+            text = self.extract_text_from_image(image_path)
             results.append(text)
         
         return results

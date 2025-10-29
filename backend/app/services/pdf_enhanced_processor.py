@@ -28,26 +28,38 @@ def process_pdf_to_markdown(file_path: str) -> Dict[str, Any]:
     
     # 方案1: 优先使用 marker-pdf
     try:
-        from marker.convert import convert_single_pdf
+        from marker.converters.pdf import PdfConverter
+        from marker.models import create_model_dict
+        from marker.output import text_from_rendered
+        
         logger.info(f"使用 marker-pdf 处理: {file_path}")
         
-        # marker 会自动转换为 Markdown
-        result = convert_single_pdf(file_path)
-        if isinstance(result, str):
-            markdown_content = result
-        elif isinstance(result, dict) and "markdown" in result:
-            markdown_content = result["markdown"]
-        else:
-            markdown_content = str(result)
+        # 创建模型字典（OCR、布局检测等模型）
+        models = create_model_dict()
+        
+        # 创建 PdfConverter（禁用 LLM 以提高速度，如需更高质量可启用）
+        converter = PdfConverter(
+            config={"pdftext_workers": 1, "use_llm": False},  # 禁用 LLM 处理，使用基础处理器
+            artifact_dict=models,
+            processor_list=None,  # 使用默认处理器列表
+            renderer=None,  # 使用默认 MarkdownRenderer
+            llm_service=None,  # 不使用 LLM 服务
+        )
+        
+        # 执行转换
+        rendered = converter(file_path)
+        
+        # 从渲染结果提取 Markdown 文本
+        markdown_content, _, _ = text_from_rendered(rendered)
         
         metadata["conversion_method"] = "marker-pdf"
         logger.info(f"✅ marker-pdf 转换成功")
         
-    except ImportError:
-        logger.warning("marker-pdf 未安装，尝试其他方案")
+    except ImportError as e:
+        logger.warning(f"marker-pdf 未安装或导入失败: {e}，尝试其他方案")
         markdown_content = None
     except Exception as e:
-        logger.warning(f"marker-pdf 转换失败: {e}，尝试其他方案")
+        logger.warning(f"marker-pdf 转换失败: {e}，尝试其他方案", exc_info=True)
         markdown_content = None
     
     # 方案2: 回退到 pymupdf4llm

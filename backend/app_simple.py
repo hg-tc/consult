@@ -18,6 +18,27 @@ from typing import List
 from dotenv import load_dotenv
 load_dotenv()
 
+# ============================================
+# 关键：强制 HuggingFace 离线模式（必须在导入任何 HF 相关模块之前设置）
+# HuggingFace 在 import 时就会尝试联网，必须在最早阶段禁用
+# ============================================
+os.environ.setdefault('HF_HUB_OFFLINE', '1')
+os.environ.setdefault('HF_DATASETS_OFFLINE', '1')
+os.environ.setdefault('TRANSFORMERS_OFFLINE', '1')
+os.environ.setdefault('HF_HUB_DISABLE_TELEMETRY', '1')
+os.environ.setdefault('HF_HUB_DISABLE_PROGRESS_BARS', '1')
+os.environ.setdefault('HF_HUB_DISABLE_EXPERIMENTAL_WARNING', '1')
+os.environ.setdefault('HF_HUB_DISABLE_SYMLINKS_WARNING', '1')
+os.environ.setdefault('TRANSFORMERS_NO_ADVISORY_WARNINGS', '1')
+os.environ.setdefault('TOKENIZERS_PARALLELISM', 'false')
+
+# 如果设置了本地模型目录，使用它作为 HF 缓存目录
+if 'LOCAL_BGE_MODEL_DIR' in os.environ:
+    local_model_dir = os.environ['LOCAL_BGE_MODEL_DIR']
+    os.environ.setdefault('HF_HOME', local_model_dir)
+    os.environ.setdefault('HUGGINGFACE_HUB_CACHE', local_model_dir)
+    os.environ.setdefault('TRANSFORMERS_CACHE', local_model_dir)
+
 # 设置日志
 logging.basicConfig(
     level=logging.DEBUG,
@@ -399,8 +420,8 @@ async def chat_with_langgraph(data: dict):
         from app.workflows.langgraph_rag_workflow import LangGraphRAGWorkflow
         
         # 获取或创建检索器
-        workspace_retriever = LlamaIndexRetriever(workspace_id)
-        global_retriever = LlamaIndexRetriever("global")
+        workspace_retriever = LlamaIndexRetriever.get_instance(workspace_id)
+        global_retriever = LlamaIndexRetriever.get_instance("global")
         
         # 获取 LLM
         from app.services.langchain_rag_service import LangChainRAGService
@@ -446,8 +467,8 @@ async def generate_deepresearch_document(data: dict):
         from app.services.web_search_service import get_web_search_service
         
         # 获取或创建检索器
-        workspace_retriever = LlamaIndexRetriever(workspace_id)
-        global_retriever = LlamaIndexRetriever("global")
+        workspace_retriever = LlamaIndexRetriever.get_instance(workspace_id)
+        global_retriever = LlamaIndexRetriever.get_instance("global")
         
         # 获取 LLM 和网络搜索服务
         from app.services.langchain_rag_service import LangChainRAGService
@@ -1109,7 +1130,7 @@ async def upload_document_for_rag(
             buffer.write(content)
         
         # 使用 LlamaIndex 导入并持久化
-        retriever = LlamaIndexRetriever(str(workspace_id))
+        retriever = LlamaIndexRetriever.get_instance(str(workspace_id))
         added = await retriever.add_document(
             file_path=str(file_path),
             metadata={
@@ -1153,99 +1174,11 @@ async def upload_document_api(
     file: UploadFile = File(...),
     workspace_id: str = Form("1")
 ):
-    """文档上传API - 前端调用（异步处理）"""
-    try:
-        logger.info(f"[DEBUG] 收到上传请求: filename={file.filename}, size={file.size}, workspace_id={workspace_id}")
-        
-        # 检查文件类型
-        if not file.filename:
-            raise HTTPException(status_code=400, detail="文件名不能为空")
-        
-        file_ext = os.path.splitext(file.filename)[1].lower()
-        allowed_extensions = [
-            '.pdf', '.docx', '.doc', '.txt', '.md', '.xlsx', '.xls', '.pptx', '.ppt',
-            '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'
-        ]
-        
-        if file_ext not in allowed_extensions:
-            raise HTTPException(status_code=400, detail=f"不支持的文件类型: {file_ext}")
-        
-        # 检查文件大小
-        content = await file.read()
-        file_size = len(content)
-        
-        if file_size > 50 * 1024 * 1024:  # 50MB限制
-            raise HTTPException(status_code=413, detail="文件大小超过限制")
-        
-        # 保存文件
-        upload_dir = Path("uploads")
-        upload_dir.mkdir(exist_ok=True)
-        
-        file_id = str(uuid.uuid4())
-        filename = f"{file_id}_{file.filename}"
-        file_path = upload_dir / filename
-        
-        with open(file_path, "wb") as buffer:
-            buffer.write(content)
-        
-        logger.info(f"[DEBUG] 文件保存完成: {file_path}, {file_size} bytes")
-        
-        # 创建异步处理任务
-        from app.services.task_queue import get_task_queue, TaskStage
-        
-        task_queue = get_task_queue()
-        task_id = task_queue.create_task(
-            task_type="document_processing",
-            metadata={
-                "original_filename": file.filename,
-                "file_size": file_size,
-                "file_path": str(file_path),
-                "file_type": file_ext,
-                "upload_time": datetime.now().isoformat(),
-                "source": "documents_api"
-            },
-            workspace_id=workspace_id
-        )
-        
-        # 更新任务进度
-        task_queue.update_task_progress(
-            task_id=task_id,
-            stage=TaskStage.UPLOADING,
-            progress=100,
-            message="文件上传完成"
-        )
-        
-        # 启动后台处理任务
-        asyncio.create_task(process_document_async(task_id, str(file_path), workspace_id))
-        
-        logger.info(f"[DEBUG] 任务创建成功: {task_id}")
-        
-        # 立即返回结果
-        return {
-            "status": "success",
-            "message": f"文档 {file.filename} 上传成功，正在后台处理",
-            "task_id": task_id,
-            "workspace_id": workspace_id,
-            "file_path": str(file_path),
-            "file_size": file_size,
-            "processing_info": {
-                "note": "文档正在后台处理，可通过任务ID查询进度"
-            }
-        }
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"[DEBUG] 文档上传失败: {str(e)}")
-        logger.error(f"[DEBUG] 文件名: {file.filename}")
-        logger.error(f"[DEBUG] 工作区: {workspace_id}")
-        logger.error(f"[DEBUG] 文件大小: {file.size if hasattr(file, 'size') else 'unknown'}")
-        import traceback
-        logger.error(f"[DEBUG] 堆栈跟踪:\n{traceback.format_exc()}")
-        return {
-            "status": "error",
-            "message": f"上传失败: {str(e)}"
-        }
+    """文档上传API - 前端调用（异步处理）[已禁用]"""
+    raise HTTPException(
+        status_code=410, 
+        detail="此接口已禁用，请使用 /api/database/upload 或 /api/workspaces/{workspace_id}/documents/upload"
+    )
 
 async def process_document_async(task_id: str, file_path: str, workspace_id: str):
     """异步处理文档"""
@@ -1283,7 +1216,7 @@ async def process_document_async(task_id: str, file_path: str, workspace_id: str
         
         # 使用 LlamaIndex 导入并持久化
         from app.services.llamaindex_retriever import LlamaIndexRetriever
-        retriever_async = LlamaIndexRetriever(workspace_id)
+        retriever_async = LlamaIndexRetriever.get_instance(workspace_id)
         logger.info(f"LlamaIndexRetriever创建完成")
         added_cnt = await retriever_async.add_document(
             file_path=file_path,
@@ -1390,7 +1323,7 @@ async def process_global_document_async(task_id: str, file_path: str):
         
         # 添加到全局RAG系统
         from app.services.llamaindex_retriever import LlamaIndexRetriever
-        retriever_global = LlamaIndexRetriever("global")
+        retriever_global = LlamaIndexRetriever.get_instance("global")
         added_cnt = await retriever_global.add_document(
             file_path=file_path,
             metadata={
@@ -1479,7 +1412,7 @@ async def process_zip_async(task_id: str, zip_path: str, workspace_id: str = "gl
                 
                 # 使用 LlamaIndex 导入
                 from app.services.llamaindex_retriever import LlamaIndexRetriever
-                zip_retriever = LlamaIndexRetriever(workspace_id)
+                zip_retriever = LlamaIndexRetriever.get_instance(workspace_id)
                 added_cnt = await zip_retriever.add_document(
                     file_path=file_info['file_path'],
                     metadata={

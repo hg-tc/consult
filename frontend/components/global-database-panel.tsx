@@ -176,7 +176,7 @@ export function GlobalDatabasePanel() {
                   type="file"
                   id="file-upload"
                   className="hidden"
-                  accept=".pdf,.docx,.doc,.txt,.md,.zip,.rar"
+                  accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt,.md,.zip,.rar,.jpg,.jpeg,.png,.gif,.bmp,.tiff"
                   onChange={handleFileUpload}
                 />
                 <Button asChild>

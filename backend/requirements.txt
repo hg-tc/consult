@@ -5,22 +5,24 @@ python-multipart==0.0.6
 python-dotenv==1.0.0
 
 # Data validation and settings
-pydantic==2.0.2
-pydantic-settings==2.0.0
+pydantic>=2.4.2,<3.0.0  # marker-pdf requires pydantic>=2.4.2
+pydantic-settings>=2.0.3,<3.0.0  # marker-pdf requires pydantic-settings>=2.0.3
 
 # AI/ML frameworks
 llama-index==0.10.68
 llama-index-core==0.10.68.post1
 llama-index-llms-openai==0.1.31
 llama-index-embeddings-huggingface==0.2.3
-llama-index-vector-stores-qdrant==0.1.3
 llama-index-readers-file==0.1.33
 
 # LLM and embeddings
-qdrant-client==1.7.3
 transformers==4.57.1
 sentence-transformers==5.1.2
-torch==2.6.0
+# PyTorch with CUDA 11.8 (统一版本避免冲突)
+# 安装命令: pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+torch==2.6.0+cu118
+torchaudio==2.6.0+cu118
+torchvision==0.21.0+cu118
 openai>=1.3.0,<2.0
 FlagEmbedding==1.3.5
 
@@ -43,19 +45,23 @@ rank-bm25==0.2.2  # BM25 for hybrid retrieval
 # Data processing
 numpy>=1.24.0,<2.0.0
 pandas>=2.0.3
+tabulate>=0.9.0  # Required for pandas.DataFrame.to_markdown()
+# Excel to Markdown conversion (better header detection)
+git+https://github.com/devin-liu/excel-to-markdown.git  # Better Excel table detection
 
 # HTTP and async
 httpx>=0.25.0
 aiofiles>=23.2.0
+anyio>=3.7.1,<4.0.0  # FastAPI 0.104.1 requires anyio<4.0.0
 
 # PDF processing
-PyPDF2>=3.0.0
-PyMuPDF>=1.20.0
-pdfminer.six>=20230101
-pdf2image>=1.16.0
-pikepdf>=8.0.0
+PyMuPDF>=1.20.0  # 主要PDF处理库
+pdf2image>=1.16.0  # PDF转图片用于OCR
+# PyPDF2>=3.0.0  # 已废弃，PyPDFLoader实际使用pypdf
+# pdfminer.six>=20230101  # 未使用
+# pikepdf>=8.0.0  # 未使用
 # Optional: PDF to Markdown converters (优先级从高到低)
-# marker-pdf  # AI驱动的PDF转Markdown，效果最好，需要单独安装: pip install marker-pdf
+marker-pdf  # AI驱动的PDF转Markdown，效果最好，需要单独安装: pip install marker-pdf
 # pymupdf4llm>=0.0.6  # 回退方案: pip install pymupdf4llm
 # camelot-py[cv]>=0.11.0  # PDF表格提取: pip install camelot-py[cv]
 # tabula-py>=2.5.0  # 另一个PDF表格提取方案: pip install tabula-py
@@ -64,18 +70,16 @@ pikepdf>=8.0.0
 python-docx>=1.1.0
 python-pptx>=0.6.21
 openpyxl>=3.1.0
-msoffcrypto-tool>=4.11.0
-docx2txt>=0.8
+docx2txt>=0.8  # 用于处理旧版.doc文件
+# msoffcrypto-tool>=4.11.0  # 未使用
 
 # OCR and image processing
 opencv-python>=4.8.0
 pytesseract>=0.3.10
-Pillow>=10.0.0
+Pillow>=11.1.0  # marker-pdf 会降级，但我们需要保持 >=11.1.0 以兼容 pillow-heif
 # pi-heif>=1.1.1  # 可选，HEIF 图片支持
-# pillow-heif>=0.13.0
-
-# File type detection
-python-magic>=0.4.27
+# pillow-heif>=0.13.0  # 需要 Pillow>=11.1.0
 
 # Archive processing
-rarfile>=4.0
+rarfile>=4.0  # 用于处理RAR压缩文件
+# python-magic>=0.4.27  # 未使用

@@ -175,6 +175,22 @@ class EnhancedDocumentProcessor:
     
     def _detect_file_type(self, file_path: str) -> str:
         """检测文件类型"""
+        # 使用文件扩展名判断，避免依赖 python-magic
+        from pathlib import Path
+        ext = Path(file_path).suffix.lower()
+        
+        if ext == '.pdf':
+            return 'pdf'
+        elif ext in ['.docx', '.doc']:
+            return 'docx' if ext == '.docx' else 'doc'
+        elif ext in ['.xlsx', '.xls']:
+            return 'xlsx'
+        elif ext in ['.pptx', '.ppt']:
+            return 'pptx'
+        elif ext == '.txt':
+            return 'txt'
+        
+        # 尝试使用 python-magic（如果可用）作为回退
         try:
             import magic
             mime_type = magic.from_file(file_path, mime=True)

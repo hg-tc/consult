@@ -291,27 +291,56 @@ class FileProcessor:
     def _process_image(self, file_path: str) -> Dict[str, Any]:
         """处理图片文件，使用本地 Tesseract OCR 输出 Markdown。"""
         try:
+            import time
+            start_time = time.time()
+            
+            logger.info(f"📷 开始处理图片文件: {file_path}")
+            
             from app.services.ocr_service import OCRService
             ocr = OCRService()
-            text = ""
-            if hasattr(ocr, 'extract_text_from_image'):
-                res = ocr.extract_text_from_image(file_path)
-                if isinstance(res, dict):
-                    text = res.get('text', '')
-                else:
-                    text = str(res)
-            md = f"### 图片OCR\n\n{text.strip()}" if text else ""
+            
+            if not ocr.is_available():
+                logger.warning(f"⚠️ OCR服务不可用，无法处理图片: {file_path}")
+                return {
+                    'content': "### 图片OCR\n\n⚠️ OCR服务不可用，无法提取文字",
+                    'metadata': {
+                        'file_size': os.path.getsize(file_path),
+                        'image_path': file_path,
+                        'ocr_available': False
+                    },
+                    'chunks': [],
+                    'file_type': 'image'
+                }
+            
+            # 调用同步版本的 OCR 方法
+            logger.info(f"🔄 调用OCR服务提取文字: {file_path}")
+            text = ocr.extract_text_from_image(file_path)
+            
+            elapsed_time = time.time() - start_time
+            logger.info(f"⏱️ 图片OCR处理耗时: {elapsed_time:.2f}秒, 提取文字长度: {len(text)}")
+            
+            # 构建 Markdown 内容
+            if text and text.strip():
+                md = f"### 图片OCR识别结果\n\n{text.strip()}"
+                logger.info(f"✅ 图片OCR成功: {file_path}, 文字预览: {text[:100]}...")
+            else:
+                md = "### 图片OCR识别结果\n\n⚠️ 未识别到任何文字（可能图片中没有文字或图片质量不佳）"
+                logger.warning(f"⚠️ 图片OCR未提取到文字: {file_path}")
+            
             return {
                 'content': md,
                 'metadata': {
                     'file_size': os.path.getsize(file_path),
-                    'image_path': file_path
+                    'image_path': file_path,
+                    'ocr_available': True,
+                    'ocr_text_length': len(text),
+                    'processing_time': elapsed_time
                 },
                 'chunks': [{'content': text.strip(), 'type': 'ocr'}] if text else [],
                 'file_type': 'image'
             }
         except Exception as e:
-            logger.error(f"图片处理失败: {e}")
+            logger.error(f"❌ 图片处理失败: {file_path}, 错误: {e}", exc_info=True)
             raise
 
     def get_supported_formats(self) -> List[str]:

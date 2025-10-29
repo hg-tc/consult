@@ -297,9 +297,11 @@ async def process_global_document_with_progress(
         )
         
         # 使用 LlamaIndex 导入（增加超时、心跳与细粒度日志）
+        logger.info(f"import 之前")
         from app.services.llamaindex_retriever import LlamaIndexRetriever
+        logger.info(f"import 之后")
         import asyncio as _asyncio
-        retriever = LlamaIndexRetriever("global")
+        retriever = LlamaIndexRetriever.get_instance("global")
         logger.info(f"🔧 LlamaIndex add_document 开始: path={file_path}, size={document_data['file_size']}, mime={document_data['mime_type']}")
         add_task = _asyncio.create_task(
             retriever.add_document(
@@ -445,7 +447,7 @@ async def process_global_document_step_by_step(file_path: str, document_data: Di
             from app.services.llamaindex_retriever import LlamaIndexRetriever
             logger.info(f"📄 开始解析文档: {document_data['original_filename']}")
 
-            retriever = LlamaIndexRetriever("global")
+            retriever = LlamaIndexRetriever.get_instance("global")
             import asyncio as _asyncio
             logger.info(f"🔧[step] LlamaIndex add_document 开始: {file_path}")
             add_task = _asyncio.create_task(
@@ -1126,7 +1128,7 @@ async def delete_global_document(doc_id: str):
         try:
             # 加载 LlamaIndex 索引
             from app.services.llamaindex_retriever import LlamaIndexRetriever
-            retriever = LlamaIndexRetriever("global")
+            retriever = LlamaIndexRetriever.get_instance("global")
             
             # 获取向量存储
             vector_store = retriever.index._vector_store if hasattr(retriever.index, '_vector_store') else None
