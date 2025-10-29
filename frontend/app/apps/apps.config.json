@@ -19,6 +19,16 @@
       "status": "active",
       "version": "1.0.0",
       "category": "智能对话"
+    },
+    {
+      "id": "questionnaire-builder",
+      "name": "问卷生成",
+      "description": "根据申请项目与客户画像，生成政策问卷与材料清单，并附引用",
+      "icon": "FileText",
+      "route": "/apps/questionnaire-builder",
+      "status": "active",
+      "version": "1.0.0",
+      "category": "辅助决策"
     }
   ]
 }

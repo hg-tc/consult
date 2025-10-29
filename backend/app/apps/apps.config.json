@@ -17,6 +17,15 @@
       "enabled": true,
       "api_prefix": "/api/apps/langgraph-chat",
       "file": "langgraph_chat_app.py"
+    },
+    {
+      "id": "questionnaire-builder",
+      "name": "问卷生成应用",
+      "description": "基于客户画像、申请项目与内外部信息，生成政策问卷与材料清单",
+      "version": "1.0.0",
+      "enabled": true,
+      "api_prefix": "/api/apps/questionnaire-builder",
+      "file": "questionnaire_builder_app.py"
     }
   ]
 }
