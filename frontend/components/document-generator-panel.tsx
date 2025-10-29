@@ -9,6 +9,7 @@ export function DocumentGeneratorPanel() {
   const [taskDescription, setTaskDescription] = useState('')
   const [targetWords, setTargetWords] = useState(5000)
   const [writingStyle, setWritingStyle] = useState('专业、严谨、客观')
+  const [copied, setCopied] = useState(false)
   
   const { 
     generateDocument, 
@@ -118,9 +119,26 @@ export function DocumentGeneratorPanel() {
             <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
             <span className="text-blue-700 font-medium">正在生成...</span>
           </div>
-          <p className="text-sm text-blue-600">
+          <p className="text-sm text-blue-600 mb-3">
             这可能需要几分钟时间，请耐心等待
           </p>
+          {/* 进度步骤 */}
+          <div className="space-y-2">
+            {[
+              { step: 'outline_planning', label: '📝 生成提纲' },
+              { step: 'parallel_retrieval', label: '🔍 并行检索' },
+              { step: 'parallel_generation', label: '✍️ 并行生成' },
+              { step: 'merge_sections', label: '🔗 合并段落' },
+              { step: 'final_polish', label: '✨ 最终润色' }
+            ].map((phase, idx) => (
+              <div key={idx} className="flex items-center gap-2 text-sm">
+                <div className="w-4 h-4 rounded-full bg-blue-200 flex items-center justify-center">
+                  <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></div>
+                </div>
+                <span className="text-blue-700">{phase.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -149,10 +167,22 @@ export function DocumentGeneratorPanel() {
           {/* 大纲 */}
           {result.outline && (
             <div className="bg-white p-4 rounded-lg border">
-              <h3 className="font-semibold mb-2">📋 文档大纲</h3>
-              <div className="text-sm text-gray-700">
+              <h3 className="font-semibold mb-3">📋 文档大纲</h3>
+              <div className="text-lg font-medium mb-3 text-gray-800">
                 {result.outline.title}
               </div>
+              {result.outline.sections && result.outline.sections.length > 0 && (
+                <div className="border-t pt-3">
+                  <div className="space-y-1">
+                    {result.outline.sections.map((section: any, idx: number) => (
+                      <div key={idx} className="text-sm" style={{ paddingLeft: `${(section.level - 1) * 16}px` }}>
+                        <span className="text-gray-600">•</span>
+                        <span className="ml-2 text-gray-700">{section.title}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -170,21 +200,58 @@ export function DocumentGeneratorPanel() {
             </div>
           )}
 
+          {/* 处理步骤 */}
+          {result.processing_steps && result.processing_steps.length > 0 && (
+            <div className="bg-white p-4 rounded-lg border">
+              <h3 className="font-semibold mb-3">⚙️ 处理步骤</h3>
+              <div className="space-y-2">
+                {result.processing_steps.map((step, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
+                      <span className="text-xs text-green-600">✓</span>
+                    </div>
+                    <span className="text-gray-700 capitalize">
+                      {step.replace(/_/g, ' ')}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* 文档内容 */}
           <div className="bg-white p-4 rounded-lg border">
             <div className="flex justify-between items-center mb-3">
               <h3 className="font-semibold">📄 文档内容</h3>
-              <button
-                onClick={downloadDocument}
-                className="px-3 py-1 text-sm bg-primary text-white rounded hover:bg-primary/90"
-              >
-                下载文档
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(result.document)
+                      setCopied(true)
+                      setTimeout(() => setCopied(false), 2000)
+                    } catch (err) {
+                      console.error('复制失败:', err)
+                    }
+                  }}
+                  className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
+                >
+                  {copied ? '✓ 已复制' : '复制内容'}
+                </button>
+                <button
+                  onClick={downloadDocument}
+                  className="px-3 py-1 text-sm bg-primary text-white rounded hover:bg-primary/90 transition-colors"
+                >
+                  下载文档
+                </button>
+              </div>
             </div>
             <div className="prose max-w-none">
-              <pre className="whitespace-pre-wrap text-sm bg-gray-50 p-4 rounded max-h-96 overflow-auto">
-                {result.document}
-              </pre>
+              <div className="bg-gray-50 p-4 rounded max-h-[600px] overflow-auto border border-gray-200">
+                <pre className="whitespace-pre-wrap text-sm text-gray-800 font-sans leading-relaxed">
+                  {result.document}
+                </pre>
+              </div>
             </div>
           </div>
         </div>

@@ -81,8 +81,10 @@ class LangChainRAGService:
                 os.environ['OPENAI_API_KEY'] = api_key
                 os.environ['OPENAI_BASE_URL'] = api_base
                 
+                # 从环境变量读取模型名称
+                model_name = os.getenv('LLM_MODEL', 'gpt-4o-2024-08-06')
                 self.llm = ChatOpenAI(
-                    model="gpt-3.5-turbo",
+                    model=model_name,
                     temperature=0.1,
                     openai_api_key=api_key,
                     openai_api_base=api_base,

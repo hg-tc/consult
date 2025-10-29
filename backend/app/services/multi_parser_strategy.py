@@ -375,7 +375,8 @@ class MultiParserStrategy:
             elif file_type == '.docx':
                 elements = partition_docx(file_path)
             elif file_type == '.xlsx':
-                elements = partition_xlsx(file_path)
+                # 使用 pandas 解析 Excel 以保留 sheet 信息
+                elements = self._parse_xlsx_with_sheets(file_path)
             elif file_type == '.pptx':
                 elements = partition_pptx(file_path)
             else:
@@ -394,12 +395,25 @@ class MultiParserStrategy:
             
             for element in elements:
                 if hasattr(element, 'text') and element.text:
-                    content_parts.append(element.text)
+                    text_to_add = element.text
+                    # 如果是 Excel 元素且有 sheet_name，添加到文本中
+                    element_metadata = getattr(element, 'metadata', {})
+                    if element_metadata.get('sheet_name'):
+                        text_to_add = f"【{element_metadata['sheet_name']}】{text_to_add}"
+                    content_parts.append(text_to_add)
+                
+                element_metadata = getattr(element, 'metadata', {})
+                
+                # 如果是 Excel 元素且有 sheet_name，添加到文本中
+                if element_metadata.get('sheet_name'):
+                    text_with_sheet = f"【{element_metadata['sheet_name']}】{getattr(element, 'text', '')}"
+                else:
+                    text_with_sheet = getattr(element, 'text', '')
                 
                 element_info = {
                     'type': element.category,
-                    'text': getattr(element, 'text', ''),
-                    'metadata': getattr(element, 'metadata', {})
+                    'text': text_with_sheet,
+                    'metadata': element_metadata
                 }
                 element_list.append(element_info)
             
@@ -409,6 +423,85 @@ class MultiParserStrategy:
         except Exception as e:
             logger.error(f"unstructured解析失败: {str(e)}")
             raise
+    
+    def _parse_xlsx_with_sheets(self, file_path: str) -> List:
+        """解析 Excel 文件，保留 sheet 名称和结构信息"""
+        try:
+            import pandas as pd
+            from dataclasses import dataclass
+            
+            @dataclass
+            class ExcelElement:
+                """模拟 unstructured Element 对象"""
+                text: str
+                category: str
+                metadata: dict
+            
+            elements = []
+            workbook = pd.ExcelFile(file_path)
+            
+            for sheet_name in workbook.sheet_names:
+                df = pd.read_excel(file_path, sheet_name=sheet_name, header=None)
+                
+                # 1. 添加 sheet 标题
+                sheet_title = f"【工作表】{sheet_name}"
+                elements.append(ExcelElement(
+                    text=sheet_title,
+                    category="Title",
+                    metadata={"sheet_name": sheet_name, "sheet_index": workbook.sheet_names.index(sheet_name)}
+                ))
+                
+                # 2. 添加表头信息
+                if not df.empty:
+                    # 第一行作为标题行
+                    headers = df.iloc[0].tolist()
+                    header_text = " | ".join([str(h) for h in headers if pd.notna(h)])
+                    if header_text:
+                        elements.append(ExcelElement(
+                            text=f"表头: {header_text}",
+                            category="Table",
+                            metadata={
+                                "sheet_name": sheet_name,
+                                "element_type": "header",
+                                "columns": headers
+                            }
+                        ))
+                    
+                    # 3. 逐行添加内容（按行分组，避免单个单元格造成碎片）
+                    row_groups = []
+                    current_group = []
+                    for idx, row in df.iterrows():
+                        if idx == 0:  # 跳过标题行
+                            continue
+                        row_text = " | ".join([str(cell) for cell in row.tolist() if pd.notna(cell)])
+                        if row_text.strip():  # 非空行
+                            current_group.append(row_text)
+                            # 每10行一组
+                            if len(current_group) >= 10:
+                                row_groups.append("\n".join(current_group))
+                                current_group = []
+                    if current_group:
+                        row_groups.append("\n".join(current_group))
+                    
+                    # 添加分组后的行内容
+                    for i, group in enumerate(row_groups):
+                        elements.append(ExcelElement(
+                            text=f"数据（第{df.iloc[0].name+1+i*10+1}-{df.iloc[0].name+1+(i+1)*10}行）:\n{group}",
+                            category="Table",
+                            metadata={
+                                "sheet_name": sheet_name,
+                                "element_type": "data",
+                                "row_range": f"{i*10+2}-{(i+1)*10+1}"
+                            }
+                        ))
+            
+            logger.info(f"Excel 解析完成：{len(workbook.sheet_names)} 个工作表，{len(elements)} 个元素")
+            return elements
+            
+        except Exception as e:
+            logger.error(f"Excel 解析失败: {str(e)}")
+            # 回退到 unstructured
+            return partition_xlsx(file_path)
     
     def _table_to_text(self, table: List[List[str]]) -> str:
         """将表格转换为文本"""

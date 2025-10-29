@@ -23,29 +23,51 @@ class EnhancedOCRService:
         self._initialize_ocr()
     
     def _initialize_ocr(self):
-        """初始化OCR引擎"""
+        """初始化OCR引擎（延迟初始化，避免启动时卡住）"""
+        # 延迟初始化：不在 __init__ 时初始化，而是在首次使用时初始化
+        # 这样可以避免系统启动时的导入冲突
+        self.ocr_engine = None
+        self._ocr_initialized = False
+        self._tesseract_mode = False
+        
+    def _ensure_ocr_initialized(self):
+        """确保 OCR 已初始化（延迟初始化）"""
+        if self._ocr_initialized:
+            return
+        
         try:
-            # 尝试导入PaddleOCR
+            # 使用与 image_parser 相同的安全导入方式
             try:
-                from paddleocr import PaddleOCR
+                from app.services.parsers.image_parser import _load_paddle_ocr
+                PaddleOCR = _load_paddle_ocr()
+                
+                use_gpu = os.getenv("PPOCR_USE_GPU", "true").lower() == "true"
                 
                 # 初始化PaddleOCR，支持中英文
+                logger.info("开始初始化 PaddleOCR 实例...")
                 self.ocr_engine = PaddleOCR(
                     use_angle_cls=True,  # 启用角度分类
                     lang='ch',  # 中文
-                    use_gpu=False,  # 根据环境决定是否使用GPU
+                    use_gpu=use_gpu,  # 使用环境变量配置
                     show_log=False  # 关闭日志输出
                 )
                 
-                logger.info("✅ PaddleOCR初始化成功")
+                logger.info("✅ PaddleOCR 实例初始化成功")
+                self._ocr_initialized = True
+                self._tesseract_mode = False
                 
-            except ImportError:
-                logger.warning("PaddleOCR不可用，尝试使用Tesseract")
+            except ImportError as ie:
+                logger.warning(f"PaddleOCR 不可用，尝试使用 Tesseract: {ie}")
                 self._initialize_tesseract_fallback()
                 
         except Exception as e:
-            logger.error(f"OCR初始化失败: {e}")
-            self.enabled = False
+            logger.error(f"OCR 初始化失败: {e}")
+            # 尝试 Tesseract 回退
+            try:
+                self._initialize_tesseract_fallback()
+            except Exception as e2:
+                logger.error(f"Tesseract 回退也失败: {e2}")
+                self.enabled = False
     
     def _initialize_tesseract_fallback(self):
         """Tesseract回退方案"""
@@ -58,13 +80,15 @@ class EnhancedOCRService:
             
             # 设置中文语言包
             self.ocr_engine = pytesseract
-            self.tesseract_mode = True
+            self._tesseract_mode = True
+            self._ocr_initialized = True
             
             logger.info("✅ Tesseract回退方案初始化成功")
             
         except Exception as e:
             logger.error(f"Tesseract初始化也失败: {e}")
             self.enabled = False
+            self._ocr_initialized = False
     
     def extract_text_from_image(self, image_path: str) -> Dict[str, Any]:
         """
@@ -76,11 +100,16 @@ class EnhancedOCRService:
         Returns:
             包含文本和位置信息的字典
         """
-        if not self.enabled or not self.ocr_engine:
+        if not self.enabled:
             return {"text": "", "confidence": 0.0, "boxes": []}
         
         try:
-            if hasattr(self, 'tesseract_mode') and self.tesseract_mode:
+            self._ensure_ocr_initialized()  # 延迟初始化
+            
+            if not self.ocr_engine:
+                return {"text": "", "confidence": 0.0, "boxes": []}
+            
+            if self._tesseract_mode:
                 return self._extract_with_tesseract(image_path)
             else:
                 return self._extract_with_paddleocr(image_path)
@@ -263,13 +292,19 @@ class EnhancedOCRService:
             return image_path
     
     def is_available(self) -> bool:
-        """检查OCR服务是否可用"""
-        return self.enabled and self.ocr_engine is not None
+        """检查 OCR 是否可用（延迟初始化，避免启动时阻塞）"""
+        if not self.enabled:
+            return False
+        try:
+            self._ensure_ocr_initialized()  # 延迟初始化
+            return self.ocr_engine is not None
+        except Exception:
+            return False
     
     def get_engine_info(self) -> Dict[str, Any]:
         """获取OCR引擎信息"""
         return {
             "enabled": self.enabled,
-            "engine_type": "PaddleOCR" if not hasattr(self, 'tesseract_mode') else "Tesseract",
+            "engine_type": "Tesseract" if self._tesseract_mode else "PaddleOCR",
             "available": self.is_available()
         }

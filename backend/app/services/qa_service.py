@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.services.llm_service import LLMService
 from app.services.vector_service import VectorService
-from app.services.llamaindex_retriever import LlamaIndexRetriever
+from app.services.llamaindex_retriever import get_retriever
 from app.services.context_service import ContextService
 
 logger = logging.getLogger(__name__)
@@ -75,7 +75,7 @@ class QAService:
                     )
 
             # 2. 使用 LlamaIndex 检索相关文档片段
-            retriever = LlamaIndexRetriever(workspace_id)
+            retriever = get_retriever(workspace_id)  # 使用缓存单例，避免重复加载模型和索引
             retrieved = await retriever.retrieve(
                 query=question,
                 top_k=max_references * 2,

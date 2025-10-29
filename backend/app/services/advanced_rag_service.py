@@ -63,8 +63,9 @@ class AdvancedRAGService:
             self.embeddings = self._initialize_embeddings()
             
             # 初始化LLM
+            model_name = os.getenv('LLM_MODEL', 'gpt-4o-2024-08-06')
             self.llm = ChatOpenAI(
-                model="gpt-3.5-turbo",
+                model=model_name,
                 temperature=0.1,
                 openai_api_base=os.getenv('THIRD_PARTY_API_BASE', 'https://api.openai.com/v1')
             )

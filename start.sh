@@ -87,6 +87,14 @@ start_backend() {
     export HF_HUB_OFFLINE=1
     export HF_DATASETS_OFFLINE=1
     
+    # 设置 PaddleOCR 离线模型目录与 GPU 开关（若未在 .env 指定则使用默认）
+    export PPOCR_MODEL_DIR="${PPOCR_MODEL_DIR:-/root/consult/backend/models/ppocr}"
+    export PPOCR_USE_GPU="${PPOCR_USE_GPU:-true}"
+    
+    # 显示关键 OCR 配置
+    print_message $BLUE "PPOCR_MODEL_DIR=$PPOCR_MODEL_DIR"
+    print_message $BLUE "PPOCR_USE_GPU=$PPOCR_USE_GPU"
+    
     # 启动后端服务
     nohup python app_simple.py > "$LOG_FILE" 2>&1 &
     BACKEND_PID=$!

@@ -69,6 +69,15 @@ export TRANSFORMERS_OFFLINE=1
 export HF_HUB_OFFLINE=1
 export HF_DATASETS_OFFLINE=1
 
+# 设置 PaddleOCR 离线模型目录与 GPU 开关（若未在 .env 指定则使用默认）
+export PPOCR_MODEL_DIR="${PPOCR_MODEL_DIR:-/root/consult/backend/models/ppocr}"
+export PPOCR_USE_GPU="${PPOCR_USE_GPU:-false}"
+
+print_message $BLUE "PPOCR_MODEL_DIR=$PPOCR_MODEL_DIR"
+print_message $BLUE "PPOCR_USE_GPU=$PPOCR_USE_GPU"
+print_message $BLUE "DISABLE_PADDLEOCR=$DISABLE_PADDLEOCR"
+print_message $YELLOW "提示: 如果 PaddleOCR 导入卡住，设置 DISABLE_PADDLEOCR=true 完全禁用它"
+
 print_message $GREEN "📝 虚拟环境已激活"
 print_message $GREEN "📝 Python: $(which python)"
 print_message $GREEN "================================"

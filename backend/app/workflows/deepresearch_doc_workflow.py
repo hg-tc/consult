@@ -63,8 +63,10 @@ class DeepResearchDocWorkflow:
         if llm is None:
             api_key = os.getenv('THIRD_PARTY_API_KEY') or os.getenv('OPENAI_API_KEY')
             api_base = os.getenv('THIRD_PARTY_API_BASE') or os.getenv('OPENAI_BASE_URL', 'https://api.openai.com/v1')
+            # 从环境变量读取模型名称，默认使用 gpt-4o
+            model_name = os.getenv('LLM_MODEL', 'gpt-4o-2024-08-06')
             self.llm = ChatOpenAI(
-                model="gpt-3.5-turbo",
+                model=model_name,
                 temperature=0.3,
                 openai_api_key=api_key,
                 openai_api_base=api_base
@@ -98,33 +100,63 @@ class DeepResearchDocWorkflow:
         return workflow
     
     async def _outline_planning_node(self, state: DocGenState) -> DocGenState:
-        """节点1: 提纲规划（3-6级目录）"""
+        """节点1: 提纲规划 - 智能理解用户意图"""
         task_desc = state["task_description"]
         requirements = state["doc_requirements"]
         target_words = requirements.get("target_words", 5000)
         
-        prompt = f"""为以下任务生成详细的文档提纲：
+        prompt = f"""请仔细分析以下任务，深度理解用户意图并生成合适的文档结构。
 
-任务: {task_desc}
+任务描述: {task_desc}
 目标字数: {target_words}
 
-要求:
-1. 生成3-6级目录结构
-2. 包含20-50个段落标题（根据字数需求）
-3. 每个段落标题要具体、可操作
-4. 标题应覆盖任务的所有方面
+**第一步：自我提问并深度理解（关键步骤）**
 
-返回JSON格式（段落ID用section_1, section_2...）:
+请主动思考并回答以下问题：
+
+1. **关于任务背景的理解**
+   - 用户提到的关键概念是什么？（如"前海十二条"、"入驻条件"等）
+   - 对于这些关键概念，我需要知道什么？
+   - 例如：如果说"前海十二条"，它具体指什么内容？每条政策的具体要求是什么？
+
+2. **关于输出类型的理解**
+   - 用户想要什么类型的内容？（问卷、报告、说明文档等）
+   - 为什么这样理解？
+
+3. **关于用途和受众**
+   - 这个内容用于什么目的？
+   - 谁会使用它？
+
+4. **关于格式的要求**
+   - 最合适的结构应该是什么样的？
+   - 为什么这个结构能最好地服务用户需求？
+
+**第二步：生成文档大纲框架**
+
+基于你的理解，生成分层次的文档大纲。先给出整体框架，再细化：
+- **问卷类**：先有评估框架（如哪些维度需要评估），再细化为具体问题和选项
+- **报告类**：先有章节主题（如哪些方面需要分析），再细化为具体内容
+- 每层都有明确的主题和目标
+
+**返回JSON格式:**
 {{
-    "title": "文档总标题",
-    "sections": [
-        {{
-            "id": "section_1",
-            "level": 1,
-            "title": "第一章 背景概述"
-        }},
-        ...
-    ]
+    "understanding": {{
+        "intent_type": "你认为用户想要生成的类型",
+        "reasoning": "你为什么这样理解（1-2句话）",
+        "purpose": "这个输出用于什么目的",
+        "target_audience": "目标受众是谁",
+        "output_format": "预期的格式特点（如：每道题目包含选项/段落式说明/条目式清单等）"
+    }},
+    "structure": {{
+        "title": "文档/问卷标题",
+        "sections": [
+            {{"id": "part_1", "level": 1, "title": "一级主题（框架性）", "notes": "说明这一部分的整体目标"}},
+            {{"id": "part_1_1", "level": 2, "title": "二级主题（细化）", "notes": "具体要涵盖的内容"}},
+            {{"id": "part_1_2", "level": 2, "title": "二级主题（细化）", "notes": "具体要涵盖的内容"}},
+            {{"id": "part_2", "level": 1, "title": "一级主题（框架性）", "notes": "说明这一部分的整体目标"}},
+            ...
+        ]
+    }}
 }}"""
         
         response = await self.llm.ainvoke(prompt)
@@ -134,13 +166,14 @@ class DeepResearchDocWorkflow:
             if json_match:
                 outline = json.loads(json_match.group())
                 state["outline"] = outline
-                all_sections = self._flatten_sections(outline.get("sections", []))
+                all_sections = self._flatten_sections(outline.get("structure", {}).get("sections", []))
                 state["total_sections"] = len(all_sections)
             else:
-                state["outline"] = {"title": task_desc, "sections": []}
+                state["outline"] = {"title": task_desc, "structure": {"sections": []}}
                 state["total_sections"] = 0
-        except:
-            state["outline"] = {"title": task_desc, "sections": []}
+        except Exception as e:
+            logger.error(f"提纲解析失败: {e}")
+            state["outline"] = {"title": task_desc, "structure": {"sections": []}}
             state["total_sections"] = 0
         
         state["processing_steps"].append("outline_planning")
@@ -158,7 +191,11 @@ class DeepResearchDocWorkflow:
     async def _parallel_retrieval_node(self, state: DocGenState) -> DocGenState:
         """节点2: 并行检索（每段独立检索）"""
         outline = state["outline"]
-        all_sections = self._flatten_sections(outline.get("sections", []))
+        # 适应新的结构格式
+        if "structure" in outline:
+            all_sections = self._flatten_sections(outline.get("structure", {}).get("sections", []))
+        else:
+            all_sections = self._flatten_sections(outline.get("sections", []))
         
         async def retrieve_for_section(section):
             section_id = section["id"]
@@ -195,7 +232,11 @@ class DeepResearchDocWorkflow:
     async def _parallel_generation_node(self, state: DocGenState) -> DocGenState:
         """节点3: 并行生成（每段独立生成500-800字）"""
         outline = state["outline"]
-        all_sections = self._flatten_sections(outline.get("sections", []))
+        # 适应新的结构格式
+        if "structure" in outline:
+            all_sections = self._flatten_sections(outline.get("structure", {}).get("sections", []))
+        else:
+            all_sections = self._flatten_sections(outline.get("sections", []))
         retrieval_results = state["retrieval_results"]
         writing_style = state["doc_requirements"].get("writing_style", "专业、严谨、客观")
         
@@ -209,19 +250,90 @@ class DeepResearchDocWorkflow:
                 for i, doc in enumerate(docs[:3])
             ])
             
-            prompt = f"""为文档段落生成内容：
+            # 获取用户理解和期望格式
+            understanding = outline.get("understanding", {})
+            intent_type = understanding.get("intent_type", "文档")
+            output_format = understanding.get("output_format", "段落式说明")
+            notes = section.get("notes", "")
+            
+            # 根据层次和类型生成内容
+            level = section.get("level", 1)
+            
+            # 一级框架：生成整体思路说明
+            if level == 1:
+                prompt = f"""生成框架性说明：
 
+主题：{section_title}
+目标：{notes}
+
+参考资料:
+{context}
+
+请生成一个框架性说明（150-200字），解释这一部分的整体思路和目标：
+"""
+            elif "问卷" in intent_type or "问题" in output_format or "选项" in output_format:
+                # 问卷题
+                # 问卷格式 - 基于理解动态生成
+                prompt = f"""基于用户需求生成问卷内容：
+
+用户需要的类型：{intent_type}
+期望的格式：{output_format}
+当前部分：{section_title}
+补充说明：{notes}
+
+参考资料:
+{context}
+
+请理解用户的真实需求，生成：
+1. 一道具体、可操作的题目（能有效评估相关条件）
+2. 3-5个选项或判断标准
+3. 确保题目和选项符合用户使用场景
+
+输出格式：
+**题目**：[具体题目]
+
+**选项**：
+A. [选项A]
+B. [选项B]  
+C. [选项C]
+
+或
+
+**判断标准**：
+- 符合条件：...
+- 不符合条件：...
+"""
+            elif "表格" in intent_type or "清单" in intent_type:
+                # 表格格式 - 基于理解
+                prompt = f"""基于用户需求生成内容：
+
+用户需要的类型：{intent_type}
+期望的格式：{output_format}
+当前字段：{section_title}
+补充说明：{notes}
+
+参考资料:
+{context}
+
+生成简洁明了的字段或条目说明，便于填写和使用。
+"""
+            else:
+                # 普通文档格式 - 基于理解
+                prompt = f"""基于用户需求生成文档内容：
+
+用户需要的类型：{intent_type}
+期望的格式：{output_format}
 段落标题: {section_title}
+补充说明: {notes}
 写作风格: {writing_style}
 
 参考资料:
 {context}
 
 要求:
-1. 严格围绕标题写作，500-800字
-2. 不要写总结、不要写过渡，只聚焦本段内容
-3. 基于参考资料，但可以适当补充
-4. 语言{writing_style}
+1. 围绕标题写作（500-800字），聚焦本段内容
+2. 不要写总结或过渡，确保内容专业有价值
+3. 基于参考资料，语言{writing_style}
 
 段落内容:
 """
@@ -258,10 +370,17 @@ class DeepResearchDocWorkflow:
     async def _merge_sections_node(self, state: DocGenState) -> DocGenState:
         """节点4: 合并段落"""
         outline = state["outline"]
-        all_sections = self._flatten_sections(outline.get("sections", []))
+        # 适应新的结构格式
+        if "structure" in outline:
+            all_sections = self._flatten_sections(outline.get("structure", {}).get("sections", []))
+            doc_title = outline.get("structure", {}).get("title", outline.get("understanding", {}).get("intent_type", "文档"))
+        else:
+            all_sections = self._flatten_sections(outline.get("sections", []))
+            doc_title = outline.get("title", "文档")
+        
         section_drafts = state["section_drafts"]
         
-        merged_parts = [f"# {outline.get('title', '文档')}\n\n"]
+        merged_parts = [f"# {doc_title}\n\n"]
         
         for section in all_sections:
             sid = section["id"]
@@ -344,11 +463,21 @@ class DeepResearchDocWorkflow:
             config={"configurable": {"thread_id": "doc_gen"}}
         )
         
+        # 提取大纲结构便于前端展示
+        outline_data = final_state["outline"]
+        if "structure" in outline_data:
+            outline = outline_data["structure"]
+        else:
+            outline = {
+                "title": outline_data.get("title", "文档"),
+                "sections": outline_data.get("sections", [])
+            }
+        
         return {
             "document": final_state["final_document"],
             "quality_metrics": final_state["quality_metrics"],
             "references": final_state.get("references", []),
-            "outline": final_state["outline"],
+            "outline": outline,
             "processing_steps": final_state["processing_steps"]
         }
 

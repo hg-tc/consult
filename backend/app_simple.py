@@ -105,6 +105,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ========================================
+# 注意：不在启动时预加载 PaddleOCR
+# 原因：PaddleOCR 导入可能卡住，会阻塞应用启动
+# 解决方案：使用延迟加载 + 自动回退到 Tesseract
+# ========================================
+
 # ------------------------
 # LlamaIndex 存储健康检查（可选）
 # ------------------------
@@ -390,22 +396,29 @@ async def get_chat_history(workspace_id: str):
 @app.post("/api/chat/langgraph")
 async def chat_with_langgraph(data: dict):
     """LangGraph 智能 RAG API"""
+    logger.info(f"收到 LangGraph 请求: {data}")
     try:
         question = data.get("question") or data.get("message", "")
         workspace_id = data.get("workspace_id") or data.get("workspaceId", "global")
         
+        logger.info(f"处理问题: {question}, 工作区: {workspace_id}")
+        
         # 导入新组件
-        from app.services.llamaindex_retriever import LlamaIndexRetriever
+        logger.info("导入 LlamaIndexRetriever 和 LangGraphRAGWorkflow...")
+        from app.services.llamaindex_retriever import get_retriever
         from app.workflows.langgraph_rag_workflow import LangGraphRAGWorkflow
         
-        # 获取或创建检索器
-        workspace_retriever = LlamaIndexRetriever(workspace_id)
-        global_retriever = LlamaIndexRetriever("global")
+        # 获取或创建检索器（使用缓存避免重复加载）
+        logger.info(f"获取检索器: workspace_id={workspace_id}")
+        workspace_retriever = get_retriever(workspace_id)
+        global_retriever = get_retriever("global")
         
         # 获取 LLM
+        logger.info("初始化 LangChainRAGService...")
         from app.services.langchain_rag_service import LangChainRAGService
         rag_service = LangChainRAGService(vector_db_path="langchain_vector_db")
         
+        logger.info("LLM 初始化完成，创建 LangGraphRAGWorkflow...")
         # 创建工作流
         workflow = LangGraphRAGWorkflow(
             workspace_retriever=workspace_retriever,
@@ -414,15 +427,19 @@ async def chat_with_langgraph(data: dict):
         )
         
         # 执行工作流
+        logger.info("开始执行工作流...")
         result = await workflow.run(question, workspace_id)
         
+        logger.info("工作流执行完成，返回结果")
         return {
             "answer": result["answer"],
             "sources": result["sources"],
             "metadata": result["metadata"]
         }
     except Exception as e:
-        logger.error(f"LangGraph 查询失败: {e}")
+        logger.error(f"LangGraph 查询失败: {e}", exc_info=True)
+        import traceback
+        logger.error(f"详细错误: {traceback.format_exc()}")
         return {
             "answer": f"抱歉，处理您的问题时出现错误: {str(e)}",
             "sources": [],
@@ -441,13 +458,13 @@ async def generate_deepresearch_document(data: dict):
         })
         
         # 导入新组件
-        from app.services.llamaindex_retriever import LlamaIndexRetriever
+        from app.services.llamaindex_retriever import get_retriever
         from app.workflows.deepresearch_doc_workflow import DeepResearchDocWorkflow
         from app.services.web_search_service import get_web_search_service
         
-        # 获取或创建检索器
-        workspace_retriever = LlamaIndexRetriever(workspace_id)
-        global_retriever = LlamaIndexRetriever("global")
+        # 获取或创建检索器（使用缓存单例，避免重复加载模型和索引）
+        workspace_retriever = get_retriever(workspace_id)
+        global_retriever = get_retriever("global")
         
         # 获取 LLM 和网络搜索服务
         from app.services.langchain_rag_service import LangChainRAGService
@@ -1097,7 +1114,7 @@ async def upload_document_for_rag(
 ):
     """上传文档到RAG系统（切换为 LlamaIndex 导入并持久化）"""
     try:
-        from app.services.llamaindex_retriever import LlamaIndexRetriever
+        from app.services.llamaindex_retriever import get_retriever
         
         # 保存上传的文件
         upload_dir = Path("uploads")
@@ -1109,7 +1126,8 @@ async def upload_document_for_rag(
             buffer.write(content)
         
         # 使用 LlamaIndex 导入并持久化
-        retriever = LlamaIndexRetriever(str(workspace_id))
+        from app.services.llamaindex_retriever import get_retriever
+        retriever = get_retriever(str(workspace_id))  # 使用缓存单例，避免重复加载模型和索引
         added = await retriever.add_document(
             file_path=str(file_path),
             metadata={
@@ -1153,96 +1171,21 @@ async def upload_document_api(
     file: UploadFile = File(...),
     workspace_id: str = Form("1")
 ):
-    """文档上传API - 前端调用（异步处理）"""
+    """文档上传API（兼容端点）- 代理到 global_api 的实现，统一 LlamaIndex 流程。"""
     try:
-        logger.info(f"[DEBUG] 收到上传请求: filename={file.filename}, size={file.size}, workspace_id={workspace_id}")
-        
-        # 检查文件类型
-        if not file.filename:
-            raise HTTPException(status_code=400, detail="文件名不能为空")
-        
-        file_ext = os.path.splitext(file.filename)[1].lower()
-        allowed_extensions = ['.pdf', '.docx', '.doc', '.txt', '.md', '.xlsx', '.xls', '.pptx', '.ppt']
-        
-        if file_ext not in allowed_extensions:
-            raise HTTPException(status_code=400, detail=f"不支持的文件类型: {file_ext}")
-        
-        # 检查文件大小
-        content = await file.read()
-        file_size = len(content)
-        
-        if file_size > 50 * 1024 * 1024:  # 50MB限制
-            raise HTTPException(status_code=413, detail="文件大小超过限制")
-        
-        # 保存文件
-        upload_dir = Path("uploads")
-        upload_dir.mkdir(exist_ok=True)
-        
-        file_id = str(uuid.uuid4())
-        filename = f"{file_id}_{file.filename}"
-        file_path = upload_dir / filename
-        
-        with open(file_path, "wb") as buffer:
-            buffer.write(content)
-        
-        logger.info(f"[DEBUG] 文件保存完成: {file_path}, {file_size} bytes")
-        
-        # 创建异步处理任务
-        from app.services.task_queue import get_task_queue, TaskStage
-        
-        task_queue = get_task_queue()
-        task_id = task_queue.create_task(
-            task_type="document_processing",
-            metadata={
-                "original_filename": file.filename,
-                "file_size": file_size,
-                "file_path": str(file_path),
-                "file_type": file_ext,
-                "upload_time": datetime.now().isoformat(),
-                "source": "documents_api"
-            },
+        from fastapi import BackgroundTasks
+        from app.api.v1.endpoints import global_api
+        # 复用全局实现，确保走 LlamaIndex + 细化日志 + 持久化一致性
+        return await global_api.upload_global_document(
+            background_tasks=BackgroundTasks(),
+            file=file,
             workspace_id=workspace_id
         )
-        
-        # 更新任务进度
-        task_queue.update_task_progress(
-            task_id=task_id,
-            stage=TaskStage.UPLOADING,
-            progress=100,
-            message="文件上传完成"
-        )
-        
-        # 启动后台处理任务
-        asyncio.create_task(process_document_async(task_id, str(file_path), workspace_id))
-        
-        logger.info(f"[DEBUG] 任务创建成功: {task_id}")
-        
-        # 立即返回结果
-        return {
-            "status": "success",
-            "message": f"文档 {file.filename} 上传成功，正在后台处理",
-            "task_id": task_id,
-            "workspace_id": workspace_id,
-            "file_path": str(file_path),
-            "file_size": file_size,
-            "processing_info": {
-                "note": "文档正在后台处理，可通过任务ID查询进度"
-            }
-        }
-        
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"[DEBUG] 文档上传失败: {str(e)}")
-        logger.error(f"[DEBUG] 文件名: {file.filename}")
-        logger.error(f"[DEBUG] 工作区: {workspace_id}")
-        logger.error(f"[DEBUG] 文件大小: {file.size if hasattr(file, 'size') else 'unknown'}")
-        import traceback
-        logger.error(f"[DEBUG] 堆栈跟踪:\n{traceback.format_exc()}")
-        return {
-            "status": "error",
-            "message": f"上传失败: {str(e)}"
-        }
+        logger.error(f"[Compat] 代理上传到 global_api 失败: {e}")
+        return {"status": "error", "message": f"上传失败: {str(e)}"}
 
 async def process_document_async(task_id: str, file_path: str, workspace_id: str):
     """异步处理文档"""
@@ -1279,8 +1222,8 @@ async def process_document_async(task_id: str, file_path: str, workspace_id: str
         original_filename = task_metadata.get('original_filename', Path(file_path).name)
         
         # 使用 LlamaIndex 导入并持久化
-        from app.services.llamaindex_retriever import LlamaIndexRetriever
-        retriever_async = LlamaIndexRetriever(workspace_id)
+        from app.services.llamaindex_retriever import get_retriever
+        retriever_async = get_retriever(workspace_id)  # 使用缓存单例，避免重复加载模型和索引
         logger.info(f"LlamaIndexRetriever创建完成")
         added_cnt = await retriever_async.add_document(
             file_path=file_path,
@@ -1386,8 +1329,8 @@ async def process_global_document_async(task_id: str, file_path: str):
         )
         
         # 添加到全局RAG系统
-        from app.services.llamaindex_retriever import LlamaIndexRetriever
-        retriever_global = LlamaIndexRetriever("global")
+        from app.services.llamaindex_retriever import get_retriever
+        retriever_global = get_retriever("global")  # 使用缓存单例，避免重复加载模型和索引
         added_cnt = await retriever_global.add_document(
             file_path=file_path,
             metadata={
@@ -1475,8 +1418,8 @@ async def process_zip_async(task_id: str, zip_path: str, workspace_id: str = "gl
                 logger.info(f"[ZIP] 处理文件 ({index+1}/{total_files}): {file_info['original_filename']}")
                 
                 # 使用 LlamaIndex 导入
-                from app.services.llamaindex_retriever import LlamaIndexRetriever
-                zip_retriever = LlamaIndexRetriever(workspace_id)
+                from app.services.llamaindex_retriever import get_retriever
+                zip_retriever = get_retriever(workspace_id)  # 使用缓存单例，避免重复加载模型和索引
                 added_cnt = await zip_retriever.add_document(
                     file_path=file_info['file_path'],
                     metadata={
@@ -1938,98 +1881,27 @@ async def get_documents_api(workspace_id: str = None):
 
 @app.delete("/api/documents/{doc_id}")
 async def delete_document_api(doc_id: str):
-    """删除文档API - 前端调用"""
+    """删除文档API（兼容端点）- 代理到 global_api 的实现，统一 LlamaIndex 流程。"""
     try:
-        from app.services.langchain_rag_service import LangChainRAGService
-        rag_service = LangChainRAGService()
-        
-        logger.info(f"收到删除文档请求: {doc_id}")
-        
-        # 在所有工作区中查找并删除文档
-        deleted = False
-        workspace_id = None
-        deleted_chunks = 0
-        filename = None
-        
-        # 首先查找文档，获取文件名和所有相关块
-        file_groups = {}
-        for ws_id in ["1", "2", "4", "7", "9", "10"]:
-            try:
-                vector_store = rag_service._load_vector_store(ws_id)
-                if vector_store and hasattr(vector_store, 'docstore'):
-                    docstore = vector_store.docstore
-                    if hasattr(docstore, '_dict'):
-                        for chunk_id, doc in docstore._dict.items():
-                            metadata = doc.metadata if hasattr(doc, 'metadata') else {}
-                            original_filename = metadata.get('original_filename') or metadata.get('source', f"文档_{chunk_id[:8]}")
-                            
-                            if original_filename not in file_groups:
-                                file_groups[original_filename] = {
-                                    "workspace_id": ws_id,
-                                    "chunk_ids": [chunk_id]
-                                }
-                            else:
-                                file_groups[original_filename]["chunk_ids"].append(chunk_id)
-            except Exception as e:
-                logger.warning(f"在工作区 {ws_id} 中查找文档失败: {str(e)}")
-                continue
-        
-        # 找到包含目标文档ID的文件组
-        target_filename = None
-        for fname, group in file_groups.items():
-            if doc_id in group["chunk_ids"]:
-                target_filename = fname
-                workspace_id = group["workspace_id"]
-                break
-        
-        if not target_filename:
-            logger.warning(f"文档 {doc_id} 未找到")
-            return {
-                "status": "not_found",
-                "id": doc_id,
-                "message": "文档未找到"
-            }
-        
-        # 删除该文件的所有块
-        for chunk_id in file_groups[target_filename]["chunk_ids"]:
-            try:
-                if rag_service.delete_document(workspace_id, chunk_id):
-                    deleted_chunks += 1
-                    deleted = True
-            except Exception as e:
-                logger.warning(f"删除块 {chunk_id} 失败: {str(e)}")
-        
-        if deleted:
-            logger.info(f"成功删除文件 {target_filename} 的 {deleted_chunks} 个块")
-            
-            # 清除缓存
-            if hasattr(get_documents_api, '_cache'):
-                get_documents_api._cache.clear()
-                logger.info("已清除文档列表缓存")
-            
-            return {
-                "status": "deleted", 
-                "id": doc_id,
-                "filename": target_filename,
-                "workspace_id": workspace_id,
-                "deleted_chunks": deleted_chunks,
-                "message": f"文件 {target_filename} 已成功删除（{deleted_chunks} 个块）"
-            }
-        else:
-            logger.warning(f"文件 {target_filename} 删除失败")
-            return {
-                "status": "error",
-                "id": doc_id,
-                "message": "删除失败"
-            }
-            
+        from app.api.v1.endpoints import global_api
+        return await global_api.delete_global_document(doc_id)
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"删除文档失败: {str(e)}")
-        return {
-            "status": "error",
-            "id": doc_id,
-            "error": f"删除失败: {str(e)}"
-        }
+        logger.error(f"[Compat] 代理删除到 global_api 失败: {e}")
+        return {"status": "error", "id": doc_id, "error": f"删除失败: {str(e)}"}
+
+@app.delete("/api/documents/by-filename")
+async def delete_document_by_filename_api(filename: str):
+    """按文件名删除（兼容端点）- 代理到 global_api 的实现。"""
+    try:
+        from app.api.v1.endpoints import global_api
+        return await global_api.delete_global_document_by_filename(filename)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[Compat] 代理按文件名删除到 global_api 失败: {e}")
+        return {"status": "error", "filename": filename, "error": f"删除失败: {str(e)}"}
 
 @app.post("/api/documents/{doc_id}/vectorize")
 async def vectorize_document_api(doc_id: str):
@@ -3126,4 +2998,5 @@ async def list_global_workspaces():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=18000)
+    logger.info("启动后端服务，监听端口 18000")
+    uvicorn.run(app, host="0.0.0.0", port=18000, log_level="info")

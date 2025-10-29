@@ -3326,5 +3326,1169 @@
       ]
     },
     "workspace_id": "global"
+  },
+  {
+    "id": "5042b5fd-9909-4102-a362-b917900ff314",
+    "task_type": "global_archive_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761714611.7503035,
+    "started_at": null,
+    "completed_at": 1761714708.934825,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "企业服务（政策申报）-智造未来.rar",
+      "file_path": "uploads/global/5ecd6f14-4c21-494b-bb90-e072a2dde897.rar",
+      "file_size": 18765849,
+      "document_id": "5ecd6f14-4c21-494b-bb90-e072a2dde897",
+      "file_type": ".rar",
+      "success": true,
+      "total_files": 17,
+      "successful": 16,
+      "failed": 1,
+      "results": [
+        {
+          "filename": "【定稿版】前海香港人才房申请.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "68ff6499-ebcd-415a-83c4-270df4060bbd",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/人才配租房申报/【定稿版】前海香港人才房申请.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/人才配租房申报/【定稿版】前海香港人才房申请.pdf",
+            "file_size": 1231046,
+            "file_type": ".pdf",
+            "original_filename": "【定稿版】前海香港人才房申请.pdf"
+          }
+        },
+        {
+          "filename": "前海香港人才配租房申请攻略.pptx",
+          "success": false,
+          "file_type": ".pptx",
+          "file_id": null,
+          "file_info": null
+        },
+        {
+          "filename": "人社局-创业补贴.xlsx",
+          "success": true,
+          "file_type": ".xlsx",
+          "file_id": "3ef57f3e-e1a1-4b01-ab2c-a9710db57af4",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/人社局创业补贴/人社局-创业补贴.xlsx",
+            "relative_path": "企业服务（政策申报）-智造未来/人社局创业补贴/人社局-创业补贴.xlsx",
+            "file_size": 182462,
+            "file_type": ".xlsx",
+            "original_filename": "人社局-创业补贴.xlsx"
+          }
+        },
+        {
+          "filename": "南山区众创空间备案申请.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "57a32f80-e12c-4043-b055-e6d3cb2f813d",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/众创空间认定/南山区众创空间备案申请.docx",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/南山区众创空间备案申请.docx",
+            "file_size": 19882,
+            "file_type": ".docx",
+            "original_filename": "南山区众创空间备案申请.docx"
+          }
+        },
+        {
+          "filename": "智造未来-营业执照（盖章）.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "21fa5717-789f-43de-ba78-db78977be8cc",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/智造未来-营业执照（盖章）.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/智造未来-营业执照（盖章）.pdf",
+            "file_size": 1898626,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-营业执照（盖章）.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-1：在孵企业清单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "2434c327-95d0-4510-8e54-e6a906dd705b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-1：在孵企业清单.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-1：在孵企业清单.pdf",
+            "file_size": 258974,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-1：在孵企业清单.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-2：近三年毕业企业清单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "cbb8e7c4-2ec5-4f6f-9c5b-01f5b75bc6e4",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-2：近三年毕业企业清单.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-2：近三年毕业企业清单.pdf",
+            "file_size": 82371,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-2：近三年毕业企业清单.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-3：孵化载体聘任创业导师名单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "957c0979-be05-48be-b9b5-ea35efc9a949",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-3：孵化载体聘任创业导师名单.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-3：孵化载体聘任创业导师名单.pdf",
+            "file_size": 187943,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-3：孵化载体聘任创业导师名单.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-4：在孵企业基本信息情况表.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "e6102476-7b02-41e6-b190-ffd1d8470284",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-4：在孵企业基本信息情况表.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-4：在孵企业基本信息情况表.pdf",
+            "file_size": 644359,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-4：在孵企业基本信息情况表.pdf"
+          }
+        },
+        {
+          "filename": "附件3：南山区科技企业孵化载体备案申请表.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "63ade001-b6db-4ecb-8c30-cb74a69c05f9",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件3：南山区科技企业孵化载体备案申请表.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件3：南山区科技企业孵化载体备案申请表.pdf",
+            "file_size": 378938,
+            "file_type": ".pdf",
+            "original_filename": "附件3：南山区科技企业孵化载体备案申请表.pdf"
+          }
+        },
+        {
+          "filename": "深圳市众创空间认定申请.doc",
+          "success": true,
+          "file_type": ".doc",
+          "file_id": "dc5b245b-8df0-42ad-ac12-fe97316e2e39",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/众创空间认定/深圳市众创空间认定申请.doc",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/深圳市众创空间认定申请.doc",
+            "file_size": 34304,
+            "file_type": ".doc",
+            "original_filename": "深圳市众创空间认定申请.doc"
+          }
+        },
+        {
+          "filename": "渠道合作协议.doc",
+          "success": true,
+          "file_type": ".doc",
+          "file_id": "32df7aa7-9b59-40de-b8bb-caf34d826b08",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/众创空间认定/渠道合作协议.doc",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/渠道合作协议.doc",
+            "file_size": 111569,
+            "file_type": ".doc",
+            "original_filename": "渠道合作协议.doc"
+          }
+        },
+        {
+          "filename": "港澳青年创业发展扶持补贴.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "91877020-8d7a-4735-a1cd-b4b71c6387c0",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/前海十二条之BUD一比一补贴/港澳青年创业发展扶持补贴.docx",
+            "relative_path": "企业服务（政策申报）-智造未来/前海十二条之BUD一比一补贴/港澳青年创业发展扶持补贴.docx",
+            "file_size": 14087,
+            "file_type": ".docx",
+            "original_filename": "港澳青年创业发展扶持补贴.docx"
+          }
+        },
+        {
+          "filename": "数码港培育计划.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "08d7639d-03f2-44b5-836a-beda94243c68",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/数码港/数码港培育计划.docx",
+            "relative_path": "企业服务（政策申报）-智造未来/数码港/数码港培育计划.docx",
+            "file_size": 14782,
+            "file_type": ".docx",
+            "original_filename": "数码港培育计划.docx"
+          }
+        },
+        {
+          "filename": "HKSTP intro SC 7.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "b7de4a7f-8c03-4877-a86b-89231c62b3e7",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/科学园/HKSTP intro SC 7.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/科学园/HKSTP intro SC 7.pdf",
+            "file_size": 2994424,
+            "file_type": ".pdf",
+            "original_filename": "HKSTP intro SC 7.pdf"
+          }
+        },
+        {
+          "filename": "bud资料清单.xlsx",
+          "success": true,
+          "file_type": ".xlsx",
+          "file_id": "9ef296d4-d155-4f5f-953a-dbf57ed97d6f",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/香港BUD/bud资料清单.xlsx",
+            "relative_path": "企业服务（政策申报）-智造未来/香港BUD/bud资料清单.xlsx",
+            "file_size": 14560,
+            "file_type": ".xlsx",
+            "original_filename": "bud资料清单.xlsx"
+          }
+        },
+        {
+          "filename": "高企信息采集表.xlsx",
+          "success": true,
+          "file_type": ".xlsx",
+          "file_id": "ae0be849-ac15-4b13-b0ad-65decec5d21c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_5042b5fd-9909-4102-a362-b917900ff314_onuoibcg/企业服务（政策申报）-智造未来/高新技术企业申请/高企信息采集表.xlsx",
+            "relative_path": "企业服务（政策申报）-智造未来/高新技术企业申请/高企信息采集表.xlsx",
+            "file_size": 12554,
+            "file_type": ".xlsx",
+            "original_filename": "高企信息采集表.xlsx"
+          }
+        }
+      ]
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "70575401-ec76-4e14-aa1a-3d8139a8e2ff",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761718120.6789083,
+    "started_at": 1761718120.7071624,
+    "completed_at": 1761718138.1932957,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/90534d43-5b75-4e12-a17b-0d592f6dc9aa.xlsx",
+      "file_size": 14560,
+      "document_id": "90534d43-5b75-4e12-a17b-0d592f6dc9aa",
+      "chunk_count": 4
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "1fb0e091-536d-4a50-ac45-6f49c220fdb2",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761718983.81227,
+    "started_at": 1761718983.8387868,
+    "completed_at": 1761719014.8987596,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/d0a9506b-3103-4875-bb0c-369f682dc623.xlsx",
+      "file_size": 14560,
+      "document_id": "d0a9506b-3103-4875-bb0c-369f682dc623",
+      "chunk_count": 4
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "5ab225a5-e7f3-4e43-8992-cf97cd562739",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761719121.2473404,
+    "started_at": 1761719121.2729144,
+    "completed_at": 1761719139.1275618,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/0bafce1a-2bc8-4823-b8e5-396f63c677bd.xlsx",
+      "file_size": 14560,
+      "document_id": "0bafce1a-2bc8-4823-b8e5-396f63c677bd",
+      "chunk_count": 4
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "1e06a951-762e-459f-bda6-9d3965bb7f6f",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761719753.7882092,
+    "started_at": 1761719753.814819,
+    "completed_at": 1761719756.7763941,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/f434b032-620c-4b57-845b-8ea0f7f35804.xlsx",
+      "file_size": 14560,
+      "document_id": "f434b032-620c-4b57-845b-8ea0f7f35804",
+      "chunk_count": 4
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "c0d348b1-7af2-4cb9-a1d6-4a90bcaf5004",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761721855.5712223,
+    "started_at": 1761721855.598462,
+    "completed_at": 1761721865.464964,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/398e0f8d-37a5-4d5a-a644-8dea0c99b674.xlsx",
+      "file_size": 14560,
+      "document_id": "398e0f8d-37a5-4d5a-a644-8dea0c99b674",
+      "chunk_count": 4
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "ad6e20ab-0e3b-4801-93cf-6dd1e2695e52",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761721888.6029787,
+    "started_at": 1761721888.6229668,
+    "completed_at": 1761721900.8935165,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/564a4119-0388-48f5-bac6-9f369fbcaed6.pptx",
+      "file_size": 4074106,
+      "document_id": "564a4119-0388-48f5-bac6-9f369fbcaed6",
+      "chunk_count": 185
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "7a0a273a-6270-49e1-b82b-96ed46f4338c",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761722805.646011,
+    "started_at": 1761722805.6740847,
+    "completed_at": 1761722815.5306008,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/40d38d9f-3c89-43b2-b216-7a6056765f4f.xlsx",
+      "file_size": 14560,
+      "document_id": "40d38d9f-3c89-43b2-b216-7a6056765f4f",
+      "chunk_count": 4
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "a111246e-7fc8-4e5e-ba98-08532018c5ec",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761722827.6245353,
+    "started_at": 1761722827.6450126,
+    "completed_at": 1761722839.5272655,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/d3227dec-cfa2-45bc-be68-44d59d482a83.pptx",
+      "file_size": 4074106,
+      "document_id": "d3227dec-cfa2-45bc-be68-44d59d482a83",
+      "chunk_count": 185
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "ca2aa6e3-2096-4b38-b9cd-05829fb10fc0",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761726359.9233968,
+    "started_at": 1761726359.9437304,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/050ba22f-65d2-4525-a248-c567e13786bb.pptx",
+      "file_size": 4074106,
+      "document_id": "050ba22f-65d2-4525-a248-c567e13786bb"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "55d32805-6321-4a58-bcb4-5835d9d62cd9",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761726642.1008644,
+    "started_at": 1761726642.1212137,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/03e5c7fc-ba29-4a68-8602-1474c9304596.pptx",
+      "file_size": 4074106,
+      "document_id": "03e5c7fc-ba29-4a68-8602-1474c9304596"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "351eb715-cdae-4e7e-8058-429743917747",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761727545.2614467,
+    "started_at": 1761727545.2821133,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/b2ff07ac-428e-4e9c-b133-531e1a5cea66.pptx",
+      "file_size": 4074106,
+      "document_id": "b2ff07ac-428e-4e9c-b133-531e1a5cea66"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "e791cf0f-eaa0-4d7d-a96f-873bb9188a8f",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761727753.0609393,
+    "started_at": 1761727753.081541,
+    "completed_at": 1761728040.8579452,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/9fbddd64-4a45-4511-bd3d-93af36186952.pptx",
+      "file_size": 4074106,
+      "document_id": "9fbddd64-4a45-4511-bd3d-93af36186952",
+      "chunk_count": 181
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "b597728b-8f56-464c-8f54-2bfe2452fcde",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761728404.9912274,
+    "started_at": 1761728405.012051,
+    "completed_at": 1761728724.088172,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/476345bf-e899-4e5b-bbf0-290ee1362de0.pptx",
+      "file_size": 4074106,
+      "document_id": "476345bf-e899-4e5b-bbf0-290ee1362de0",
+      "chunk_count": 181
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "c532eee0-85f9-4d54-8c26-bb84af29cf15",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761729247.4494796,
+    "started_at": 1761729247.470402,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/833586c9-b4f5-438c-a59d-bcf407f880c7.pptx",
+      "file_size": 4074106,
+      "document_id": "833586c9-b4f5-438c-a59d-bcf407f880c7"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "6f3446f0-96c3-4945-bfec-14c17bdd0ce3",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761729311.0822182,
+    "started_at": 1761729311.1078622,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "附件5：商业计划书（路演）ppt.pptx",
+      "file_path": "uploads/global/3e016042-700d-4c05-a54c-56cf22894dae.pptx",
+      "file_size": 67955,
+      "document_id": "3e016042-700d-4c05-a54c-56cf22894dae"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "e3cdc1a0-899d-48dd-8cce-6e7bfcf15d8b",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761729385.6658955,
+    "started_at": 1761729385.6871312,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/c2c2d843-bc08-4dc4-935b-64697cde4601.pptx",
+      "file_size": 4074106,
+      "document_id": "c2c2d843-bc08-4dc4-935b-64697cde4601"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "58dd338c-c223-4753-8a0f-3a2c093987f1",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761729441.130274,
+    "started_at": 1761729441.1515412,
+    "completed_at": 1761729763.5528502,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/962194a3-4786-474e-8cdb-5f524c112cfc.pptx",
+      "file_size": 4074106,
+      "document_id": "962194a3-4786-474e-8cdb-5f524c112cfc",
+      "chunk_count": 181
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "a9398033-463a-43fe-9bb9-630c509fa69e",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761730059.6631503,
+    "started_at": 1761730059.684375,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/34a20081-3fe3-4e19-9b3c-734a4307c4e0.pptx",
+      "file_size": 4074106,
+      "document_id": "34a20081-3fe3-4e19-9b3c-734a4307c4e0"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "3367f315-f411-4679-8e91-7151d2d78f74",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761730122.244531,
+    "started_at": 1761730122.2659516,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/29eab315-3462-4fa1-98dd-cf5305097e02.pptx",
+      "file_size": 4074106,
+      "document_id": "29eab315-3462-4fa1-98dd-cf5305097e02"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "fae8d3eb-9346-497f-a0a2-f480b9bf0d2e",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761730554.7320364,
+    "started_at": 1761730554.7538676,
+    "completed_at": 1761730844.3578255,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/279365be-e9cc-455c-8f2b-05a568631732.pptx",
+      "file_size": 4074106,
+      "document_id": "279365be-e9cc-455c-8f2b-05a568631732",
+      "chunk_count": 181
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "86bff365-c6a5-44e8-b7ea-20e0bc689213",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761730853.1769161,
+    "started_at": 1761730853.2038755,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "附件5：商业计划书（路演）ppt.pptx",
+      "file_path": "uploads/global/2f4a2274-183d-4025-86d9-769473cf59ea.pptx",
+      "file_size": 67955,
+      "document_id": "2f4a2274-183d-4025-86d9-769473cf59ea"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "09362b87-29e7-42fd-90fe-b8ec142751c3",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761730905.925779,
+    "started_at": 1761730905.9477124,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/accbc9f8-6e35-4b33-970e-6cc672294904.pptx",
+      "file_size": 4074106,
+      "document_id": "accbc9f8-6e35-4b33-970e-6cc672294904"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "1b1b9a9e-d0fd-483a-9a61-78ffeb762a7e",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761730991.5904183,
+    "started_at": 1761730991.6123443,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/3b70f98b-2ef9-4cf1-b446-e33e56dc8f5a.pptx",
+      "file_size": 4074106,
+      "document_id": "3b70f98b-2ef9-4cf1-b446-e33e56dc8f5a"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "246379f3-d6ee-4aad-807b-574cd9f41ddd",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761731100.4879894,
+    "started_at": 1761731100.509993,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/25b6e1ee-3a37-4b55-a6b9-f2375738938b.pptx",
+      "file_size": 4074106,
+      "document_id": "25b6e1ee-3a37-4b55-a6b9-f2375738938b"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "32b93990-fa11-4933-acd1-3261e8153dbf",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761731166.463632,
+    "started_at": 1761731166.4857485,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/fc75a315-4a3c-4571-a0b3-efaf17e092dc.pptx",
+      "file_size": 4074106,
+      "document_id": "fc75a315-4a3c-4571-a0b3-efaf17e092dc"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "88c40ab8-25fd-4726-91f1-144f02b975de",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761731252.878806,
+    "started_at": 1761731252.9010425,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/e3e1d791-0215-477f-9308-7ffb5ee11479.pptx",
+      "file_size": 4074106,
+      "document_id": "e3e1d791-0215-477f-9308-7ffb5ee11479"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "56ae5a3a-7fb8-428c-8b50-2514dcbaeaec",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761731543.4516888,
+    "started_at": 1761731543.4739356,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/8f338076-1e4d-42d9-814c-f7c0803825d2.pptx",
+      "file_size": 4074106,
+      "document_id": "8f338076-1e4d-42d9-814c-f7c0803825d2"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "f05e4469-4dcf-40a0-a068-b98bee5b5ace",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761731649.9452684,
+    "started_at": 1761731649.967805,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/a892b4eb-276c-4ebb-8a24-885ae74d7c65.pptx",
+      "file_size": 4074106,
+      "document_id": "a892b4eb-276c-4ebb-8a24-885ae74d7c65"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "f0ed23af-6875-46b7-aa47-f14ac23a3746",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761731812.691863,
+    "started_at": 1761731812.7154768,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/5559e287-6977-4fa8-be08-9719daf18c5d.pptx",
+      "file_size": 4074106,
+      "document_id": "5559e287-6977-4fa8-be08-9719daf18c5d"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "49f7e693-b3f9-4172-bb30-89f018d3936b",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761732168.5057557,
+    "started_at": 1761732168.5281243,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/71dc76cd-7bac-494a-8484-6ac0435f1802.pptx",
+      "file_size": 4074106,
+      "document_id": "71dc76cd-7bac-494a-8484-6ac0435f1802"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "c4f3f461-c147-4b26-a986-cf5c88feb96b",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761732758.402481,
+    "started_at": 1761732758.425237,
+    "completed_at": 1761733082.800125,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/0ccef0b9-aaef-4a51-979b-ba7bf5f4a27d.pptx",
+      "file_size": 4074106,
+      "document_id": "0ccef0b9-aaef-4a51-979b-ba7bf5f4a27d",
+      "chunk_count": 181
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "2ad3d1e6-c4e2-4c6e-bdf2-c0a1edc94270",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761733155.5777848,
+    "started_at": 1761733155.6006153,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/0b29d25c-8666-4926-bf50-55c553a2bcc6.pptx",
+      "file_size": 4074106,
+      "document_id": "0b29d25c-8666-4926-bf50-55c553a2bcc6"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "e5d69b1f-73fa-4c8a-a96a-219bc5515c02",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761733588.4573252,
+    "started_at": 1761733588.4807363,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/e597c62c-6ac6-4927-86c6-7e79060cd295.pptx",
+      "file_size": 4074106,
+      "document_id": "e597c62c-6ac6-4927-86c6-7e79060cd295"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "1584f613-97dd-44df-824b-a4bba215b67d",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761733852.398297,
+    "started_at": 1761733852.4219947,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/7c13681f-6c35-46f6-87b6-9f0190daf97c.pptx",
+      "file_size": 4074106,
+      "document_id": "7c13681f-6c35-46f6-87b6-9f0190daf97c"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "00eb64b0-fed5-473b-ae66-716dca8d6086",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761734094.5553765,
+    "started_at": 1761734094.5785327,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/cd4d0d3f-87f6-4b32-9609-feac08850a94.pptx",
+      "file_size": 4074106,
+      "document_id": "cd4d0d3f-87f6-4b32-9609-feac08850a94"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "4c294766-b76d-4141-899f-46ab3144655e",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761734389.734033,
+    "started_at": 1761734389.757277,
+    "completed_at": 1761734408.9244165,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/74a61f1e-d6dc-41b2-a738-c84c87026878.pptx",
+      "file_size": 4074106,
+      "document_id": "74a61f1e-d6dc-41b2-a738-c84c87026878",
+      "chunk_count": 181
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "31636204-5e98-439d-8797-06f08a04781a",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761734534.027664,
+    "started_at": 1761734534.0517633,
+    "completed_at": 1761734621.7619936,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/29133a62-e190-48e0-ba18-403a1b7b47ab.pptx",
+      "file_size": 4074106,
+      "document_id": "29133a62-e190-48e0-ba18-403a1b7b47ab",
+      "chunk_count": 181
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "bbc56ac1-7323-4c77-a2c1-4deeb04b0daa",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761734831.460872,
+    "started_at": 1761734831.801127,
+    "completed_at": 1761734923.7243702,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/db729f04-bfb3-414d-bb21-30dad6007863.pptx",
+      "file_size": 4074106,
+      "document_id": "db729f04-bfb3-414d-bb21-30dad6007863",
+      "chunk_count": 181
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "fb3e4162-e7d1-46dd-91cf-3357a563a01b",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761735096.8955874,
+    "started_at": 1761735096.9191685,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/283d2f50-232c-414f-8a8a-68cd2ccd931c.pptx",
+      "file_size": 4074106,
+      "document_id": "283d2f50-232c-414f-8a8a-68cd2ccd931c"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "72ce8a6d-b6a5-4f43-8c07-784fcfada62d",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761735360.3220341,
+    "started_at": 1761735360.345846,
+    "completed_at": 1761735422.838133,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海香港人才配租房申请攻略.pptx",
+      "file_path": "uploads/global/0b103ff5-1133-44a7-aec6-9d90eeb06700.pptx",
+      "file_size": 4074106,
+      "document_id": "0b103ff5-1133-44a7-aec6-9d90eeb06700",
+      "chunk_count": 181
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "196ffca1-e8ef-4e64-8c19-fd049d6e5f02",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761735506.7903802,
+    "started_at": 1761735506.8200846,
+    "completed_at": 1761735511.4247782,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/fa2d9a60-ff5b-40e9-9a8d-10ba09b27367.xlsx",
+      "file_size": 14560,
+      "document_id": "fa2d9a60-ff5b-40e9-9a8d-10ba09b27367",
+      "chunk_count": 185
+    },
+    "workspace_id": "global"
   }
 ]

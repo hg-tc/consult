@@ -103,7 +103,8 @@ async def upload_global_document(
             raise HTTPException(status_code=400, detail="文件名不能为空")
         
         file_ext = os.path.splitext(file.filename)[1].lower()
-        allowed_extensions = ['.pdf', '.docx', '.doc', '.txt', '.md', '.zip', '.rar']
+        # 与前端 accept 对齐，支持 Office 与归档
+        allowed_extensions = ['.pdf', '.docx', '.doc', '.txt', '.md', '.xlsx', '.xls', '.pptx', '.ppt', '.zip', '.rar']
         
         if file_ext not in allowed_extensions:
             raise HTTPException(status_code=400, detail=f"不支持的文件类型: {file_ext}")
@@ -167,12 +168,11 @@ async def upload_global_document(
                 progress=100,
                 message="归档文件上传完成"
             )
-            logger.info(f"还没开始process_zip_async函数")
+            
             # 使用app_simple.py中的process_zip_async函数
             from app_simple import process_zip_async
             import asyncio
             asyncio.create_task(process_zip_async(task_id, str(file_path), "global"))
-            logger.info(f"已经完成了process_zip_async函数")
             return {
                 "id": file_id,
                 "task_id": task_id,
@@ -293,9 +293,13 @@ async def process_global_document_with_progress(
         )
         
         # 使用 LlamaIndex 导入（增加超时、心跳与细粒度日志）
-        from app.services.llamaindex_retriever import LlamaIndexRetriever
+        logger.info(f"准备开始LlamaIndexRetriever")
+        from app.services.llamaindex_retriever import get_retriever
+        logger.info(f"LlamaIndexRetriever导入完成")
         import asyncio as _asyncio
-        retriever = LlamaIndexRetriever("global")
+        logger.info(f"还没开始LlamaIndexRetriever")
+        retriever = get_retriever("global")  # 使用缓存单例，避免重复加载模型和索引
+        logger.info(f"LlamaIndexRetriever完成")
         logger.info(f"🔧 LlamaIndex add_document 开始: path={file_path}, size={document_data['file_size']}, mime={document_data['mime_type']}")
         add_task = _asyncio.create_task(
             retriever.add_document(
@@ -438,10 +442,10 @@ async def process_global_document_step_by_step(file_path: str, document_data: Di
         
         # 第二步：使用 LlamaIndex 处理文档
         try:
-            from app.services.llamaindex_retriever import LlamaIndexRetriever
+            from app.services.llamaindex_retriever import get_retriever
             logger.info(f"📄 开始解析文档: {document_data['original_filename']}")
 
-            retriever = LlamaIndexRetriever("global")
+            retriever = get_retriever("global")  # 使用缓存单例，避免重复加载模型和索引
             import asyncio as _asyncio
             logger.info(f"🔧[step] LlamaIndex add_document 开始: {file_path}")
             add_task = _asyncio.create_task(
@@ -1076,89 +1080,59 @@ async def delete_global_document(doc_id: str):
     try:
         logger.info(f"收到删除全局文档请求: {doc_id}")
         
-        # 从 LlamaIndex 向量库中查找匹配的文档
+        # 1) 使用 LlamaIndex API 进行删除并持久化重建
+        from app.services.llamaindex_retriever import get_retriever
+        retriever = get_retriever("global")  # 使用缓存单例，避免重复加载模型和索引
+        
+        # 优先按 document_id 删除；若没有命中，再按 original_filename 删除
+        res = retriever.delete_by_document_id(doc_id)
+        deleted = res.get("deleted", 0)
+        
+        # 2) 找出 original_filename 以同步业务 JSON 与物理文件删除
         original_filename = None
-        all_node_ids = []
         file_path = None
+        try:
+            ds = getattr(retriever.index.storage_context, 'docstore', None)
+            nodes_map = getattr(ds, 'docs', None) or getattr(ds, '_docstore', None) or getattr(ds, '_dict', None) or {}
+            # 若按 doc_id 未命中，需要从旧的存储读取元数据（回退逻辑：直接扫描存储文件较重，这里保持轻量行为）
+        except Exception:
+            nodes_map = {}
         
-        llamaindex_storage_dir = Path("llamaindex_storage/global")
-        docstore_file = llamaindex_storage_dir / "docstore.json"
+        # 当按 doc_id 未删任何节点时，尝试把 doc_id 当作 node_id 反查其文件名，再按文件名整体删除
+        if deleted == 0:
+            # 读取存储文件以解析 original_filename 与 file_path
+            llamaindex_storage_dir = Path("llamaindex_storage/global")
+            docstore_file = llamaindex_storage_dir / "docstore.json"
+            if docstore_file.exists():
+                import json
+                with open(docstore_file, 'r', encoding='utf-8') as f:
+                    docstore_data = json.load(f)
+                nodes = docstore_data.get('docstore/data', {})
+                for node_id, node_data in nodes.items():
+                    if node_id == doc_id:
+                        data = node_data.get('__data__', {})
+                        metadata = data.get('metadata', {})
+                        original_filename = metadata.get('original_filename') or metadata.get('file_name', '')
+                        file_path = metadata.get('file_path', '')
+                        break
+                if original_filename:
+                    res2 = retriever.delete_by_original_filename(original_filename)
+                    deleted = max(deleted, res2.get("deleted", 0))
         
-        if docstore_file.exists():
-            import json
-            with open(docstore_file, 'r', encoding='utf-8') as f:
-                docstore_data = json.load(f)
-            
-            nodes = docstore_data.get('docstore/data', {})
-            
-            # 查找匹配的文档
-            for node_id, node_data in nodes.items():
-                data = node_data.get('__data__', {})
-                metadata = data.get('metadata', {})
-                
-                # 检查是否为匹配的节点
-                if node_id == doc_id or metadata.get('document_id') == doc_id:
-                    original_filename = metadata.get('original_filename') or metadata.get('file_name', '未知文档')
-                    file_path = metadata.get('file_path', '')
-                    
-                    # 找到所有属于这个文档的节点
-                    for nid, ndata in nodes.items():
-                        nd = ndata.get('__data__', {})
-                        nmeta = nd.get('metadata', {})
-                        nfilename = nmeta.get('original_filename') or nmeta.get('file_name', '')
-                        
-                        if nfilename == original_filename:
-                            all_node_ids.append(nid)
-                    break
-        
-        logger.info(f"找到文件: {original_filename}, nodes: {len(all_node_ids)}")
-        
-        if not original_filename:
-            logger.warning(f"文档 {doc_id} 在向量数据库中未找到")
+        if deleted == 0:
+            logger.warning(f"文档 {doc_id} 未在索引中命中")
             raise HTTPException(status_code=404, detail="文档未找到")
         
-        # 从 LlamaIndex 向量存储中删除所有相关节点
-        deleted_count = 0
-        try:
-            # 加载 LlamaIndex 索引
-            from app.services.llamaindex_retriever import LlamaIndexRetriever
-            retriever = LlamaIndexRetriever("global")
-            
-            # 获取向量存储
-            vector_store = retriever.index._vector_store if hasattr(retriever.index, '_vector_store') else None
-            
-            # 删除所有相关节点
-            for node_id in all_node_ids:
-                # 从 docstore 删除
-                if hasattr(retriever.index, '_docstore') and retriever.index._docstore:
-                    retriever.index._docstore.delete_document(node_id, raise_error=False)
-                    deleted_count += 1
-                    logger.debug(f"删除节点: {node_id}")
-                
-                # 从向量存储删除
-                if vector_store and hasattr(vector_store, '_data'):
-                    if node_id in vector_store._data.embedding_dict:
-                        del vector_store._data.embedding_dict[node_id]
-                        logger.debug(f"从向量存储删除节点: {node_id}")
-                    if node_id in vector_store._data.text_id_to_ref_doc_id:
-                        del vector_store._data.text_id_to_ref_doc_id[node_id]
-                    if node_id in vector_store._data.metadata_dict:
-                        del vector_store._data.metadata_dict[node_id]
-                
-                # 从 index_store 删除
-                if hasattr(retriever.index, '_index_struct') and hasattr(retriever.index._index_struct, 'nodes_dict'):
-                    if node_id in retriever.index._index_struct.nodes_dict:
-                        del retriever.index._index_struct.nodes_dict[node_id]
-            
-            # 持久化更改
-            retriever.index.storage_context.persist(persist_dir=str(retriever.storage_dir))
-            logger.info(f"成功删除 {deleted_count} 个节点并持久化")
-        except Exception as e:
-            logger.error(f"删除节点失败: {e}")
-            import traceback
-            logger.error(traceback.format_exc())
+        # 3) 删除物理文件（按文件名匹配）与业务 JSON 记录
+        if not original_filename:
+            # 仍未解析出文件名时，尽量从全局 JSON 中探索
+            documents = load_global_documents()
+            for doc in documents:
+                if doc.get('id') == doc_id:
+                    original_filename = doc.get('original_filename')
+                    file_path = doc.get('file_path')
+                    break
         
-        # 删除物理文件
         if file_path and os.path.exists(file_path):
             try:
                 os.remove(file_path)
@@ -1166,45 +1140,98 @@ async def delete_global_document(doc_id: str):
             except Exception as e:
                 logger.warning(f"删除物理文件失败: {str(e)}")
         
-        # 从 file_index_manager 中删除（如果存在）
+        # 从文件索引移除
         try:
-            # 查找文档的原始 ID
             documents = load_global_documents()
             for doc in documents:
-                if doc.get('original_filename') == original_filename:
+                if original_filename and doc.get('original_filename') == original_filename:
                     file_index_manager.remove_file(doc.get('id'))
                     break
         except Exception as e:
             logger.warning(f"从索引删除失败: {str(e)}")
         
-        # 从 JSON 文件中删除记录
+        # 从 JSON 中删除记录
         documents = load_global_documents()
-        documents_before = len(documents)
-        
-        # 删除所有同名文件记录
-        documents = [doc for doc in documents if doc.get('original_filename') != original_filename]
-        
-        documents_after = len(documents)
-        removed_from_json = documents_before - documents_after
-        
-        logger.info(f"从JSON中删除了 {removed_from_json} 条记录")
-        
-        # 保存更新后的文档列表
+        before = len(documents)
+        if original_filename:
+            documents = [d for d in documents if d.get('original_filename') != original_filename]
+        else:
+            documents = [d for d in documents if d.get('id') != doc_id]
         save_global_documents(documents)
-        
-        logger.info(f"文档删除完成: {original_filename}")
+        after = len(documents)
+        logger.info(f"从JSON中删除了 {before - after} 条记录")
         
         return {
             "status": "deleted",
             "id": doc_id,
             "filename": original_filename,
-            "message": f"文档 {original_filename} 已成功删除"
+            "deleted_nodes": deleted
         }
         
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"删除全局文档失败: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"删除失败: {str(e)}")
+
+
+@router.delete("/documents/by-filename")
+async def delete_global_document_by_filename(filename: str):
+    """按原始文件名删除全局文档并持久化索引。"""
+    try:
+        if not filename:
+            raise HTTPException(status_code=400, detail="缺少文件名")
+
+        logger.info(f"收到按文件名删除全局文档请求: {filename}")
+
+        # 1) 使用 LlamaIndex 删除并持久化
+        from app.services.llamaindex_retriever import get_retriever
+        retriever = get_retriever("global")  # 使用缓存单例，避免重复加载模型和索引
+        res = retriever.delete_by_original_filename(filename)
+        deleted = res.get("deleted", 0)
+
+        if deleted == 0:
+            logger.warning(f"按文件名未命中: {filename}")
+            raise HTTPException(status_code=404, detail="文档未在索引中找到")
+
+        # 2) 删除物理文件与 file_index_manager
+        documents = load_global_documents()
+        removed_files = []
+        try:
+            for doc in documents:
+                if doc.get('original_filename') == filename:
+                    fid = doc.get('id')
+                    fpath = doc.get('file_path')
+                    if fpath and os.path.exists(fpath):
+                        try:
+                            os.remove(fpath)
+                            removed_files.append(fpath)
+                        except Exception as e:
+                            logger.warning(f"删除物理文件失败: {fpath}, {e}")
+                    try:
+                        file_index_manager.remove_file(fid)
+                    except Exception as e:
+                        logger.warning(f"从索引删除失败: {e}")
+        except Exception as e:
+            logger.warning(f"删除相关物理文件或索引失败: {e}")
+
+        # 3) 过滤并保存 JSON 记录
+        before = len(documents)
+        documents = [d for d in documents if d.get('original_filename') != filename]
+        save_global_documents(documents)
+        after = len(documents)
+        logger.info(f"从JSON中删除了 {before - after} 条记录，文件: {filename}")
+
+        return {
+            "status": "deleted",
+            "filename": filename,
+            "deleted_nodes": deleted,
+            "removed_files": removed_files
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"按文件名删除失败: {e}")
         raise HTTPException(status_code=500, detail=f"删除失败: {str(e)}")
 
 

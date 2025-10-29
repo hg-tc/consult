@@ -66,6 +66,9 @@ docx2txt>=0.8
 opencv-python>=4.8.0
 pytesseract>=0.3.10
 Pillow>=10.0.0
+# PaddleOCR (GPU 版依赖与离线模型配套使用；CUDA 11.8 对应后缀 post118)
+paddlepaddle-gpu==2.5.0.post118
+paddleocr==2.7.0.3
 # pi-heif>=1.1.1  # 可选，HEIF 图片支持
 # pillow-heif>=0.13.0
 

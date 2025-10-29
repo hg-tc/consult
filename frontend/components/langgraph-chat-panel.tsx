@@ -8,7 +8,7 @@ import { Card } from './ui/card'
 import { Button } from './ui/button'
 import { Textarea } from './ui/textarea'
 import { ScrollArea } from './ui/scroll-area'
-import { Send, Loader2, User, Bot, RefreshCw } from 'lucide-react'
+import { Send, Loader2, User, Bot, RefreshCw, FileText, ChevronDown, ChevronUp } from 'lucide-react'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -172,12 +172,10 @@ export function LangGraphChatPanel() {
               {/* 引用来源 */}
               {result?.sources && result.sources.length > 0 && (
                 <div className="mt-4">
-                  <h4 className="text-sm font-semibold mb-2">引用来源</h4>
-                  <div className="space-y-1">
+                  <h4 className="text-sm font-semibold mb-2">引用来源 ({result.sources.length})</h4>
+                  <div className="space-y-2 max-h-[400px] overflow-y-auto">
                     {result.sources.map((source, idx) => (
-                      <div key={idx} className="text-xs bg-gray-100 px-2 py-1 rounded">
-                        {source}
-                      </div>
+                      <SourceItem key={idx} source={source} />
                     ))}
                   </div>
                 </div>
@@ -191,6 +189,49 @@ export function LangGraphChatPanel() {
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
           {error}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function SourceItem({ source }: { source: any }) {
+  const [isExpanded, setIsExpanded] = useState<boolean>(false)
+
+  // 兼容新旧格式
+  const filename = typeof source === 'string' ? source : source.filename || `文档${source.index || ''}`
+  const content = source.content || ''
+  const fullContent = source.full_content || content
+  const score = source.score || 0
+  const isObject = typeof source === 'object'
+
+  return (
+    <div className="text-xs bg-gray-100 rounded border border-gray-200">
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full px-2 py-2 flex items-center justify-between hover:bg-gray-200 transition-colors"
+      >
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <FileText className="w-3 h-3 shrink-0 text-black" />
+          <span className="font-medium text-black truncate">{filename}</span>
+          {isObject && score > 0 && (
+            <span className="text-black shrink-0">({score})</span>
+          )}
+        </div>
+        {isObject && fullContent && (
+          isExpanded ? (
+            <ChevronUp className="w-3 h-3 shrink-0" />
+          ) : (
+            <ChevronDown className="w-3 h-3 shrink-0" />
+          )
+        )}
+      </button>
+      
+      {isExpanded && isObject && fullContent && (
+        <div className="px-2 pb-2 pt-1 border-t border-gray-300">
+          <div className="text-black whitespace-pre-wrap bg-white p-2 rounded text-xs">
+            {fullContent}
+          </div>
         </div>
       )}
     </div>
