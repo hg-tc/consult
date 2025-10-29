@@ -25,12 +25,14 @@ except ImportError:
 class ZipProcessor:
     """归档文件处理器 (支持ZIP和RAR)"""
     
-    # 支持的文件类型
+    # 支持的文件类型（包括图片文件）
     SUPPORTED_EXTENSIONS = [
         '.pdf', '.docx', '.doc', 
         '.txt', '.md', 
         '.xlsx', '.xls', '.pptx', '.ppt',
-        '.csv', '.json', '.sql'
+        '.csv', '.json', '.sql',
+        # 图片文件类型
+        '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.tif', '.webp'
     ]
     
     # 支持的归档格式
@@ -43,13 +45,14 @@ class ZipProcessor:
     ]
     
     @staticmethod
-    async def extract_archive(archive_path: str, extract_to: str) -> List[Dict]:
+    async def extract_archive(archive_path: str, extract_to: str, max_depth: int = 5) -> List[Dict]:
         """
-        解压归档文件（ZIP或RAR）并返回文件列表
+        解压归档文件（ZIP或RAR）并返回文件列表（支持递归解压嵌套压缩文件）
         
         Args:
             archive_path: 归档文件路径
             extract_to: 解压目标目录
+            max_depth: 最大递归深度（防止无限递归）
             
         Returns:
             文件信息列表
@@ -57,20 +60,23 @@ class ZipProcessor:
         file_ext = Path(archive_path).suffix.lower()
         
         if file_ext == '.zip':
-            return await ZipProcessor.extract_zip(archive_path, extract_to)
+            return await ZipProcessor.extract_zip(archive_path, extract_to, max_depth=max_depth)
         elif file_ext == '.rar':
-            return await ZipProcessor.extract_rar(archive_path, extract_to)
+            return await ZipProcessor.extract_rar(archive_path, extract_to, max_depth=max_depth)
         else:
             raise ValueError(f"不支持的归档格式: {file_ext}")
     
     @staticmethod
-    async def extract_zip(zip_path: str, extract_to: str) -> List[Dict]:
+    async def extract_zip(zip_path: str, extract_to: str, max_depth: int = 5, current_depth: int = 0, parent_path: str = "") -> List[Dict]:
         """
-        解压ZIP文件并返回文件列表
+        解压ZIP文件并返回文件列表（支持递归解压嵌套压缩文件）
         
         Args:
             zip_path: ZIP文件路径
             extract_to: 解压目标目录
+            max_depth: 最大递归深度
+            current_depth: 当前递归深度
+            parent_path: 父路径（用于构建相对路径）
             
         Returns:
             文件信息列表，每个元素包含:
@@ -83,44 +89,115 @@ class ZipProcessor:
         extract_dir = Path(extract_to)
         extract_dir.mkdir(parents=True, exist_ok=True)
         
+        # 防止无限递归
+        if current_depth >= max_depth:
+            logger.warning(f"[ZIP] 达到最大递归深度 {max_depth}，跳过嵌套压缩文件: {zip_path}")
+            return extracted_files
+        
         try:
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                 # 获取所有文件列表
                 file_list = zip_ref.namelist()
                 
-                logger.info(f"[ZIP] 开始解压ZIP文件: {zip_path}, 包含 {len(file_list)} 个文件")
+                logger.info(f"[ZIP] 开始解压ZIP文件 (深度 {current_depth}): {zip_path}, 包含 {len(file_list)} 个文件")
+                
+                # 先解压所有文件到临时目录
+                nested_archives = []
                 
                 for file_info in zip_ref.infolist():
                     # 检查是否应该忽略
                     if ZipProcessor._should_ignore(file_info.filename):
                         continue
                     
-                    # 检查文件扩展名
-                    file_ext = Path(file_info.filename).suffix.lower()
-                    if file_ext in ZipProcessor.SUPPORTED_EXTENSIONS:
-                        try:
-                            # 解压文件
-                            zip_ref.extract(file_info, extract_dir)
-                            
-                            file_path = extract_dir / file_info.filename
-                            
-                            # 验证文件是否真的存在且为文件（不是目录）
+                    try:
+                        # 解压文件到目标目录
+                        zip_ref.extract(file_info, extract_dir)
+                        file_path = extract_dir / file_info.filename
+                        
+                        # 跳过目录
+                        if file_path.is_dir():
+                            continue
+                        
+                        # 检查文件扩展名
+                        file_ext = Path(file_info.filename).suffix.lower()
+                        
+                        # 检查是否是嵌套的压缩文件
+                        if file_ext in ZipProcessor.ARCHIVE_EXTENSIONS:
+                            # 记录嵌套压缩文件，稍后递归处理
+                            nested_archives.append({
+                                'archive_path': str(file_path),
+                                'relative_path': file_info.filename,
+                                'original_filename': Path(file_info.filename).name
+                            })
+                            logger.info(f"[ZIP] 发现嵌套压缩文件: {file_info.filename}")
+                            continue
+                        
+                        # 检查是否是支持的文件类型（包括图片）
+                        if file_ext in ZipProcessor.SUPPORTED_EXTENSIONS:
                             if file_path.exists() and file_path.is_file():
+                                # 构建相对路径
+                                relative_path = f"{parent_path}/{file_info.filename}".lstrip('/') if parent_path else file_info.filename
+                                
                                 extracted_files.append({
                                     'file_path': str(file_path),
-                                    'relative_path': file_info.filename,
+                                    'relative_path': relative_path,
                                     'file_size': file_info.file_size,
                                     'file_type': file_ext,
                                     'original_filename': Path(file_info.filename).name
                                 })
                                 logger.info(f"[ZIP] 解压文件: {file_info.filename} ({file_info.file_size} bytes)")
-                        except Exception as e:
-                            logger.warning(f"[ZIP] 解压文件失败: {file_info.filename}, 错误: {e}")
-                            continue
-                    else:
-                        logger.debug(f"[ZIP] 跳过不支持的文件类型: {file_info.filename} (类型: {file_ext})")
+                        else:
+                            logger.debug(f"[ZIP] 跳过不支持的文件类型: {file_info.filename} (类型: {file_ext})")
+                            
+                    except Exception as e:
+                        logger.warning(f"[ZIP] 解压文件失败: {file_info.filename}, 错误: {e}")
+                        continue
                 
-                logger.info(f"[ZIP] ZIP文件解压完成，成功提取 {len(extracted_files)} 个文件")
+                # 递归处理嵌套的压缩文件
+                for nested_archive in nested_archives:
+                    try:
+                        # 创建嵌套解压目录
+                        nested_extract_dir = extract_dir / Path(nested_archive['relative_path']).stem
+                        nested_extract_dir.mkdir(parents=True, exist_ok=True)
+                        
+                        # 构建嵌套路径前缀
+                        nested_parent_path = f"{parent_path}/{Path(nested_archive['relative_path']).stem}".lstrip('/') if parent_path else Path(nested_archive['relative_path']).stem
+                        
+                        # 递归解压嵌套压缩文件
+                        if nested_archive['archive_path'].endswith('.zip'):
+                            nested_files = await ZipProcessor.extract_zip(
+                                nested_archive['archive_path'],
+                                str(nested_extract_dir),
+                                max_depth=max_depth,
+                                current_depth=current_depth + 1,
+                                parent_path=nested_parent_path
+                            )
+                        elif nested_archive['archive_path'].endswith('.rar'):
+                            nested_files = await ZipProcessor.extract_rar(
+                                nested_archive['archive_path'],
+                                str(nested_extract_dir),
+                                max_depth=max_depth,
+                                current_depth=current_depth + 1,
+                                parent_path=nested_parent_path
+                            )
+                        else:
+                            nested_files = []
+                        
+                        # 将嵌套文件添加到结果列表
+                        extracted_files.extend(nested_files)
+                        
+                        # 删除已处理的嵌套压缩文件（已解压，不再需要）
+                        try:
+                            Path(nested_archive['archive_path']).unlink()
+                            logger.debug(f"[ZIP] 已删除嵌套压缩文件: {nested_archive['archive_path']}")
+                        except Exception as e:
+                            logger.warning(f"[ZIP] 删除嵌套压缩文件失败: {nested_archive['archive_path']}, 错误: {e}")
+                            
+                    except Exception as e:
+                        logger.error(f"[ZIP] 递归解压嵌套压缩文件失败: {nested_archive['archive_path']}, 错误: {e}")
+                        continue
+                
+                logger.info(f"[ZIP] ZIP文件解压完成 (深度 {current_depth})，成功提取 {len(extracted_files)} 个文件")
                 
         except zipfile.BadZipFile:
             logger.error(f"[ZIP] 无效的ZIP文件: {zip_path}")
@@ -132,13 +209,16 @@ class ZipProcessor:
         return extracted_files
     
     @staticmethod
-    async def extract_rar(rar_path: str, extract_to: str) -> List[Dict]:
+    async def extract_rar(rar_path: str, extract_to: str, max_depth: int = 5, current_depth: int = 0, parent_path: str = "") -> List[Dict]:
         """
-        解压RAR文件并返回文件列表
+        解压RAR文件并返回文件列表（支持递归解压嵌套压缩文件）
         
         Args:
             rar_path: RAR文件路径
             extract_to: 解压目标目录
+            max_depth: 最大递归深度
+            current_depth: 当前递归深度
+            parent_path: 父路径（用于构建相对路径）
             
         Returns:
             文件信息列表
@@ -146,6 +226,11 @@ class ZipProcessor:
         extracted_files = []
         extract_dir = Path(extract_to)
         extract_dir.mkdir(parents=True, exist_ok=True)
+        
+        # 防止无限递归
+        if current_depth >= max_depth:
+            logger.warning(f"[RAR] 达到最大递归深度 {max_depth}，跳过嵌套压缩文件: {rar_path}")
+            return extracted_files
         
         if not RARFILE_AVAILABLE:
             raise ValueError("rarfile库未安装，无法处理RAR文件。请运行: pip install rarfile")
@@ -155,7 +240,10 @@ class ZipProcessor:
                 # 获取所有文件列表
                 file_list = rar_ref.namelist()
                 
-                logger.info(f"[RAR] 开始解压RAR文件: {rar_path}, 包含 {len(file_list)} 个文件")
+                logger.info(f"[RAR] 开始解压RAR文件 (深度 {current_depth}): {rar_path}, 包含 {len(file_list)} 个文件")
+                
+                # 先解压所有文件到临时目录
+                nested_archives = []
                 
                 for file_info in rar_ref.infolist():
                     # 跳过目录
@@ -166,32 +254,94 @@ class ZipProcessor:
                     if ZipProcessor._should_ignore(file_info.filename):
                         continue
                     
-                    # 检查文件扩展名
-                    file_ext = Path(file_info.filename).suffix.lower()
-                    if file_ext in ZipProcessor.SUPPORTED_EXTENSIONS:
-                        try:
-                            # 解压文件
-                            rar_ref.extract(file_info, extract_dir)
-                            
-                            file_path = extract_dir / file_info.filename
-                            
-                            # 验证文件是否真的存在且为文件
-                            if file_path.exists() and file_path.is_file():
-                                extracted_files.append({
-                                    'file_path': str(file_path),
-                                    'relative_path': file_info.filename,
-                                    'file_size': file_info.file_size,
-                                    'file_type': file_ext,
-                                    'original_filename': Path(file_info.filename).name
-                                })
-                                logger.info(f"[RAR] 解压文件: {file_info.filename} ({file_info.file_size} bytes)")
-                        except Exception as e:
-                            logger.warning(f"[RAR] 解压文件失败: {file_info.filename}, 错误: {e}")
+                    try:
+                        # 解压文件到目标目录
+                        rar_ref.extract(file_info, extract_dir)
+                        file_path = extract_dir / file_info.filename
+                        
+                        # 验证文件是否真的存在且为文件
+                        if not file_path.exists() or not file_path.is_file():
                             continue
-                    else:
-                        logger.debug(f"[RAR] 跳过不支持的文件类型: {file_info.filename} (类型: {file_ext})")
+                        
+                        # 检查文件扩展名
+                        file_ext = Path(file_info.filename).suffix.lower()
+                        
+                        # 检查是否是嵌套的压缩文件
+                        if file_ext in ZipProcessor.ARCHIVE_EXTENSIONS:
+                            # 记录嵌套压缩文件，稍后递归处理
+                            nested_archives.append({
+                                'archive_path': str(file_path),
+                                'relative_path': file_info.filename,
+                                'original_filename': Path(file_info.filename).name
+                            })
+                            logger.info(f"[RAR] 发现嵌套压缩文件: {file_info.filename}")
+                            continue
+                        
+                        # 检查是否是支持的文件类型（包括图片）
+                        if file_ext in ZipProcessor.SUPPORTED_EXTENSIONS:
+                            # 构建相对路径
+                            relative_path = f"{parent_path}/{file_info.filename}".lstrip('/') if parent_path else file_info.filename
+                            
+                            extracted_files.append({
+                                'file_path': str(file_path),
+                                'relative_path': relative_path,
+                                'file_size': file_info.file_size,
+                                'file_type': file_ext,
+                                'original_filename': Path(file_info.filename).name
+                            })
+                            logger.info(f"[RAR] 解压文件: {file_info.filename} ({file_info.file_size} bytes)")
+                        else:
+                            logger.debug(f"[RAR] 跳过不支持的文件类型: {file_info.filename} (类型: {file_ext})")
+                            
+                    except Exception as e:
+                        logger.warning(f"[RAR] 解压文件失败: {file_info.filename}, 错误: {e}")
+                        continue
                 
-                logger.info(f"[RAR] RAR文件解压完成，成功提取 {len(extracted_files)} 个文件")
+                # 递归处理嵌套的压缩文件
+                for nested_archive in nested_archives:
+                    try:
+                        # 创建嵌套解压目录
+                        nested_extract_dir = extract_dir / Path(nested_archive['relative_path']).stem
+                        nested_extract_dir.mkdir(parents=True, exist_ok=True)
+                        
+                        # 构建嵌套路径前缀
+                        nested_parent_path = f"{parent_path}/{Path(nested_archive['relative_path']).stem}".lstrip('/') if parent_path else Path(nested_archive['relative_path']).stem
+                        
+                        # 递归解压嵌套压缩文件
+                        if nested_archive['archive_path'].endswith('.zip'):
+                            nested_files = await ZipProcessor.extract_zip(
+                                nested_archive['archive_path'],
+                                str(nested_extract_dir),
+                                max_depth=max_depth,
+                                current_depth=current_depth + 1,
+                                parent_path=nested_parent_path
+                            )
+                        elif nested_archive['archive_path'].endswith('.rar'):
+                            nested_files = await ZipProcessor.extract_rar(
+                                nested_archive['archive_path'],
+                                str(nested_extract_dir),
+                                max_depth=max_depth,
+                                current_depth=current_depth + 1,
+                                parent_path=nested_parent_path
+                            )
+                        else:
+                            nested_files = []
+                        
+                        # 将嵌套文件添加到结果列表
+                        extracted_files.extend(nested_files)
+                        
+                        # 删除已处理的嵌套压缩文件（已解压，不再需要）
+                        try:
+                            Path(nested_archive['archive_path']).unlink()
+                            logger.debug(f"[RAR] 已删除嵌套压缩文件: {nested_archive['archive_path']}")
+                        except Exception as e:
+                            logger.warning(f"[RAR] 删除嵌套压缩文件失败: {nested_archive['archive_path']}, 错误: {e}")
+                            
+                    except Exception as e:
+                        logger.error(f"[RAR] 递归解压嵌套压缩文件失败: {nested_archive['archive_path']}, 错误: {e}")
+                        continue
+                
+                logger.info(f"[RAR] RAR文件解压完成 (深度 {current_depth})，成功提取 {len(extracted_files)} 个文件")
                 
         except rarfile.RarCannotExec:
             logger.error(f"[RAR] 无法执行RAR解压，可能缺少unrar工具")

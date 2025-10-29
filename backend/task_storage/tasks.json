@@ -4055,5 +4055,372 @@
       ]
     },
     "workspace_id": "global"
+  },
+  {
+    "id": "6fdfbef9-694a-4b28-b625-5aa0f1f91e81",
+    "task_type": "global_archive_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761752732.7828388,
+    "started_at": null,
+    "completed_at": 1761753375.5978403,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "企业服务（政策申报）-智造未来.rar",
+      "file_path": "uploads/global/fa77a3c6-35c2-49b2-b919-ff5d3b88fdfe.rar",
+      "file_size": 18765849,
+      "document_id": "fa77a3c6-35c2-49b2-b919-ff5d3b88fdfe",
+      "file_type": ".rar",
+      "success": true,
+      "total_files": 26,
+      "successful": 26,
+      "failed": 0,
+      "results": [
+        {
+          "filename": "【定稿】香港人才房申请.jpg",
+          "success": true,
+          "file_type": ".jpg",
+          "file_id": "ec74dc0c-c57d-4097-b5ff-01143ef6c690",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/人才配租房申报/【定稿】香港人才房申请.jpg",
+            "relative_path": "企业服务（政策申报）-智造未来/人才配租房申报/【定稿】香港人才房申请.jpg",
+            "file_size": 4753785,
+            "file_type": ".jpg",
+            "original_filename": "【定稿】香港人才房申请.jpg"
+          }
+        },
+        {
+          "filename": "【定稿版】前海香港人才房申请.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "5430105d-e3b0-40d1-bb0d-ad38cc012c15",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/人才配租房申报/【定稿版】前海香港人才房申请.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/人才配租房申报/【定稿版】前海香港人才房申请.pdf",
+            "file_size": 1231046,
+            "file_type": ".pdf",
+            "original_filename": "【定稿版】前海香港人才房申请.pdf"
+          }
+        },
+        {
+          "filename": "前海香港人才配租房申请攻略.pptx",
+          "success": true,
+          "file_type": ".pptx",
+          "file_id": "e02b84d9-fb08-43b1-bc88-c6c418da0ac6",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/人才配租房申报/前海香港人才配租房申请攻略.pptx",
+            "relative_path": "企业服务（政策申报）-智造未来/人才配租房申报/前海香港人才配租房申请攻略.pptx",
+            "file_size": 4074106,
+            "file_type": ".pptx",
+            "original_filename": "前海香港人才配租房申请攻略.pptx"
+          }
+        },
+        {
+          "filename": "bbf9061191b032fd0859dd01a6121d1b.jpg",
+          "success": true,
+          "file_type": ".jpg",
+          "file_id": "17fa7ea3-2deb-4598-8190-c1ae119c23c0",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/人社局创业补贴/bbf9061191b032fd0859dd01a6121d1b.jpg",
+            "relative_path": "企业服务（政策申报）-智造未来/人社局创业补贴/bbf9061191b032fd0859dd01a6121d1b.jpg",
+            "file_size": 278867,
+            "file_type": ".jpg",
+            "original_filename": "bbf9061191b032fd0859dd01a6121d1b.jpg"
+          }
+        },
+        {
+          "filename": "ecfa7025b8187427bdf8a4561f4cca83.jpg",
+          "success": true,
+          "file_type": ".jpg",
+          "file_id": "be4483f5-a509-4a56-a7ab-67e12326b28f",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/人社局创业补贴/ecfa7025b8187427bdf8a4561f4cca83.jpg",
+            "relative_path": "企业服务（政策申报）-智造未来/人社局创业补贴/ecfa7025b8187427bdf8a4561f4cca83.jpg",
+            "file_size": 224654,
+            "file_type": ".jpg",
+            "original_filename": "ecfa7025b8187427bdf8a4561f4cca83.jpg"
+          }
+        },
+        {
+          "filename": "人社局-创业补贴.xlsx",
+          "success": true,
+          "file_type": ".xlsx",
+          "file_id": "fb6de3ca-bf5d-4ff9-b220-bbfeb2086a65",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/人社局创业补贴/人社局-创业补贴.xlsx",
+            "relative_path": "企业服务（政策申报）-智造未来/人社局创业补贴/人社局-创业补贴.xlsx",
+            "file_size": 182462,
+            "file_type": ".xlsx",
+            "original_filename": "人社局-创业补贴.xlsx"
+          }
+        },
+        {
+          "filename": "南山区众创空间备案申请.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "c0aca5a8-a9f1-41a1-b59c-094a1bf80abd",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/众创空间认定/南山区众创空间备案申请.docx",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/南山区众创空间备案申请.docx",
+            "file_size": 19882,
+            "file_type": ".docx",
+            "original_filename": "南山区众创空间备案申请.docx"
+          }
+        },
+        {
+          "filename": "智造未来-营业执照（盖章）.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "c64f4210-833b-466c-95f1-3f3c2ee2f6ac",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/智造未来-营业执照（盖章）.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/智造未来-营业执照（盖章）.pdf",
+            "file_size": 1898626,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-营业执照（盖章）.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-1：在孵企业清单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "425e3c8f-3e88-44d5-af2e-66abd9ae846b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-1：在孵企业清单.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-1：在孵企业清单.pdf",
+            "file_size": 258974,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-1：在孵企业清单.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-2：近三年毕业企业清单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "7d199d36-f1a7-4475-adca-10d6bab45476",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-2：近三年毕业企业清单.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-2：近三年毕业企业清单.pdf",
+            "file_size": 82371,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-2：近三年毕业企业清单.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-3：孵化载体聘任创业导师名单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "542ce432-ae8f-425b-9119-5bc15bd741ec",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-3：孵化载体聘任创业导师名单.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-3：孵化载体聘任创业导师名单.pdf",
+            "file_size": 187943,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-3：孵化载体聘任创业导师名单.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-4：在孵企业基本信息情况表.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "784997fb-833e-40fd-8ad4-31ff2cfbccb2",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-4：在孵企业基本信息情况表.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件2-1-4：在孵企业基本信息情况表.pdf",
+            "file_size": 644359,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-4：在孵企业基本信息情况表.pdf"
+          }
+        },
+        {
+          "filename": "附件3：南山区科技企业孵化载体备案申请表.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "bd8a430f-abd4-4ecc-941a-2184e354b0bf",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件3：南山区科技企业孵化载体备案申请表.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/已盖章材料/附件3：南山区科技企业孵化载体备案申请表.pdf",
+            "file_size": 378938,
+            "file_type": ".pdf",
+            "original_filename": "附件3：南山区科技企业孵化载体备案申请表.pdf"
+          }
+        },
+        {
+          "filename": "深圳市众创空间认定申请.doc",
+          "success": true,
+          "file_type": ".doc",
+          "file_id": "e9ea5736-7365-4071-99c8-f41b186605e4",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/众创空间认定/深圳市众创空间认定申请.doc",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/深圳市众创空间认定申请.doc",
+            "file_size": 34304,
+            "file_type": ".doc",
+            "original_filename": "深圳市众创空间认定申请.doc"
+          }
+        },
+        {
+          "filename": "渠道合作协议.doc",
+          "success": true,
+          "file_type": ".doc",
+          "file_id": "d5972f8d-bbad-4437-92d7-f1d7ef35e743",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/众创空间认定/渠道合作协议.doc",
+            "relative_path": "企业服务（政策申报）-智造未来/众创空间认定/渠道合作协议.doc",
+            "file_size": 111569,
+            "file_type": ".doc",
+            "original_filename": "渠道合作协议.doc"
+          }
+        },
+        {
+          "filename": "港澳青年创业发展扶持补贴.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "042347f6-41df-4137-aa26-cf2c325debdd",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/前海十二条之BUD一比一补贴/港澳青年创业发展扶持补贴.docx",
+            "relative_path": "企业服务（政策申报）-智造未来/前海十二条之BUD一比一补贴/港澳青年创业发展扶持补贴.docx",
+            "file_size": 14087,
+            "file_type": ".docx",
+            "original_filename": "港澳青年创业发展扶持补贴.docx"
+          }
+        },
+        {
+          "filename": "数码港培育计划.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "eb7c78dd-89b2-49ae-8c5b-d788ee513235",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/数码港/数码港培育计划.docx",
+            "relative_path": "企业服务（政策申报）-智造未来/数码港/数码港培育计划.docx",
+            "file_size": 14782,
+            "file_type": ".docx",
+            "original_filename": "数码港培育计划.docx"
+          }
+        },
+        {
+          "filename": "HKSTP intro SC 7.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "29c797c5-39a3-47c1-91fb-877304fb6e0f",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/科学园/HKSTP intro SC 7.pdf",
+            "relative_path": "企业服务（政策申报）-智造未来/科学园/HKSTP intro SC 7.pdf",
+            "file_size": 2994424,
+            "file_type": ".pdf",
+            "original_filename": "HKSTP intro SC 7.pdf"
+          }
+        },
+        {
+          "filename": "bud资料清单.xlsx",
+          "success": true,
+          "file_type": ".xlsx",
+          "file_id": "10e777ce-7603-4d16-8f37-03471ea8b5f4",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/香港BUD/bud资料清单.xlsx",
+            "relative_path": "企业服务（政策申报）-智造未来/香港BUD/bud资料清单.xlsx",
+            "file_size": 14560,
+            "file_type": ".xlsx",
+            "original_filename": "bud资料清单.xlsx"
+          }
+        },
+        {
+          "filename": "高企信息采集表.xlsx",
+          "success": true,
+          "file_type": ".xlsx",
+          "file_id": "01a22c41-1995-454c-8098-99db359d822a",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/企业服务（政策申报）-智造未来/高新技术企业申请/高企信息采集表.xlsx",
+            "relative_path": "企业服务（政策申报）-智造未来/高新技术企业申请/高企信息采集表.xlsx",
+            "file_size": 12554,
+            "file_type": ".xlsx",
+            "original_filename": "高企信息采集表.xlsx"
+          }
+        },
+        {
+          "filename": "智造未来-营业执照（盖章）.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "61d6b65c-7f7c-41c4-b457-001b18a298d8",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/众创空间备案资料（盖章）/已盖章材料/智造未来-营业执照（盖章）.pdf",
+            "relative_path": "众创空间备案资料（盖章）/已盖章材料/智造未来-营业执照（盖章）.pdf",
+            "file_size": 1898626,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-营业执照（盖章）.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-1：在孵企业清单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "0201ceb9-f319-44ca-9ec4-c5facd1e5470",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/众创空间备案资料（盖章）/已盖章材料/附件2-1-1：在孵企业清单.pdf",
+            "relative_path": "众创空间备案资料（盖章）/已盖章材料/附件2-1-1：在孵企业清单.pdf",
+            "file_size": 258974,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-1：在孵企业清单.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-2：近三年毕业企业清单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "45531862-62f6-4e8c-bae5-5b1b1f5bfc80",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/众创空间备案资料（盖章）/已盖章材料/附件2-1-2：近三年毕业企业清单.pdf",
+            "relative_path": "众创空间备案资料（盖章）/已盖章材料/附件2-1-2：近三年毕业企业清单.pdf",
+            "file_size": 82371,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-2：近三年毕业企业清单.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-3：孵化载体聘任创业导师名单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "7b2d50d8-8eb3-48cb-ade0-b831bf9a512c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/众创空间备案资料（盖章）/已盖章材料/附件2-1-3：孵化载体聘任创业导师名单.pdf",
+            "relative_path": "众创空间备案资料（盖章）/已盖章材料/附件2-1-3：孵化载体聘任创业导师名单.pdf",
+            "file_size": 187943,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-3：孵化载体聘任创业导师名单.pdf"
+          }
+        },
+        {
+          "filename": "附件2-1-4：在孵企业基本信息情况表.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "2c9d838f-a770-4ab6-97ab-23fc5c86cb64",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/众创空间备案资料（盖章）/已盖章材料/附件2-1-4：在孵企业基本信息情况表.pdf",
+            "relative_path": "众创空间备案资料（盖章）/已盖章材料/附件2-1-4：在孵企业基本信息情况表.pdf",
+            "file_size": 644359,
+            "file_type": ".pdf",
+            "original_filename": "附件2-1-4：在孵企业基本信息情况表.pdf"
+          }
+        },
+        {
+          "filename": "附件3：南山区科技企业孵化载体备案申请表.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "4df9213b-3487-46a2-8b05-c40496d96f28",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_6fdfbef9-694a-4b28-b625-5aa0f1f91e81_xq0b7m1i/众创空间备案资料（盖章）/已盖章材料/附件3：南山区科技企业孵化载体备案申请表.pdf",
+            "relative_path": "众创空间备案资料（盖章）/已盖章材料/附件3：南山区科技企业孵化载体备案申请表.pdf",
+            "file_size": 378938,
+            "file_type": ".pdf",
+            "original_filename": "附件3：南山区科技企业孵化载体备案申请表.pdf"
+          }
+        }
+      ]
+    },
+    "workspace_id": "global"
   }
 ]
