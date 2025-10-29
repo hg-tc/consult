@@ -3,10 +3,8 @@
 import { useState } from "react"
 import { Navigation } from "@/components/navigation"
 import { DatabasePanel } from "@/components/database-panel"
-import { GlobalDatabasePanel } from "@/components/global-database-panel"
 import { WorkspacePanel } from "@/components/workspace-panel"
 import { StatusPanel } from "@/components/enhanced-status-panel"
-import { OutputPanel } from "@/components/output-panel"
 import { DocumentGeneratorPanel } from "@/components/document-generator-panel"
 import { LangGraphChatPanel } from "@/components/langgraph-chat-panel"
 
@@ -17,14 +15,10 @@ export default function Home() {
     switch (activeTab) {
       case "database":
         return <DatabasePanel />
-      case "global":
-        return <GlobalDatabasePanel />
       case "workspace":
         return <WorkspacePanel />
       case "status":
         return <StatusPanel />
-      case "output":
-        return <OutputPanel />
       case "langgraph":
         return <LangGraphChatPanel />
       case "doc-generator":

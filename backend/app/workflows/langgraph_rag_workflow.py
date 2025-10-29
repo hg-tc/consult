@@ -78,7 +78,6 @@ class LangGraphRAGWorkflow:
         
         # 添加节点
         workflow.add_node("intent_analysis", self._intent_analysis_node)
-        workflow.add_node("route_strategy", self._route_strategy_node)
         workflow.add_node("simple_retrieval", self._simple_retrieval_node)
         workflow.add_node("complex_retrieval", self._complex_retrieval_node)
         workflow.add_node("multi_hop_reasoning", self._multi_hop_reasoning_node)
@@ -172,20 +171,16 @@ class LangGraphRAGWorkflow:
             state["complexity"] = "low"
             state["requires_multi_hop"] = False
         
-        state["processing_steps"].append("intent_analysis")
-        logger.info(f"意图: {state['intent']}, 复杂度: {state['complexity']}")
-        
-        return state
-    
-    async def _route_strategy_node(self, state: RAGState) -> RAGState:
-        """节点2: 路由策略（可选，用于更细粒度控制）"""
-        # 根据意图和复杂度决定检索策略
+        # 根据复杂度设置检索策略
         if state["complexity"] == "low":
             state["retrieval_strategy"] = "workspace_only"
         elif state["complexity"] == "medium":
             state["retrieval_strategy"] = "hybrid"
         else:
             state["retrieval_strategy"] = "comprehensive"
+        
+        state["processing_steps"].append("intent_analysis")
+        logger.info(f"意图: {state['intent']}, 复杂度: {state['complexity']}, 策略: {state['retrieval_strategy']}")
         
         return state
     

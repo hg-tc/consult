@@ -1,6 +1,6 @@
 "use client"
 
-import { Database, Globe, FolderKanban, Activity, MessageSquare, FileText, Brain } from "lucide-react"
+import { Database, FolderKanban, Activity, FileText, Brain } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface NavigationProps {
@@ -11,10 +11,8 @@ interface NavigationProps {
 export function Navigation({ activeTab, onTabChange }: NavigationProps) {
   const tabs = [
     { id: "database", label: "数据库管理", icon: Database },
-    { id: "global", label: "全局数据库", icon: Globe },
     { id: "workspace", label: "工作区", icon: FolderKanban },
     { id: "status", label: "处理状态", icon: Activity },
-    { id: "output", label: "输出交互", icon: MessageSquare },
     { id: "langgraph", label: "智能问答", icon: Brain },
     { id: "doc-generator", label: "文档生成", icon: FileText },
   ]

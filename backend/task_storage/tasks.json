@@ -3326,5 +3326,28 @@
       ]
     },
     "workspace_id": "global"
+  },
+  {
+    "id": "11457615-d2c0-421a-a60b-19aebb770635",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761738778.9296112,
+    "started_at": 1761738778.9476829,
+    "completed_at": 1761738786.400256,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "实验指导书_无人机仿真.pdf",
+      "file_path": "uploads/global/31436711-b7ba-4baf-999d-ed1e3a96296b.pdf",
+      "file_size": 761594,
+      "document_id": "31436711-b7ba-4baf-999d-ed1e3a96296b",
+      "chunk_count": 9
+    },
+    "workspace_id": "global"
   }
 ]
