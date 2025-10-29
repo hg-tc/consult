@@ -57,8 +57,8 @@ async def upload_global_document(
         content = await file.read()
         file_size = len(content)
         
-        if file_size > 50 * 1024 * 1024:  # 50MB限制
-            raise HTTPException(status_code=413, detail="文件大小超过限制")
+        if file_size > 500 * 1024 * 1024:  # 500MB限制
+            raise HTTPException(status_code=413, detail="文件大小超过限制（最大500MB）")
         
         # 保存文件
         file_id = str(uuid.uuid4())

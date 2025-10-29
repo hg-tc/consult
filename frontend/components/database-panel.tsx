@@ -26,19 +26,23 @@ export function DatabasePanel() {
     if (input) {
       const handleChange = async (e: Event) => {
         const target = e.target as HTMLInputElement
-        const file = target.files?.[0]
-        if (!file) {
-          console.log("[v0] No file selected")
+        const files = target.files
+        if (!files || files.length === 0) {
+          console.log("[v0] No files selected")
           return
         }
 
-        console.log("[v0] File selected:", file.name, "size:", file.size)
+        console.log("[v0] Files selected:", files.length, "files")
         try {
           setUploadStatus("idle")
           console.log("[v0] Starting upload...")
           
-          // 使用全局文档上传
-          await uploadDocument(file)
+          // 逐个上传文件
+          for (const file of Array.from(files)) {
+            console.log("[v0] Uploading file:", file.name, "size:", file.size)
+            await uploadDocument(file)
+          }
+          
           setUploadStatus("success")
           setTimeout(() => setUploadStatus("idle"), 3000)
         } catch (error) {
@@ -156,7 +160,7 @@ export function DatabasePanel() {
                 ) : (
                   <>
                     <Upload className="w-4 h-4 mr-2" />
-                    选择文件
+                    选择文件（可多选）
                   </>
                 )}
               </Button>
@@ -167,6 +171,7 @@ export function DatabasePanel() {
               type="file"
               className="hidden"
               accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt,.md,.zip,.rar,.jpg,.jpeg,.png,.gif,.bmp,.tiff"
+              multiple
               disabled={isUploading}
             />
           </div>

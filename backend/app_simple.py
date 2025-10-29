@@ -262,8 +262,8 @@ async def upload_database(file: UploadFile = File(...)):
         content = await file.read()
         file_size = len(content)
         
-        if file_size > 50 * 1024 * 1024:  # 50MB限制
-            raise HTTPException(status_code=413, detail="文件大小超过限制")
+        if file_size > 500 * 1024 * 1024:  # 500MB限制
+            raise HTTPException(status_code=413, detail="文件大小超过限制（最大500MB）")
         
         # 保存文件到全局数据库目录
         upload_dir = Path("uploads/global")
@@ -1136,13 +1136,20 @@ async def upload_document_for_rag(
     try:
         from app.services.llamaindex_retriever import LlamaIndexRetriever
         
+        # 读取文件内容并检查大小
+        content = await file.read()
+        file_size = len(content)
+        
+        # 检查文件大小限制（500MB）
+        if file_size > 500 * 1024 * 1024:
+            raise HTTPException(status_code=413, detail="文件大小超过限制（最大500MB）")
+        
         # 保存上传的文件
         upload_dir = Path("uploads")
         upload_dir.mkdir(exist_ok=True)
         
         file_path = upload_dir / f"{uuid.uuid4()}_{file.filename}"
         with open(file_path, "wb") as buffer:
-            content = await file.read()
             buffer.write(content)
         
         # 使用 LlamaIndex 导入并持久化
@@ -2040,13 +2047,20 @@ async def upload_workspace_file_api(
 ):
     """工作区文件上传API - 前端调用"""
     try:
+        # 读取文件内容并检查大小
+        content = await file.read()
+        file_size = len(content)
+        
+        # 检查文件大小限制（500MB）
+        if file_size > 500 * 1024 * 1024:
+            raise HTTPException(status_code=413, detail="文件大小超过限制（最大500MB）")
+        
         # 保存上传的文件
         upload_dir = Path("uploads")
         upload_dir.mkdir(exist_ok=True)
         
         file_path = upload_dir / f"{uuid.uuid4()}_{file.filename}"
         with open(file_path, "wb") as buffer:
-            content = await file.read()
             buffer.write(content)
         
         # 添加到RAG系统
@@ -2382,13 +2396,20 @@ async def upload_workspace_document_api(
         file_extension = os.path.splitext(file.filename)[1]
         safe_filename = f"{file_id}_{file.filename}"
         
+        # 读取文件内容并检查大小
+        content = await file.read()
+        file_size = len(content)
+        
+        # 检查文件大小限制（500MB）
+        if file_size > 500 * 1024 * 1024:
+            raise HTTPException(status_code=413, detail="文件大小超过限制（最大500MB）")
+        
         # 保存文件
         upload_dir = Path("uploads") / workspace_id
         upload_dir.mkdir(parents=True, exist_ok=True)
         file_path = upload_dir / safe_filename
         
         with open(file_path, "wb") as buffer:
-            content = await file.read()
             buffer.write(content)
         
         # 创建任务
@@ -2453,13 +2474,20 @@ async def upload_global_document_api(
         file_extension = os.path.splitext(file.filename)[1]
         safe_filename = f"{file_id}_{file.filename}"
 
+        # 读取文件内容并检查大小
+        content = await file.read()
+        file_size = len(content)
+        
+        # 检查文件大小限制（500MB）
+        if file_size > 500 * 1024 * 1024:
+            raise HTTPException(status_code=413, detail="文件大小超过限制（最大500MB）")
+
         # 保存文件到 uploads/global/
         upload_dir = Path("uploads") / workspace_id
         upload_dir.mkdir(parents=True, exist_ok=True)
         file_path = upload_dir / safe_filename
 
         with open(file_path, "wb") as buffer:
-            content = await file.read()
             buffer.write(content)
 
         # 创建任务

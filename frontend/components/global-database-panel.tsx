@@ -61,16 +61,22 @@ export function GlobalDatabasePanel() {
   }
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
+    const files = event.target.files
+    if (!files || files.length === 0) return
 
     try {
-      // 使用统一的uploadDocument函数
-      const result = await uploadDocument(file)
-      console.log('上传成功:', result)
+      // 逐个上传文件
+      for (const file of Array.from(files)) {
+        const result = await uploadDocument(file)
+        console.log('上传成功:', result)
+      }
       
       // 显示成功消息
-      alert(`文件 ${file.name} 上传成功！正在后台处理中，请到"处理状态"页面查看进度。`)
+      if (files.length === 1) {
+        alert(`文件 ${files[0].name} 上传成功！正在后台处理中，请到"处理状态"页面查看进度。`)
+      } else {
+        alert(`${files.length} 个文件上传成功！正在后台处理中，请到"处理状态"页面查看进度。`)
+      }
     } catch (error) {
       console.error('上传失败:', error)
       alert('上传失败，请重试')
@@ -182,12 +188,13 @@ export function GlobalDatabasePanel() {
                   id="file-upload"
                   className="hidden"
                   accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt,.md,.zip,.rar,.jpg,.jpeg,.png,.gif,.bmp,.tiff"
+                  multiple
                   onChange={handleFileUpload}
                 />
                 <Button asChild>
                   <label htmlFor="file-upload" className="cursor-pointer">
                     <Upload className="w-4 h-4 mr-2" />
-                    上传文档
+                    上传文档（可多选）
                   </label>
                 </Button>
               </div>

@@ -5245,5 +5245,51 @@
       ]
     },
     "workspace_id": "global"
+  },
+  {
+    "id": "428d5631-4ca4-44c7-9020-8f9123170303",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761758672.9096072,
+    "started_at": 1761758672.9395263,
+    "completed_at": 1761758696.01735,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "无人机仿真任务验收规则_2025年春.pdf",
+      "file_path": "uploads/global/edf3a7b5-b828-4b4c-b516-d464038e2e48.pdf",
+      "file_size": 485706,
+      "document_id": "edf3a7b5-b828-4b4c-b516-d464038e2e48",
+      "chunk_count": 4
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "62c3f4fc-e104-4b7e-8adf-b7791c79be3e",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761758673.1563735,
+    "started_at": 1761758673.1856318,
+    "completed_at": 1761758696.0554318,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "实验指导书_无人机仿真.pdf",
+      "file_path": "uploads/global/74b6d65a-2530-40cc-97a5-ed12d110b4bf.pdf",
+      "file_size": 761594,
+      "document_id": "74b6d65a-2530-40cc-97a5-ed12d110b4bf",
+      "chunk_count": 7
+    },
+    "workspace_id": "global"
   }
 ]

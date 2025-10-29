@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8天
 
     # 文件上传配置
-    MAX_UPLOAD_SIZE: int = 100 * 1024 * 1024  # 100MB
+    MAX_UPLOAD_SIZE: int = 500 * 1024 * 1024  # 500MB
     UPLOAD_DIR: str = "uploads"
     ALLOWED_EXTENSIONS: List[str] = [
         ".pdf", ".docx", ".doc", ".xlsx", ".xls", ".pptx", ".ppt",
