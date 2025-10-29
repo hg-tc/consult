@@ -289,17 +289,62 @@ async def process_global_document_with_progress(
             task_id, 
             TaskStage.VECTORIZING, 
             60, 
-            "正在生成向量..."
+            "正在加载检索模块..."
         )
         
-        # 使用 LlamaIndex 导入（增加超时、心跳与细粒度日志）
-        logger.info(f"准备开始LlamaIndexRetriever")
-        from app.services.llamaindex_retriever import get_retriever
-        logger.info(f"LlamaIndexRetriever导入完成")
+        # 使用 LlamaIndex 导入（增加超时检测）
+        logger.info(f"准备开始LlamaIndexRetriever导入和初始化")
         import asyncio as _asyncio
-        logger.info(f"还没开始LlamaIndexRetriever")
-        retriever = get_retriever("global")  # 使用缓存单例，避免重复加载模型和索引
-        logger.info(f"LlamaIndexRetriever完成")
+        import concurrent.futures
+        
+        # 导入超时时间（秒）：60秒 = 1分钟
+        IMPORT_TIMEOUT = 60
+        
+        def import_and_get_retriever():
+            """在线程中执行导入和初始化，避免阻塞主事件循环"""
+            try:
+                from app.services.llamaindex_retriever import get_retriever
+                logger.info(f"✅ LlamaIndexRetriever模块导入完成")
+                retriever = get_retriever("global")  # 使用缓存单例，避免重复加载模型和索引
+                logger.info(f"✅ LlamaIndexRetriever初始化完成")
+                return retriever
+            except Exception as e:
+                logger.error(f"❌ LlamaIndexRetriever导入或初始化失败: {e}", exc_info=True)
+                raise
+        
+        retriever = None
+        try:
+            # 在线程池中执行导入，设置超时
+            loop = _asyncio.get_event_loop()
+            task_queue.update_task_progress(
+                task_id,
+                TaskStage.VECTORIZING,
+                62,
+                f"正在导入检索模块（最多等待{IMPORT_TIMEOUT}秒）..."
+            )
+            retriever = await _asyncio.wait_for(
+                loop.run_in_executor(None, import_and_get_retriever),
+                timeout=IMPORT_TIMEOUT
+            )
+            logger.info(f"✅ LlamaIndexRetriever导入和初始化成功完成")
+        except _asyncio.TimeoutError:
+            logger.error(f"⏰ LlamaIndexRetriever导入超时({IMPORT_TIMEOUT}秒): {file_path}")
+            # 清理失败的上传
+            await cleanup_failed_upload(doc_id, file_path)
+            await update_document_status(doc_id, 'failed', 
+                                        processing_completed=datetime.now().isoformat(),
+                                        error_message=f"导入检索模块超时({IMPORT_TIMEOUT}秒)，请重新上传")
+            task_queue.fail_task(task_id, f"导入检索模块超时({IMPORT_TIMEOUT}秒)，文件上传失败，请重新上传")
+            return
+        except Exception as e:
+            logger.error(f"❌ LlamaIndexRetriever导入失败: {e}", exc_info=True)
+            # 清理失败的上传
+            await cleanup_failed_upload(doc_id, file_path)
+            await update_document_status(doc_id, 'failed',
+                                        processing_completed=datetime.now().isoformat(),
+                                        error_message=f"导入检索模块失败: {str(e)}")
+            task_queue.fail_task(task_id, f"导入检索模块失败: {str(e)}，文件上传失败，请重新上传")
+            return
         logger.info(f"🔧 LlamaIndex add_document 开始: path={file_path}, size={document_data['file_size']}, mime={document_data['mime_type']}")
         add_task = _asyncio.create_task(
             retriever.add_document(
@@ -337,13 +382,35 @@ async def process_global_document_with_progress(
                         raise _asyncio.TimeoutError()
         except _asyncio.TimeoutError:
             logger.error(f"⏰ LlamaIndex add_document 超时(600s): {file_path}")
-            await update_document_status(doc_id, 'failed', processing_completed=datetime.now().isoformat())
-            task_queue.fail_task(task_id, "LlamaIndex add_document 超时(600s)")
+            # 尝试从索引中删除可能已添加的数据
+            try:
+                if retriever:
+                    retriever.delete_by_document_id(doc_id)
+                    logger.info(f"已尝试从索引中删除超时的文档: {doc_id}")
+            except Exception as cleanup_err:
+                logger.warning(f"清理索引数据失败: {cleanup_err}")
+            # 清理失败的上传
+            await cleanup_failed_upload(doc_id, file_path)
+            await update_document_status(doc_id, 'failed', 
+                                        processing_completed=datetime.now().isoformat(),
+                                        error_message="文档处理超时(600秒)，请重新上传")
+            task_queue.fail_task(task_id, "文档处理超时(600秒)，文件上传失败，请重新上传")
             return
         except Exception as e:
             logger.error(f"❌ LlamaIndex add_document 失败: {e}")
-            await update_document_status(doc_id, 'failed', processing_completed=datetime.now().isoformat())
-            task_queue.fail_task(task_id, f"LlamaIndex 失败: {str(e)}")
+            # 尝试从索引中删除可能已添加的数据
+            try:
+                if retriever:
+                    retriever.delete_by_document_id(doc_id)
+                    logger.info(f"已尝试从索引中删除失败的文档: {doc_id}")
+            except Exception as cleanup_err:
+                logger.warning(f"清理索引数据失败: {cleanup_err}")
+            # 清理失败的上传
+            await cleanup_failed_upload(doc_id, file_path)
+            await update_document_status(doc_id, 'failed',
+                                        processing_completed=datetime.now().isoformat(),
+                                        error_message=f"文档处理失败: {str(e)}，请重新上传")
+            task_queue.fail_task(task_id, f"文档处理失败: {str(e)}，文件上传失败，请重新上传")
             return
         finally:
             logger.info(f"🔧 LlamaIndex add_document 结束，added_count={added_count}")
@@ -370,17 +437,32 @@ async def process_global_document_with_progress(
                         raise _asyncio.TimeoutError()
         except _asyncio.TimeoutError:
             logger.error("⏰ 持久化索引超时(600s)")
-            await update_document_status(doc_id, 'failed', processing_completed=datetime.now().isoformat())
-            task_queue.fail_task(task_id, "持久化索引超时(600s)")
+            # 尝试从索引中删除已添加的数据
+            try:
+                if retriever:
+                    retriever.delete_by_document_id(doc_id)
+                    logger.info(f"已尝试从索引中删除持久化超时的文档: {doc_id}")
+            except Exception as cleanup_err:
+                logger.warning(f"清理索引数据失败: {cleanup_err}")
+            # 清理失败的上传
+            await cleanup_failed_upload(doc_id, file_path)
+            await update_document_status(doc_id, 'failed', 
+                                        processing_completed=datetime.now().isoformat(),
+                                        error_message="索引持久化超时(600秒)，请重新上传")
+            task_queue.fail_task(task_id, "索引持久化超时(600秒)，文件上传失败，请重新上传")
             return
         success = bool(added_count)
         
         if success:
             logger.info(f"✅ 文档解析和向量化成功: {document_data['original_filename']}，新增 {added_count} 个节点")
             
-            # 统计新增节点数
+            # 统计新增节点数 & 收集node_id列表
             chunk_count = int(added_count) if added_count else 0
-            chunk_ids = []
+            try:
+                node_ids = retriever.get_node_ids_by_document_id(doc_id)
+            except Exception:
+                node_ids = []
+            chunk_ids = list(node_ids)
             
             # 阶段4: 索引构建 (80-100%)
             task_queue.update_task_progress(
@@ -410,6 +492,7 @@ async def process_global_document_with_progress(
                 'completed', 
                 processing_completed=datetime.now().isoformat(),
                 chunk_count=chunk_count,
+                node_ids=chunk_ids,
                 quality_score=0.8  # 可以根据实际处理结果调整
             )
             
@@ -427,9 +510,28 @@ async def process_global_document_with_progress(
             task_queue.fail_task(task_id, "文档处理失败")
             
     except Exception as e:
-        logger.error(f"❌ 带进度文档处理异常: {file_path}, 错误: {str(e)}")
-        await update_document_status(document_data['id'], 'failed', processing_completed=datetime.now().isoformat())
-        task_queue.fail_task(task_id, str(e))
+        logger.error(f"❌ 带进度文档处理异常: {file_path}, 错误: {str(e)}", exc_info=True)
+        doc_id = document_data.get('id')
+        # 尝试从索引中删除可能已添加的数据
+        try:
+            # 尝试获取retriever（如果之前已经创建）
+            try:
+                from app.services.llamaindex_retriever import get_retriever
+                retriever = get_retriever("global")
+                if retriever and doc_id:
+                    retriever.delete_by_document_id(doc_id)
+                    logger.info(f"已尝试从索引中删除异常处理的文档: {doc_id}")
+            except Exception:
+                pass  # 如果获取retriever失败，忽略
+        except Exception as cleanup_err:
+            logger.warning(f"清理索引数据失败: {cleanup_err}")
+        # 清理失败的上传
+        if doc_id:
+            await cleanup_failed_upload(doc_id, file_path)
+            await update_document_status(doc_id, 'failed', 
+                                        processing_completed=datetime.now().isoformat(),
+                                        error_message=f"处理异常: {str(e)}，请重新上传")
+        task_queue.fail_task(task_id, f"处理异常: {str(e)}，文件上传失败，请重新上传")
 
 async def process_global_document_step_by_step(file_path: str, document_data: Dict[str, Any]):
     """分步处理全局文档：解析 -> LlamaIndex 导入 -> 持久化"""
@@ -560,6 +662,42 @@ async def update_document_status(doc_id: str, status: str, **kwargs):
         logger.info(f"📝 文档状态已更新: {doc_id} -> {status}")
     except Exception as e:
         logger.error(f"更新文档状态失败: {str(e)}")
+
+async def cleanup_failed_upload(doc_id: str, file_path: str):
+    """清理失败的上传：删除JSON记录和物理文件"""
+    try:
+        logger.info(f"🗑️ 开始清理失败的上传: doc_id={doc_id}, file_path={file_path}")
+        
+        # 1. 从JSON中删除文档记录
+        documents = load_global_documents()
+        original_count = len(documents)
+        documents = [doc for doc in documents if doc.get('id') != doc_id]
+        if len(documents) < original_count:
+            save_global_documents(documents)
+            logger.info(f"✅ 已从JSON中删除文档记录: {doc_id}")
+        else:
+            logger.warning(f"⚠️ JSON中未找到文档记录: {doc_id}")
+        
+        # 2. 删除物理文件
+        if file_path and os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                logger.info(f"✅ 已删除物理文件: {file_path}")
+            except Exception as file_err:
+                logger.error(f"删除物理文件失败: {file_path}, 错误: {file_err}")
+        else:
+            logger.warning(f"⚠️ 文件不存在或路径为空: {file_path}")
+        
+        # 3. 从文件索引中删除（如果存在）
+        try:
+            file_index_manager.remove_file(doc_id)
+            logger.info(f"✅ 已从文件索引中删除: {doc_id}")
+        except Exception as index_err:
+            logger.warning(f"从文件索引删除失败（可能不存在）: {index_err}")
+        
+        logger.info(f"✅ 清理失败上传完成: {doc_id}")
+    except Exception as e:
+        logger.error(f"清理失败上传时发生错误: {str(e)}", exc_info=True)
 
 async def cleanup_original_file(file_path: str, doc_id: str):
     """清理原始文件（可选）"""
@@ -1077,16 +1215,83 @@ async def download_global_document(doc_id: str):
 @router.delete("/documents/{doc_id}")
 async def delete_global_document(doc_id: str):
     """删除全局文档"""
+    import asyncio as _asyncio
+    
     try:
         logger.info(f"收到删除全局文档请求: {doc_id}")
         
-        # 1) 使用 LlamaIndex API 进行删除并持久化重建
-        from app.services.llamaindex_retriever import get_retriever
-        retriever = get_retriever("global")  # 使用缓存单例，避免重复加载模型和索引
+        # 1) 异步获取检索器（带超时）
+        RETRIEVER_INIT_TIMEOUT = 120  # 检索器初始化超时时间（秒）
+        DELETE_OPERATION_TIMEOUT = 300  # 删除操作超时时间（秒）
         
-        # 优先按 document_id 删除；若没有命中，再按 original_filename 删除
-        res = retriever.delete_by_document_id(doc_id)
-        deleted = res.get("deleted", 0)
+        def import_and_get_retriever():
+            """在线程中执行导入和初始化，避免阻塞主事件循环"""
+            try:
+                from app.services.llamaindex_retriever import get_retriever
+                logger.info(f"✅ LlamaIndexRetriever模块导入完成")
+                retriever = get_retriever("global")
+                logger.info(f"✅ LlamaIndexRetriever初始化完成")
+                return retriever
+            except Exception as e:
+                logger.error(f"❌ LlamaIndexRetriever导入或初始化失败: {e}", exc_info=True)
+                raise
+        
+        retriever = None
+        try:
+            loop = _asyncio.get_event_loop()
+            logger.info(f"⏳ 开始获取检索器实例（最多等待{RETRIEVER_INIT_TIMEOUT}秒）...")
+            retriever = await _asyncio.wait_for(
+                loop.run_in_executor(None, import_and_get_retriever),
+                timeout=RETRIEVER_INIT_TIMEOUT
+            )
+            logger.info(f"✅ 检索器实例获取成功")
+        except _asyncio.TimeoutError:
+            logger.error(f"⏰ 获取检索器超时({RETRIEVER_INIT_TIMEOUT}秒)")
+            raise HTTPException(
+                status_code=504,
+                detail=f"获取检索器超时({RETRIEVER_INIT_TIMEOUT}秒)，请稍后重试"
+            )
+        except Exception as e:
+            logger.error(f"❌ 获取检索器失败: {e}", exc_info=True)
+            raise HTTPException(
+                status_code=500,
+                detail=f"获取检索器失败: {str(e)}"
+            )
+        
+        # 2) 异步执行删除操作（带超时）
+        def delete_operation():
+            """在线程中执行删除操作"""
+            try:
+                logger.info(f"开始执行删除操作: document_id={doc_id}")
+                res = retriever.delete_by_document_id(doc_id)
+                logger.info(f"删除操作完成: deleted={res.get('deleted', 0)}")
+                return res
+            except Exception as e:
+                logger.error(f"删除操作失败: {e}", exc_info=True)
+                raise
+        
+        res = None
+        try:
+            logger.info(f"⏳ 开始删除操作（最多等待{DELETE_OPERATION_TIMEOUT}秒）...")
+            res = await _asyncio.wait_for(
+                loop.run_in_executor(None, delete_operation),
+                timeout=DELETE_OPERATION_TIMEOUT
+            )
+            logger.info(f"✅ 删除操作成功完成")
+        except _asyncio.TimeoutError:
+            logger.error(f"⏰ 删除操作超时({DELETE_OPERATION_TIMEOUT}秒)")
+            raise HTTPException(
+                status_code=504,
+                detail=f"删除操作超时({DELETE_OPERATION_TIMEOUT}秒)，索引可能较大，请稍后重试或联系管理员"
+            )
+        except Exception as e:
+            logger.error(f"❌ 删除操作失败: {e}", exc_info=True)
+            raise HTTPException(
+                status_code=500,
+                detail=f"删除操作失败: {str(e)}"
+            )
+        
+        deleted = res.get("deleted", 0) if res else 0
         
         # 2) 找出 original_filename 以同步业务 JSON 与物理文件删除
         original_filename = None
@@ -1098,41 +1303,60 @@ async def delete_global_document(doc_id: str):
         except Exception:
             nodes_map = {}
         
-        # 当按 doc_id 未删任何节点时，尝试把 doc_id 当作 node_id 反查其文件名，再按文件名整体删除
+        # 2) 如果索引中未找到，尝试按文件名删除（可能 document_id 设置不正确）
         if deleted == 0:
-            # 读取存储文件以解析 original_filename 与 file_path
-            llamaindex_storage_dir = Path("llamaindex_storage/global")
-            docstore_file = llamaindex_storage_dir / "docstore.json"
-            if docstore_file.exists():
-                import json
-                with open(docstore_file, 'r', encoding='utf-8') as f:
-                    docstore_data = json.load(f)
-                nodes = docstore_data.get('docstore/data', {})
-                for node_id, node_data in nodes.items():
-                    if node_id == doc_id:
-                        data = node_data.get('__data__', {})
-                        metadata = data.get('metadata', {})
-                        original_filename = metadata.get('original_filename') or metadata.get('file_name', '')
-                        file_path = metadata.get('file_path', '')
-                        break
-                if original_filename:
-                    res2 = retriever.delete_by_original_filename(original_filename)
-                    deleted = max(deleted, res2.get("deleted", 0))
-        
-        if deleted == 0:
-            logger.warning(f"文档 {doc_id} 未在索引中命中")
-            raise HTTPException(status_code=404, detail="文档未找到")
-        
-        # 3) 删除物理文件（按文件名匹配）与业务 JSON 记录
-        if not original_filename:
-            # 仍未解析出文件名时，尽量从全局 JSON 中探索
+            # 先从JSON中获取文件名
             documents = load_global_documents()
             for doc in documents:
                 if doc.get('id') == doc_id:
-                    original_filename = doc.get('original_filename')
-                    file_path = doc.get('file_path')
+                    original_filename = doc.get('original_filename') or original_filename
+                    file_path = doc.get('file_path') or file_path
+                    break
+            
+            # 尝试按文件名删除（异步执行）
+            if original_filename:
+                logger.warning(f"按 document_id={doc_id} 未在索引中找到，尝试按文件名删除: {original_filename}")
+                def delete_by_filename_operation():
+                    """在线程中执行按文件名删除操作"""
+                    try:
+                        logger.info(f"开始按文件名删除操作: filename={original_filename}")
+                        res2 = retriever.delete_by_original_filename(original_filename)
+                        logger.info(f"按文件名删除操作完成: deleted={res2.get('deleted', 0)}")
+                        return res2
+                    except Exception as e:
+                        logger.error(f"按文件名删除操作失败: {e}", exc_info=True)
+                        raise
+                
+                try:
+                    res2 = await _asyncio.wait_for(
+                        loop.run_in_executor(None, delete_by_filename_operation),
+                        timeout=DELETE_OPERATION_TIMEOUT
+                    )
+                    deleted = max(deleted, res2.get("deleted", 0))
+                    if deleted > 0:
+                        logger.info(f"通过文件名删除成功，删除了 {deleted} 个节点")
+                except _asyncio.TimeoutError:
+                    logger.warning(f"按文件名删除操作超时({DELETE_OPERATION_TIMEOUT}秒)")
+                except Exception as e:
+                    logger.warning(f"按文件名删除操作失败: {e}")
+            
+            # 如果仍然未找到，可能是索引创建有问题
+            if deleted == 0:
+                logger.error(f"⚠️ 文档 {doc_id} 在索引中未找到！这可能表示索引创建时未正确设置 document_id。")
+                logger.error(f"请检查上传文档时的日志，确认 metadata 中的 document_id 是否正确设置。")
+                # 但仍然尝试清理其他数据
+                logger.warning(f"将尝试清理 JSON、文件索引和物理文件...")
+        
+        # 3) 获取完整的文档信息（用于后续清理）
+        if not original_filename or not file_path:
+            documents = load_global_documents()
+            for doc in documents:
+                if doc.get('id') == doc_id:
+                    original_filename = doc.get('original_filename') or original_filename
+                    file_path = doc.get('file_path') or file_path
                     break
         
+        # 4) 删除物理文件
         if file_path and os.path.exists(file_path):
             try:
                 os.remove(file_path)
@@ -1140,17 +1364,26 @@ async def delete_global_document(doc_id: str):
             except Exception as e:
                 logger.warning(f"删除物理文件失败: {str(e)}")
         
-        # 从文件索引移除
+        # 5) 从文件索引移除
+        file_index_removed = False
         try:
-            documents = load_global_documents()
-            for doc in documents:
-                if original_filename and doc.get('original_filename') == original_filename:
+            documents_for_index = load_global_documents()
+            for doc in documents_for_index:
+                if doc.get('id') == doc_id:
+                    file_index_manager.remove_file(doc_id)
+                    file_index_removed = True
+                    logger.info(f"从文件索引删除: {doc_id}")
+                    break
+                # 如果通过文件名匹配
+                elif original_filename and doc.get('original_filename') == original_filename:
                     file_index_manager.remove_file(doc.get('id'))
+                    file_index_removed = True
+                    logger.info(f"从文件索引删除（按文件名）: {original_filename}")
                     break
         except Exception as e:
-            logger.warning(f"从索引删除失败: {str(e)}")
+            logger.warning(f"从文件索引删除失败: {str(e)}")
         
-        # 从 JSON 中删除记录
+        # 6) 从 JSON 中删除记录
         documents = load_global_documents()
         before = len(documents)
         if original_filename:
@@ -1159,13 +1392,29 @@ async def delete_global_document(doc_id: str):
             documents = [d for d in documents if d.get('id') != doc_id]
         save_global_documents(documents)
         after = len(documents)
-        logger.info(f"从JSON中删除了 {before - after} 条记录")
+        json_deleted_count = before - after
+        if json_deleted_count > 0:
+            logger.info(f"从JSON中删除了 {json_deleted_count} 条记录")
+        
+        # 7) 如果索引中未找到，这是主要问题
+        if deleted == 0:
+            logger.error(f"❌ 删除失败：文档 {doc_id} 在向量索引中未找到！")
+            logger.error(f"这可能是因为：")
+            logger.error(f"  1. 上传时 metadata 中的 document_id 未正确设置")
+            logger.error(f"  2. 索引创建或持久化时出现问题")
+            logger.error(f"  3. 索引加载时节点 metadata 丢失")
+            logger.error(f"已清理 JSON 和文件系统数据（{json_deleted_count} 条JSON记录，文件索引: {file_index_removed}）")
+            raise HTTPException(
+                status_code=404, 
+                detail=f"文档在索引中未找到（document_id={doc_id}）。已清理其他数据，但索引可能需要重建。"
+            )
         
         return {
             "status": "deleted",
             "id": doc_id,
             "filename": original_filename,
-            "deleted_nodes": deleted
+            "deleted_nodes": deleted,
+            "message": "文档已从索引、JSON、文件索引和物理文件中删除"
         }
         
     except HTTPException:
@@ -1178,17 +1427,86 @@ async def delete_global_document(doc_id: str):
 @router.delete("/documents/by-filename")
 async def delete_global_document_by_filename(filename: str):
     """按原始文件名删除全局文档并持久化索引。"""
+    import asyncio as _asyncio
+    
     try:
         if not filename:
             raise HTTPException(status_code=400, detail="缺少文件名")
 
         logger.info(f"收到按文件名删除全局文档请求: {filename}")
 
-        # 1) 使用 LlamaIndex 删除并持久化
-        from app.services.llamaindex_retriever import get_retriever
-        retriever = get_retriever("global")  # 使用缓存单例，避免重复加载模型和索引
-        res = retriever.delete_by_original_filename(filename)
-        deleted = res.get("deleted", 0)
+        # 1) 异步获取检索器（带超时）
+        RETRIEVER_INIT_TIMEOUT = 120  # 检索器初始化超时时间（秒）
+        DELETE_OPERATION_TIMEOUT = 300  # 删除操作超时时间（秒）
+        
+        def import_and_get_retriever():
+            """在线程中执行导入和初始化，避免阻塞主事件循环"""
+            try:
+                from app.services.llamaindex_retriever import get_retriever
+                logger.info(f"✅ LlamaIndexRetriever模块导入完成")
+                retriever = get_retriever("global")
+                logger.info(f"✅ LlamaIndexRetriever初始化完成")
+                return retriever
+            except Exception as e:
+                logger.error(f"❌ LlamaIndexRetriever导入或初始化失败: {e}", exc_info=True)
+                raise
+        
+        retriever = None
+        try:
+            loop = _asyncio.get_event_loop()
+            logger.info(f"⏳ 开始获取检索器实例（最多等待{RETRIEVER_INIT_TIMEOUT}秒）...")
+            retriever = await _asyncio.wait_for(
+                loop.run_in_executor(None, import_and_get_retriever),
+                timeout=RETRIEVER_INIT_TIMEOUT
+            )
+            logger.info(f"✅ 检索器实例获取成功")
+        except _asyncio.TimeoutError:
+            logger.error(f"⏰ 获取检索器超时({RETRIEVER_INIT_TIMEOUT}秒)")
+            raise HTTPException(
+                status_code=504,
+                detail=f"获取检索器超时({RETRIEVER_INIT_TIMEOUT}秒)，请稍后重试"
+            )
+        except Exception as e:
+            logger.error(f"❌ 获取检索器失败: {e}", exc_info=True)
+            raise HTTPException(
+                status_code=500,
+                detail=f"获取检索器失败: {str(e)}"
+            )
+
+        # 2) 异步执行删除操作（带超时）
+        def delete_by_filename_operation():
+            """在线程中执行按文件名删除操作"""
+            try:
+                logger.info(f"开始执行按文件名删除操作: filename={filename}")
+                res = retriever.delete_by_original_filename(filename)
+                logger.info(f"按文件名删除操作完成: deleted={res.get('deleted', 0)}")
+                return res
+            except Exception as e:
+                logger.error(f"按文件名删除操作失败: {e}", exc_info=True)
+                raise
+        
+        res = None
+        try:
+            logger.info(f"⏳ 开始按文件名删除操作（最多等待{DELETE_OPERATION_TIMEOUT}秒）...")
+            res = await _asyncio.wait_for(
+                loop.run_in_executor(None, delete_by_filename_operation),
+                timeout=DELETE_OPERATION_TIMEOUT
+            )
+            logger.info(f"✅ 按文件名删除操作成功完成")
+        except _asyncio.TimeoutError:
+            logger.error(f"⏰ 按文件名删除操作超时({DELETE_OPERATION_TIMEOUT}秒)")
+            raise HTTPException(
+                status_code=504,
+                detail=f"删除操作超时({DELETE_OPERATION_TIMEOUT}秒)，索引可能较大，请稍后重试或联系管理员"
+            )
+        except Exception as e:
+            logger.error(f"❌ 按文件名删除操作失败: {e}", exc_info=True)
+            raise HTTPException(
+                status_code=500,
+                detail=f"删除操作失败: {str(e)}"
+            )
+        
+        deleted = res.get("deleted", 0) if res else 0
 
         if deleted == 0:
             logger.warning(f"按文件名未命中: {filename}")

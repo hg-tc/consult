@@ -287,10 +287,25 @@ class LlamaIndexRetriever:
                 return 0
 
             logger.info(f"[LlamaIndex] 开始插入文档到索引: blocks={len(docs)}, file={file_path_str}")
+            logger.info(f"[LlamaIndex] base_meta keys: {list(base_meta.keys())}, document_id={base_meta.get('document_id')}")
+            
             inserted = 0
-            for doc in docs:
+            for idx, doc in enumerate(docs):
                 # 兼容外部 Document 对象或纯文本
                 if isinstance(doc, LI_Document):
+                    # 确保 metadata 中包含 base_meta（特别是 document_id）
+                    if not doc.metadata:
+                        doc.metadata = {}
+                    doc.metadata.update(base_meta)  # 确保 base_meta 中的字段（如 document_id）被包含
+                    
+                    # 验证 document_id 是否在 metadata 中
+                    if base_meta.get('document_id') and base_meta.get('document_id') not in doc.metadata:
+                        logger.warning(f"Document metadata 中缺少 document_id，补充中...")
+                        doc.metadata['document_id'] = base_meta.get('document_id')
+                    
+                    if idx < 3:  # 前3个文档记录日志
+                        logger.debug(f"插入 Document #{idx}: metadata keys={list(doc.metadata.keys())[:10]}, document_id={doc.metadata.get('document_id')}")
+                    
                     self.index.insert(doc)
                 else:
                     # 构造 LI Document 对象
@@ -299,8 +314,14 @@ class LlamaIndexRetriever:
                     except Exception:
                         from llama_index import Document as _Doc
                     text = doc.get('text') if isinstance(doc, dict) else str(doc)
-                    meta = doc.get('metadata', {}) if isinstance(doc, dict) else base_meta
-                    self.index.insert(_Doc(text=text, metadata=meta))
+                    meta = doc.get('metadata', {}) if isinstance(doc, dict) else {}
+                    # 合并 base_meta，确保 document_id 存在
+                    final_meta = {**base_meta, **meta}
+                    
+                    if idx < 3:  # 前3个文档记录日志
+                        logger.debug(f"插入 Document #{idx} (constructed): metadata keys={list(final_meta.keys())[:10]}, document_id={final_meta.get('document_id')}")
+                    
+                    self.index.insert(_Doc(text=text, metadata=final_meta))
                 inserted += 1
                 if inserted % 20 == 0:
                     logger.info(f"[LlamaIndex] 已插入 {inserted}/{len(docs)} 块…")
@@ -390,30 +411,244 @@ class LlamaIndexRetriever:
             logger.error(f"按文件名删除失败: {e}")
             return {"deleted": 0, "kept": 0, "error": str(e)}
 
-    def delete_by_document_id(self, document_id: str) -> Dict[str, Any]:
-        """根据 metadata.document_id 删除对应所有节点，并持久化重建索引。"""
+    def inspect_all_nodes_metadata(self) -> List[Dict[str, Any]]:
+        """调试函数：检查索引中所有节点的metadata"""
+        nodes_info = []
         try:
             ds = getattr(self.index.storage_context, 'docstore', None)
             if ds is None:
+                logger.warning("docstore 不存在")
+                return nodes_info
+            
+            # 尝试多种方式访问节点映射
+            nodes_map = None
+            for attr_name in ['docs', '_docstore', '_dict']:
+                nodes_map = getattr(ds, attr_name, None)
+                if nodes_map is not None:
+                    break
+            
+            if nodes_map is None or not hasattr(nodes_map, 'items'):
+                logger.warning(f"无法访问节点映射，docstore 类型: {type(ds)}")
+                return nodes_info
+            
+            items = list(nodes_map.items())
+            logger.info(f"检查 {len(items)} 个节点的metadata")
+            
+            for node_id, node in items:
+                # 尝试多种方式访问 metadata
+                meta = {}
+                node_type = type(node).__name__
+                
+                # 方法1: 直接访问 node.metadata
+                if hasattr(node, 'metadata'):
+                    meta_raw = getattr(node, 'metadata', None)
+                    if isinstance(meta_raw, dict):
+                        meta = meta_raw
+                    elif meta_raw is not None:
+                        try:
+                            meta = dict(meta_raw) if hasattr(meta_raw, '__iter__') else {}
+                        except:
+                            meta = {}
+                
+                # 方法2: 通过 node.node.metadata 访问
+                elif hasattr(node, 'node') and hasattr(node.node, 'metadata'):
+                    meta_raw = getattr(node.node, 'metadata', None)
+                    if isinstance(meta_raw, dict):
+                        meta = meta_raw
+                
+                # 方法3: 尝试通过反射获取
+                if not meta:
+                    try:
+                        if hasattr(node, '__dict__'):
+                            node_dict = node.__dict__
+                            if 'metadata' in node_dict:
+                                meta = node_dict['metadata'] if isinstance(node_dict['metadata'], dict) else {}
+                    except:
+                        pass
+                
+                # 记录节点信息
+                node_info = {
+                    'node_id': str(node_id)[:100],
+                    'node_type': node_type,
+                    'has_metadata': bool(meta),
+                    'metadata': dict(meta) if isinstance(meta, dict) else {},
+                    'document_id': meta.get('document_id') if isinstance(meta, dict) else None,
+                    'original_filename': meta.get('original_filename') if isinstance(meta, dict) else None,
+                    'metadata_keys': list(meta.keys()) if isinstance(meta, dict) else []
+                }
+                nodes_info.append(node_info)
+            
+            return nodes_info
+        except Exception as e:
+            logger.error(f"检查节点metadata失败: {e}", exc_info=True)
+            return nodes_info
+
+    def _iter_docstore_items(self) -> List[Any]:
+        """内部工具：以(items)形式返回docstore节点列表。"""
+        ds = getattr(self.index.storage_context, 'docstore', None)
+        if ds is None:
+            return []
+        nodes_map = None
+        for attr_name in ['docs', '_docstore', '_dict']:
+            nodes_map = getattr(ds, attr_name, None)
+            if nodes_map is not None:
+                break
+        if nodes_map is None or not hasattr(nodes_map, 'items'):
+            return []
+        try:
+            return list(nodes_map.items())
+        except Exception:
+            return []
+
+    def resolve_document_id(self, id_or_node_id: str) -> Optional[str]:
+        """
+        解析传入的ID：
+        - 若它本身就是某些节点metadata.document_id，直接返回该ID；
+        - 若它匹配某个node_id，则从该节点metadata中取document_id并返回；
+        - 否则返回None。
+        """
+        items = self._iter_docstore_items()
+        if not items:
+            return None
+        candidate_doc_id: Optional[str] = None
+        # 第一遍：如果传入的是document_id，看看是否存在任何节点引用它
+        for _, node in items:
+            meta = getattr(node, 'metadata', {}) or {}
+            if isinstance(meta, dict):
+                doc_id = meta.get('document_id') or meta.get('doc_id') or meta.get('docId')
+                if doc_id and doc_id == id_or_node_id:
+                    return id_or_node_id
+        # 第二遍：如果传入的是node_id，尝试用node_id命中
+        for node_id, node in items:
+            if str(node_id) == id_or_node_id:
+                meta = getattr(node, 'metadata', {}) or {}
+                if isinstance(meta, dict):
+                    doc_id = meta.get('document_id') or meta.get('doc_id') or meta.get('docId')
+                    if doc_id:
+                        candidate_doc_id = doc_id
+                        break
+        return candidate_doc_id
+
+    def get_node_ids_by_document_id(self, document_id: str) -> List[str]:
+        """返回与给定document_id关联的所有node_id列表。"""
+        node_ids: List[str] = []
+        for node_id, node in self._iter_docstore_items():
+            meta = getattr(node, 'metadata', {}) or {}
+            if isinstance(meta, dict):
+                doc_id = meta.get('document_id') or meta.get('doc_id') or meta.get('docId')
+                if doc_id == document_id:
+                    node_ids.append(str(node_id))
+        return node_ids
+
+    def delete_by_document_id(self, document_id: str) -> Dict[str, Any]:
+        """根据 metadata.document_id 删除对应所有节点，并持久化重建索引。"""
+        try:
+            # 先解析：允许传入的是 node_id 或 document_id
+            resolved_doc_id = self.resolve_document_id(document_id)
+            if not resolved_doc_id:
+                logger.warning(f"无法解析为有效document_id: {document_id}")
                 return {"deleted": 0, "kept": 0}
-            nodes_map = getattr(ds, 'docs', None) or getattr(ds, '_docstore', None) or getattr(ds, '_dict', None) or {}
-            if hasattr(nodes_map, 'items'):
-                items = list(nodes_map.items())
-            else:
-                items = []
+
+            ds = getattr(self.index.storage_context, 'docstore', None)
+            if ds is None:
+                logger.warning(f"docstore 不存在，无法删除 document_id={resolved_doc_id}")
+                return {"deleted": 0, "kept": 0}
+            
+            # 尝试多种方式访问节点映射
+            nodes_map = None
+            for attr_name in ['docs', '_docstore', '_dict']:
+                nodes_map = getattr(ds, attr_name, None)
+                if nodes_map is not None:
+                    break
+            
+            if nodes_map is None:
+                logger.warning(f"无法访问节点映射，docstore 类型: {type(ds)}")
+                return {"deleted": 0, "kept": 0}
+            
+            if not hasattr(nodes_map, 'items'):
+                logger.warning(f"节点映射不支持 items()，类型: {type(nodes_map)}")
+                return {"deleted": 0, "kept": 0}
+            
+            items = list(nodes_map.items())
+            logger.info(f"开始检查 {len(items)} 个节点，查找 document_id={resolved_doc_id}")
+            
             kept_nodes: List[Any] = []
             deleted = 0
-            for _, node in items:
-                meta = getattr(node, 'metadata', {}) or {}
-                doc_id = meta.get('document_id')
-                if doc_id == document_id:
+            found_nodes_info = []  # 用于调试
+            
+            for node_id, node in items:
+                # 尝试多种方式访问 metadata
+                meta = {}
+                node_type = type(node).__name__
+                
+                # 方法1: 直接访问 node.metadata
+                if hasattr(node, 'metadata'):
+                    meta_raw = getattr(node, 'metadata', None)
+                    if isinstance(meta_raw, dict):
+                        meta = meta_raw
+                    elif meta_raw is not None:
+                        try:
+                            meta = dict(meta_raw) if hasattr(meta_raw, '__iter__') else {}
+                        except:
+                            meta = {}
+                
+                # 方法2: 通过 node.node.metadata 访问（节点可能被包装）
+                if not meta and hasattr(node, 'node'):
+                    if hasattr(node.node, 'metadata'):
+                        meta_raw = getattr(node.node, 'metadata', None)
+                        if isinstance(meta_raw, dict):
+                            meta = meta_raw
+                
+                # 方法3: 尝试通过反射获取
+                if not meta and hasattr(node, '__dict__'):
+                    try:
+                        node_dict = node.__dict__
+                        if 'metadata' in node_dict:
+                            meta_raw = node_dict['metadata']
+                            if isinstance(meta_raw, dict):
+                                meta = meta_raw
+                    except:
+                        pass
+                
+                # 确保 meta 是字典
+                if not isinstance(meta, dict):
+                    meta = {}
+                
+                # 获取 document_id（尝试多种字段名）
+                doc_id = None
+                if isinstance(meta, dict):
+                    doc_id = meta.get('document_id') or meta.get('doc_id') or meta.get('docId')
+                
+                # 调试日志：记录前10个节点的信息
+                if len(found_nodes_info) < 10:
+                    found_nodes_info.append({
+                        'node_id': str(node_id)[:50],
+                        'node_type': node_type,
+                        'doc_id': doc_id,
+                        'has_meta': bool(meta),
+                        'meta_keys': list(meta.keys())[:10] if isinstance(meta, dict) else [],
+                        'original_filename': meta.get('original_filename') if isinstance(meta, dict) else None
+                    })
+                
+                if doc_id == resolved_doc_id:
                     deleted += 1
+                    logger.debug(f"找到匹配节点: node_id={node_id}, document_id={doc_id}, type={node_type}")
                 else:
                     kept_nodes.append(node)
+            
+            if deleted == 0 and found_nodes_info:
+                logger.warning(f"未找到 document_id={resolved_doc_id}")
+                logger.info(f"索引中前10个节点的信息: {found_nodes_info}")
+            
             kept = len(kept_nodes)
-            self._rebuild_index_from_nodes(kept_nodes)
-            return {"deleted": deleted, "kept": kept}
+            logger.info(f"删除结果: deleted={deleted}, kept={kept}, 总数={len(items)}")
+            
+            if deleted > 0:
+                self._rebuild_index_from_nodes(kept_nodes)
+                logger.info(f"已重建索引，保留 {kept} 个节点")
+            
+            return {"deleted": deleted, "kept": kept, "all_nodes_info": found_nodes_info[:20], "resolved_document_id": resolved_doc_id}
         except Exception as e:
-            logger.error(f"按 document_id 删除失败: {e}")
+            logger.error(f"按 document_id 删除失败: {e}", exc_info=True)
             return {"deleted": 0, "kept": 0, "error": str(e)}
 

@@ -4490,5 +4490,50 @@
       "chunk_count": 185
     },
     "workspace_id": "global"
+  },
+  {
+    "id": "edf99287-a0fc-4ce3-9cf3-e9d146393df0",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761736663.3843207,
+    "started_at": 1761736663.4150853,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/be8bafcc-3b3e-4e63-9e60-e614382e0a0a.xlsx",
+      "file_size": 14560,
+      "document_id": "be8bafcc-3b3e-4e63-9e60-e614382e0a0a"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "ed54b03c-365b-48fa-be3e-e5916e3133da",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761737292.437825,
+    "started_at": 1761737292.4693556,
+    "completed_at": 1761737298.872889,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "bud资料清单.xlsx",
+      "file_path": "uploads/global/42f5aebf-0b50-44ec-b8f7-ce12eee5a0df.xlsx",
+      "file_size": 14560,
+      "document_id": "42f5aebf-0b50-44ec-b8f7-ce12eee5a0df",
+      "chunk_count": 11
+    },
+    "workspace_id": "global"
   }
 ]
