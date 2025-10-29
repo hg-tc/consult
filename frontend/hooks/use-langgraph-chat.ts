@@ -29,7 +29,7 @@ export function useLangGraphChat() {
     setResult(null)
 
     try {
-      const response = await fetch('/api/chat/langgraph', {
+      const response = await fetch('/api/apps/langgraph-chat/chat', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

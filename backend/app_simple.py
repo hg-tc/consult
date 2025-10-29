@@ -412,34 +412,47 @@ async def get_chat_history(workspace_id: str):
         "actions": actions
     }
 
+# ============================================
+# 应用注册 - 从配置文件加载并注册应用
+# ============================================
+try:
+    from app.apps.app_registry import AppRegistry
+    app_registry = AppRegistry()
+    registered_count = app_registry.register_apps(app, api_prefix="/api")
+    logger.info(f"✅ 应用注册完成: {registered_count} 个应用已注册")
+except Exception as e:
+    logger.error(f"❌ 应用注册失败: {e}", exc_info=True)
+    logger.warning("将继续使用旧版端点（如果存在）")
+
+# ============================================
+# 以下端点已迁移到独立应用文件，保留用于向后兼容
+# 建议使用新的应用端点：/api/apps/{app-id}/*
+# ============================================
+
 @app.post("/api/chat/langgraph")
-async def chat_with_langgraph(data: dict):
-    """LangGraph 智能 RAG API"""
+async def chat_with_langgraph_legacy(data: dict):
+    """LangGraph 智能 RAG API（向后兼容，已迁移到 /api/apps/langgraph-chat/chat）"""
     try:
-        question = data.get("question") or data.get("message", "")
-        workspace_id = data.get("workspace_id") or data.get("workspaceId", "global")
-        
-        # 导入新组件
+        # 调用新应用的处理逻辑
         from app.services.llamaindex_retriever import LlamaIndexRetriever
         from app.workflows.langgraph_rag_workflow import LangGraphRAGWorkflow
         
-        # 获取或创建检索器
+        question = data.get("question") or data.get("message", "")
+        workspace_id = data.get("workspace_id") or data.get("workspaceId", "global")
+        
         workspace_retriever = LlamaIndexRetriever.get_instance(workspace_id)
         global_retriever = LlamaIndexRetriever.get_instance("global")
         
-        # 获取 LLM
         from app.services.langchain_rag_service import LangChainRAGService
         from app.core.config import settings
         rag_service = LangChainRAGService(vector_db_path=settings.LANGCHAIN_VECTOR_DB_PATH)
         
-        # 创建工作流
         workflow = LangGraphRAGWorkflow(
             workspace_retriever=workspace_retriever,
             global_retriever=global_retriever,
             llm=rag_service.llm
         )
         
-        # 执行工作流
         result = await workflow.run(question, workspace_id)
         
         return {
@@ -448,7 +461,7 @@ async def chat_with_langgraph(data: dict):
             "metadata": result["metadata"]
         }
     except Exception as e:
-        logger.error(f"LangGraph 查询失败: {e}")
+        logger.error(f"LangGraph 查询失败: {e}", exc_info=True)
         return {
             "answer": f"抱歉，处理您的问题时出现错误: {str(e)}",
             "sources": [],
@@ -456,9 +469,10 @@ async def chat_with_langgraph(data: dict):
         }
 
 @app.post("/api/document/generate-deepresearch")
-async def generate_deepresearch_document(data: dict):
-    """DeepResearch 风格长文档生成 API"""
+async def generate_deepresearch_document_legacy(data: dict):
+    """DeepResearch 风格长文档生成 API（向后兼容，已迁移到 /api/apps/document-generator/generate）"""
     try:
+        # 调用新应用的处理逻辑
         task_description = data.get("task_description", "")
         workspace_id = data.get("workspace_id", "global")
         doc_requirements = data.get("doc_requirements", {
@@ -466,22 +480,18 @@ async def generate_deepresearch_document(data: dict):
             "writing_style": "专业、严谨、客观"
         })
         
-        # 导入新组件
         from app.services.llamaindex_retriever import LlamaIndexRetriever
         from app.workflows.deepresearch_doc_workflow import DeepResearchDocWorkflow
         from app.services.web_search_service import get_web_search_service
         
-        # 获取或创建检索器
         workspace_retriever = LlamaIndexRetriever.get_instance(workspace_id)
         global_retriever = LlamaIndexRetriever.get_instance("global")
         
-        # 获取 LLM 和网络搜索服务
         from app.services.langchain_rag_service import LangChainRAGService
         from app.core.config import settings
         rag_service = LangChainRAGService(vector_db_path=settings.LANGCHAIN_VECTOR_DB_PATH)
         web_search_service = get_web_search_service()
         
-        # 创建文档生成工作流
         workflow = DeepResearchDocWorkflow(
             workspace_retriever=workspace_retriever,
             global_retriever=global_retriever,
@@ -489,7 +499,6 @@ async def generate_deepresearch_document(data: dict):
             llm=rag_service.llm
         )
         
-        # 执行工作流
         result = await workflow.run(task_description, workspace_id, doc_requirements)
         
         return {
@@ -500,7 +509,7 @@ async def generate_deepresearch_document(data: dict):
             "processing_steps": result["processing_steps"]
         }
     except Exception as e:
-        logger.error(f"DeepResearch 文档生成失败: {e}")
+        logger.error(f"DeepResearch 文档生成失败: {e}", exc_info=True)
         return {
             "document": f"抱歉，文档生成失败: {str(e)}",
             "quality_metrics": {},
@@ -510,9 +519,9 @@ async def generate_deepresearch_document(data: dict):
 
 @app.post("/api/agent/chat")
 async def ask_question(data: dict):
-    """统一代理到 LangGraph + LlamaIndex 实现"""
+    """统一代理到 LangGraph + LlamaIndex 实现（向后兼容，已迁移到 /api/apps/langgraph-chat/chat）"""
     try:
-        return await chat_with_langgraph(data)
+        return await chat_with_langgraph_legacy(data)
     except Exception as e:
         logger.error(f"/api/agent/chat 处理失败: {e}")
         return {
@@ -3112,6 +3121,19 @@ async def list_global_workspaces():
             "total_count": 0,
             "message": "暂无全局工作区"
         }
+
+# ============================================
+# 应用注册 - 在应用启动时注册所有应用
+# ============================================
+try:
+    from app.apps.app_registry import AppRegistry
+    if 'app_registry' not in globals():
+        app_registry = AppRegistry()
+        registered_count = app_registry.register_apps(app, api_prefix="/api")
+        logger.info(f"✅ 应用注册完成: {registered_count} 个应用已注册")
+except Exception as e:
+    logger.error(f"❌ 应用注册失败: {e}", exc_info=True)
+    logger.warning("应用注册失败，部分功能可能不可用")
 
 if __name__ == "__main__":
     import uvicorn

@@ -1,0 +1,25 @@
+{
+  "apps": [
+    {
+      "id": "document-generator",
+      "name": "文档生成",
+      "description": "基于 DeepResearch 技术的长文档生成应用，支持生成 2-5 万字的高质量文档",
+      "icon": "FileText",
+      "route": "/apps/document-generator",
+      "status": "active",
+      "version": "1.0.0",
+      "category": "内容生成"
+    },
+    {
+      "id": "langgraph-chat",
+      "name": "智能问答",
+      "description": "基于 LangGraph 的智能 RAG 问答系统，支持自适应路由、多跳推理和质量保证",
+      "icon": "Brain",
+      "route": "/apps/langgraph-chat",
+      "status": "active",
+      "version": "1.0.0",
+      "category": "智能对话"
+    }
+  ]
+}
+

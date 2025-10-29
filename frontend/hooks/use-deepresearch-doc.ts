@@ -40,7 +40,7 @@ export function useDeepResearchDoc() {
     setResult(null)
 
     try {
-      const response = await fetch('/api/document/generate-deepresearch', {
+      const response = await fetch('/api/apps/document-generator/generate', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

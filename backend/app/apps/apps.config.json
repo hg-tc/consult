@@ -1,0 +1,23 @@
+{
+  "apps": [
+    {
+      "id": "document-generator",
+      "name": "文档生成应用",
+      "description": "基于 DeepResearch 技术的长文档生成",
+      "version": "1.0.0",
+      "enabled": true,
+      "api_prefix": "/api/apps/document-generator",
+      "file": "document_generator_app.py"
+    },
+    {
+      "id": "langgraph-chat",
+      "name": "智能问答应用",
+      "description": "基于 LangGraph 的智能 RAG 问答",
+      "version": "1.0.0",
+      "enabled": true,
+      "api_prefix": "/api/apps/langgraph-chat",
+      "file": "langgraph_chat_app.py"
+    }
+  ]
+}
+
