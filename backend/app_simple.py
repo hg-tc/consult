@@ -1390,8 +1390,20 @@ async def process_zip_async(task_id: str, zip_path: str, workspace_id: str = "gl
         extract_dir = tempfile.mkdtemp(prefix=f"zip_extract_{task_id}_")
         logger.info(f"[ZIP] 临时解压目录: {extract_dir}")
         
-        # 解压归档文件（ZIP或RAR）
-        extracted_files = await ZipProcessor.extract_archive(zip_path, extract_dir)
+        # 解压归档文件（ZIP或RAR），传递压缩包名称用于构建层级路径
+        # 优先使用任务元数据中的原始文件名，避免显示UUID
+        archive_name = Path(zip_path).stem
+        try:
+            task = task_queue.get_task(task_id)
+            if task and task.metadata:
+                orig = task.metadata.get('original_filename') or task.metadata.get('zip_original_filename')
+                if isinstance(orig, str) and orig.strip():
+                    # 去掉扩展名作为归档展示名
+                    from pathlib import Path as _P
+                    archive_name = _P(orig).stem
+        except Exception:
+            pass
+        extracted_files = await ZipProcessor.extract_archive(zip_path, extract_dir, archive_name=archive_name)
         
         if not extracted_files:
             task_queue.fail_task(task_id, "ZIP文件中没有找到支持的文件")
@@ -1415,22 +1427,31 @@ async def process_zip_async(task_id: str, zip_path: str, workspace_id: str = "gl
         async def process_single_file(file_info: dict, index: int):
             """处理单个文件"""
             try:
-                logger.info(f"[ZIP] 处理文件 ({index+1}/{total_files}): {file_info['original_filename']}")
+                hierarchy_path = file_info.get('hierarchy_path', file_info['original_filename'])
+                logger.info(f"[ZIP] 处理文件 ({index+1}/{total_files}): {hierarchy_path}")
                 
                 # 使用 LlamaIndex 导入
                 from app.services.llamaindex_retriever import LlamaIndexRetriever
                 zip_retriever = LlamaIndexRetriever.get_instance(workspace_id)
+                
+                # 构建层级信息用于元数据
+                hierarchy_metadata = {
+                    "task_id": task_id,
+                    "original_filename": file_info['original_filename'],
+                    "hierarchy_path": hierarchy_path,  # 完整层级路径
+                    "archive_name": file_info.get('archive_name', archive_name),
+                    "archive_hierarchy": file_info.get('archive_hierarchy', ''),
+                    "folder_path": file_info.get('folder_path', ''),
+                    "file_size": file_info['file_size'],
+                    "upload_time": datetime.now().isoformat(),
+                    "source": "zip_batch_processing",
+                    "zip_file": Path(zip_path).name,
+                    "file_type": file_info['file_type']
+                }
+                
                 added_cnt = await zip_retriever.add_document(
                     file_path=file_info['file_path'],
-                    metadata={
-                        "task_id": task_id,
-                        "original_filename": file_info['original_filename'],
-                        "file_size": file_info['file_size'],
-                        "upload_time": datetime.now().isoformat(),
-                        "source": "zip_batch_processing",
-                        "zip_file": Path(zip_path).name,
-                        "file_type": file_info['file_type']
-                    }
+                    metadata=hierarchy_metadata
                 )
                 zip_retriever.index.storage_context.persist(persist_dir=str(zip_retriever.storage_dir))
                 success = bool(added_cnt)
@@ -1438,12 +1459,20 @@ async def process_zip_async(task_id: str, zip_path: str, workspace_id: str = "gl
                 # 为每个内部文件生成唯一ID（用于后续保存到JSON）
                 internal_file_id = str(uuid.uuid4())
                 
+                # 确保file_info包含所有层级信息
+                enhanced_file_info = file_info.copy()
+                if success:
+                    enhanced_file_info['hierarchy_path'] = hierarchy_path
+                    enhanced_file_info['archive_name'] = file_info.get('archive_name', archive_name)
+                    enhanced_file_info['archive_hierarchy'] = file_info.get('archive_hierarchy', '')
+                    enhanced_file_info['folder_path'] = file_info.get('folder_path', '')
+                
                 return {
                     "filename": file_info['original_filename'],
                     "success": success,
                     "file_type": file_info['file_type'],
                     "file_id": internal_file_id if success else None,
-                    "file_info": file_info if success else None
+                    "file_info": enhanced_file_info if success else None
                 }
             except Exception as e:
                 logger.error(f"[ZIP] 处理文件失败: {file_info['original_filename']}, 错误: {e}")
@@ -1493,10 +1522,20 @@ async def process_zip_async(task_id: str, zip_path: str, workspace_id: str = "gl
                         # 获取chunks数量
                         chunk_count = file_info.get('chunk_count', 0)
                         
+                        # 获取层级信息
+                        hierarchy_path = file_info.get('hierarchy_path', result['filename'])
+                        archive_name = file_info.get('archive_name', archive_name)
+                        archive_hierarchy = file_info.get('archive_hierarchy', '')
+                        folder_path = file_info.get('folder_path', '')
+                        
                         internal_document = {
                             'id': result['file_id'],
                             'filename': result['filename'],
                             'original_filename': result['filename'],
+                            'hierarchy_path': hierarchy_path,  # 完整层级路径
+                            'archive_name': archive_name,  # 压缩包名称
+                            'archive_hierarchy': archive_hierarchy,  # 嵌套压缩包路径
+                            'folder_path': folder_path,  # 文件夹路径
                             'file_size': file_info.get('file_size', 0),
                             'file_path': file_info.get('file_path', ''),
                             'file_type': result.get('file_type', ''),

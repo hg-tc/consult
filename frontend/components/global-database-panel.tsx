@@ -13,9 +13,14 @@ interface GlobalDocument {
   id: string
   filename: string
   original_filename: string
+  hierarchy_path?: string
+  archive_name?: string
+  archive_hierarchy?: string
+  folder_path?: string
   file_size: number
   status: string
   created_at: string
+  chunk_count?: number
 }
 
 interface Workspace {
@@ -209,17 +214,24 @@ export function GlobalDatabasePanel() {
               ) : (
                 documents.map((doc) => (
                   <div key={doc.id} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <Database className="w-5 h-5 text-muted-foreground" />
-                      <div>
-                        <p className="font-medium">{doc.original_filename}</p>
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <Database className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium truncate">{doc.original_filename}</p>
+                        {/* 显示层级信息 */}
+                        {doc.hierarchy_path && doc.hierarchy_path !== doc.original_filename && (
+                          <p className="text-xs text-muted-foreground truncate mt-0.5" title={doc.hierarchy_path}>
+                            📁 {doc.hierarchy_path}
+                          </p>
+                        )}
                         <p className="text-sm text-muted-foreground">
                           {(doc.file_size / 1024 / 1024).toFixed(2)} MB • {doc.status}
+                          {doc.chunk_count !== undefined && ` • ${doc.chunk_count} 个片段`}
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">
                         {new Date(doc.created_at).toLocaleDateString()}
                       </span>
                     </div>

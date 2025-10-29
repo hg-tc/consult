@@ -45,7 +45,7 @@ class ZipProcessor:
     ]
     
     @staticmethod
-    async def extract_archive(archive_path: str, extract_to: str, max_depth: int = 5) -> List[Dict]:
+    async def extract_archive(archive_path: str, extract_to: str, max_depth: int = 5, archive_name: str = None) -> List[Dict]:
         """
         解压归档文件（ZIP或RAR）并返回文件列表（支持递归解压嵌套压缩文件）
         
@@ -53,21 +53,25 @@ class ZipProcessor:
             archive_path: 归档文件路径
             extract_to: 解压目标目录
             max_depth: 最大递归深度（防止无限递归）
+            archive_name: 压缩包名称（用于构建层级路径）
             
         Returns:
-            文件信息列表
+            文件信息列表，每个文件包含层级路径信息
         """
         file_ext = Path(archive_path).suffix.lower()
         
+        if archive_name is None:
+            archive_name = Path(archive_path).stem
+        
         if file_ext == '.zip':
-            return await ZipProcessor.extract_zip(archive_path, extract_to, max_depth=max_depth)
+            return await ZipProcessor.extract_zip(archive_path, extract_to, max_depth=max_depth, top_level_archive_name=archive_name)
         elif file_ext == '.rar':
-            return await ZipProcessor.extract_rar(archive_path, extract_to, max_depth=max_depth)
+            return await ZipProcessor.extract_rar(archive_path, extract_to, max_depth=max_depth, top_level_archive_name=archive_name)
         else:
             raise ValueError(f"不支持的归档格式: {file_ext}")
     
     @staticmethod
-    async def extract_zip(zip_path: str, extract_to: str, max_depth: int = 5, current_depth: int = 0, parent_path: str = "") -> List[Dict]:
+    async def extract_zip(zip_path: str, extract_to: str, max_depth: int = 5, current_depth: int = 0, parent_path: str = "", top_level_archive_name: str = None, archive_hierarchy: str = "") -> List[Dict]:
         """
         解压ZIP文件并返回文件列表（支持递归解压嵌套压缩文件）
         
@@ -77,11 +81,16 @@ class ZipProcessor:
             max_depth: 最大递归深度
             current_depth: 当前递归深度
             parent_path: 父路径（用于构建相对路径）
+            top_level_archive_name: 顶级压缩包名称
+            archive_hierarchy: 压缩包层级路径（如：archive1/archive2）
             
         Returns:
             文件信息列表，每个元素包含:
             - file_path: 文件路径
             - relative_path: 相对ZIP内的路径
+            - hierarchy_path: 完整层级路径（包括压缩包名称和文件夹结构）
+            - archive_name: 顶级压缩包名称
+            - archive_hierarchy: 压缩包层级路径
             - file_size: 文件大小
             - file_type: 文件类型
         """
@@ -138,14 +147,34 @@ class ZipProcessor:
                                 # 构建相对路径
                                 relative_path = f"{parent_path}/{file_info.filename}".lstrip('/') if parent_path else file_info.filename
                                 
+                                # 构建完整层级路径（用于唯一标识和显示）
+                                # 格式：压缩包名/嵌套压缩包/文件夹/文件名
+                                hierarchy_parts = []
+                                if top_level_archive_name:
+                                    hierarchy_parts.append(top_level_archive_name)
+                                if archive_hierarchy:
+                                    hierarchy_parts.append(archive_hierarchy)
+                                
+                                # 提取文件夹路径（去掉文件名）
+                                dir_path = str(Path(file_info.filename).parent)
+                                if dir_path and dir_path != '.':
+                                    hierarchy_parts.append(dir_path)
+                                
+                                hierarchy_path = '/'.join(hierarchy_parts) if hierarchy_parts else ''
+                                full_hierarchy_path = f"{hierarchy_path}/{Path(file_info.filename).name}" if hierarchy_path else Path(file_info.filename).name
+                                
                                 extracted_files.append({
                                     'file_path': str(file_path),
                                     'relative_path': relative_path,
+                                    'hierarchy_path': full_hierarchy_path,  # 完整层级路径
+                                    'archive_name': top_level_archive_name or Path(zip_path).stem,
+                                    'archive_hierarchy': archive_hierarchy,  # 嵌套压缩包路径
+                                    'folder_path': dir_path if dir_path and dir_path != '.' else '',  # 文件夹路径
                                     'file_size': file_info.file_size,
                                     'file_type': file_ext,
                                     'original_filename': Path(file_info.filename).name
                                 })
-                                logger.info(f"[ZIP] 解压文件: {file_info.filename} ({file_info.file_size} bytes)")
+                                logger.info(f"[ZIP] 解压文件: {full_hierarchy_path} ({file_info.file_size} bytes)")
                         else:
                             logger.debug(f"[ZIP] 跳过不支持的文件类型: {file_info.filename} (类型: {file_ext})")
                             
@@ -209,7 +238,7 @@ class ZipProcessor:
         return extracted_files
     
     @staticmethod
-    async def extract_rar(rar_path: str, extract_to: str, max_depth: int = 5, current_depth: int = 0, parent_path: str = "") -> List[Dict]:
+    async def extract_rar(rar_path: str, extract_to: str, max_depth: int = 5, current_depth: int = 0, parent_path: str = "", top_level_archive_name: str = None, archive_hierarchy: str = "") -> List[Dict]:
         """
         解压RAR文件并返回文件列表（支持递归解压嵌套压缩文件）
         
@@ -219,9 +248,11 @@ class ZipProcessor:
             max_depth: 最大递归深度
             current_depth: 当前递归深度
             parent_path: 父路径（用于构建相对路径）
+            top_level_archive_name: 顶级压缩包名称
+            archive_hierarchy: 压缩包层级路径（如：archive1/archive2）
             
         Returns:
-            文件信息列表
+            文件信息列表，每个元素包含层级路径信息
         """
         extracted_files = []
         extract_dir = Path(extract_to)
@@ -282,14 +313,33 @@ class ZipProcessor:
                             # 构建相对路径
                             relative_path = f"{parent_path}/{file_info.filename}".lstrip('/') if parent_path else file_info.filename
                             
+                            # 构建完整层级路径（用于唯一标识和显示）
+                            hierarchy_parts = []
+                            if top_level_archive_name:
+                                hierarchy_parts.append(top_level_archive_name)
+                            if archive_hierarchy:
+                                hierarchy_parts.append(archive_hierarchy)
+                            
+                            # 提取文件夹路径（去掉文件名）
+                            dir_path = str(Path(file_info.filename).parent)
+                            if dir_path and dir_path != '.':
+                                hierarchy_parts.append(dir_path)
+                            
+                            hierarchy_path = '/'.join(hierarchy_parts) if hierarchy_parts else ''
+                            full_hierarchy_path = f"{hierarchy_path}/{Path(file_info.filename).name}" if hierarchy_path else Path(file_info.filename).name
+                            
                             extracted_files.append({
                                 'file_path': str(file_path),
                                 'relative_path': relative_path,
+                                'hierarchy_path': full_hierarchy_path,  # 完整层级路径
+                                'archive_name': top_level_archive_name or Path(rar_path).stem,
+                                'archive_hierarchy': archive_hierarchy,  # 嵌套压缩包路径
+                                'folder_path': dir_path if dir_path and dir_path != '.' else '',  # 文件夹路径
                                 'file_size': file_info.file_size,
                                 'file_type': file_ext,
                                 'original_filename': Path(file_info.filename).name
                             })
-                            logger.info(f"[RAR] 解压文件: {file_info.filename} ({file_info.file_size} bytes)")
+                            logger.info(f"[RAR] 解压文件: {full_hierarchy_path} ({file_info.file_size} bytes)")
                         else:
                             logger.debug(f"[RAR] 跳过不支持的文件类型: {file_info.filename} (类型: {file_ext})")
                             
@@ -307,6 +357,10 @@ class ZipProcessor:
                         # 构建嵌套路径前缀
                         nested_parent_path = f"{parent_path}/{Path(nested_archive['relative_path']).stem}".lstrip('/') if parent_path else Path(nested_archive['relative_path']).stem
                         
+                        # 构建嵌套压缩包的层级路径
+                        nested_archive_name = Path(nested_archive['relative_path']).stem
+                        nested_archive_hierarchy = f"{archive_hierarchy}/{nested_archive_name}".lstrip('/') if archive_hierarchy else nested_archive_name
+                        
                         # 递归解压嵌套压缩文件
                         if nested_archive['archive_path'].endswith('.zip'):
                             nested_files = await ZipProcessor.extract_zip(
@@ -314,7 +368,9 @@ class ZipProcessor:
                                 str(nested_extract_dir),
                                 max_depth=max_depth,
                                 current_depth=current_depth + 1,
-                                parent_path=nested_parent_path
+                                parent_path=nested_parent_path,
+                                top_level_archive_name=top_level_archive_name or Path(rar_path).stem,
+                                archive_hierarchy=nested_archive_hierarchy
                             )
                         elif nested_archive['archive_path'].endswith('.rar'):
                             nested_files = await ZipProcessor.extract_rar(
@@ -322,7 +378,9 @@ class ZipProcessor:
                                 str(nested_extract_dir),
                                 max_depth=max_depth,
                                 current_depth=current_depth + 1,
-                                parent_path=nested_parent_path
+                                parent_path=nested_parent_path,
+                                top_level_archive_name=top_level_archive_name or Path(rar_path).stem,
+                                archive_hierarchy=nested_archive_hierarchy
                             )
                         else:
                             nested_files = []

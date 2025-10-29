@@ -244,8 +244,8 @@ export function DatabasePanel() {
                       <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                         <Database className="w-5 h-5 text-primary" />
                       </div>
-                      <div className="flex-1">
-                        <h4 className="font-medium text-foreground">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-foreground truncate">
                           {item.original_filename}
                           {item.chunk_count && item.chunk_count > 1 && (
                             <span className="ml-2 text-xs text-muted-foreground bg-gray-100 px-2 py-1 rounded">
@@ -253,8 +253,14 @@ export function DatabasePanel() {
                             </span>
                           )}
                         </h4>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span>{item.file_type?.toUpperCase()} · {item.file_size} bytes</span>
+                        {/* 显示层级信息 */}
+                        {item.hierarchy_path && item.hierarchy_path !== item.original_filename && (
+                          <p className="text-xs text-muted-foreground truncate mt-0.5" title={item.hierarchy_path}>
+                            📁 {item.hierarchy_path}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1 flex-wrap">
+                          <span>{item.file_type?.toUpperCase()} · {(item.file_size / 1024 / 1024).toFixed(2)} MB</span>
                           <span>状态: {getStatusText(item.status)}</span>
                           {item.is_vectorized && (
                             <span className="text-green-600">已向量化 ({item.vector_count} 块)</span>

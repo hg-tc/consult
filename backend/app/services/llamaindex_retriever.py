@@ -439,18 +439,67 @@ class LlamaIndexRetriever:
 
             documents = []
             if text and text.strip():
-                # 使用 Markdown 文本创建 Document
-                doc_meta = metadata.copy() if metadata else {}
-                doc_meta.update(md_meta)
-                doc_meta.setdefault("original_path", str(file_path))
-                documents = [LIDocument(text=text, metadata=doc_meta)]
+                # 构建层级信息前缀（如果有层级信息，添加到文档内容前端以确保向量化）
+                hierarchy_prefix = ""
+                if metadata and metadata.get('hierarchy_path'):
+                    hierarchy_info = []
+                    archive_name = metadata.get('archive_name')
+                    archive_hierarchy = metadata.get('archive_hierarchy')
+                    folder_path = metadata.get('folder_path')
+                    
+                    if archive_name:
+                        hierarchy_info.append(f"压缩包: {archive_name}")
+                    if archive_hierarchy:
+                        hierarchy_info.append(f"嵌套路径: {archive_hierarchy}")
+                    if folder_path:
+                        hierarchy_info.append(f"文件夹: {folder_path}")
+                    
+                    if hierarchy_info:
+                        hierarchy_prefix = f"## 文件层级信息\n\n" + "\n".join(hierarchy_info) + "\n\n---\n\n"
+                    
+                    # 完整层级路径也添加到元数据
+                    doc_meta = metadata.copy() if metadata else {}
+                    doc_meta.update(md_meta)
+                    doc_meta.setdefault("original_path", str(file_path))
+                    doc_meta.setdefault("hierarchy_path", metadata.get('hierarchy_path'))
+                else:
+                    doc_meta = metadata.copy() if metadata else {}
+                    doc_meta.update(md_meta)
+                    doc_meta.setdefault("original_path", str(file_path))
+                
+                # 将层级信息添加到文档内容前端
+                enhanced_text = hierarchy_prefix + text if hierarchy_prefix else text
+                documents = [LIDocument(text=enhanced_text, metadata=doc_meta)]
             else:
                 # 回退 SimpleDirectoryReader
                 from llama_index.core import SimpleDirectoryReader
                 documents = SimpleDirectoryReader(input_files=[file_path]).load_data()
                 if metadata:
+                    # 如果有层级信息，也添加到回退方案的文档中
+                    if metadata.get('hierarchy_path'):
+                        hierarchy_info = []
+                        archive_name = metadata.get('archive_name')
+                        archive_hierarchy = metadata.get('archive_hierarchy')
+                        folder_path = metadata.get('folder_path')
+                        
+                        if archive_name:
+                            hierarchy_info.append(f"压缩包: {archive_name}")
+                        if archive_hierarchy:
+                            hierarchy_info.append(f"嵌套路径: {archive_hierarchy}")
+                        if folder_path:
+                            hierarchy_info.append(f"文件夹: {folder_path}")
+                        
+                        hierarchy_prefix = ""
+                        if hierarchy_info:
+                            hierarchy_prefix = f"## 文件层级信息\n\n" + "\n".join(hierarchy_info) + "\n\n---\n\n"
+                    
                     for d in documents:
                         d.metadata.update(metadata)
+                        if metadata.get('hierarchy_path'):
+                            d.metadata['hierarchy_path'] = metadata.get('hierarchy_path')
+                        # 如果有层级前缀，添加到文档内容
+                        if hierarchy_prefix:
+                            d.text = hierarchy_prefix + d.text
 
             # 插入与持久化
             for doc in documents:

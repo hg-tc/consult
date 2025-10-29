@@ -625,31 +625,67 @@ async def list_global_documents():
                     docstore_data = json.load(f)
                 
                 # 解析 LlamaIndex 格式的 docstore
+                # 使用层级路径作为唯一标识，解决重名问题
+                # 注意：这里统计的是文档数，不是节点数（chunks）
                 file_groups = {}
                 nodes = docstore_data.get('docstore/data', {})
+                total_nodes = len(nodes)  # 节点总数（用于日志）
                 
                 for node_id, node_data in nodes.items():
                     data = node_data.get('__data__', {})
                     metadata = data.get('metadata', {})
                     
                     original_filename = metadata.get('original_filename') or metadata.get('file_name', f"文档_{node_id[:8]}")
+                    hierarchy_path = metadata.get('hierarchy_path', '') or original_filename
                     
-                    if original_filename not in file_groups:
-                        file_groups[original_filename] = {
-                            "id": node_id,
+                    # 优先使用层级路径作为唯一标识，如果没有则使用original_filename
+                    # 如果hierarchy_path就是original_filename，说明没有层级信息，仍使用original_filename
+                    if hierarchy_path and hierarchy_path != original_filename:
+                        unique_key = hierarchy_path
+                    else:
+                        # 没有层级信息时，使用original_filename + document_id（如果有）作为唯一标识
+                        document_id = metadata.get('document_id', '')
+                        unique_key = f"{original_filename}_{document_id}" if document_id else original_filename
+                    
+                    # 处理同一文件夹下的重名文件（简单添加(1)后缀）
+                    if unique_key in file_groups:
+                        # 检查是否是真正的重名（同一层级路径和document_id）
+                        existing = file_groups[unique_key]
+                        existing_doc_id = existing.get('document_id', '')
+                        current_doc_id = metadata.get('document_id', '')
+                        
+                        if existing.get('hierarchy_path') == hierarchy_path and existing_doc_id == current_doc_id:
+                            # 同一个文档的多个chunks，增加chunk_count
+                            file_groups[unique_key]["chunk_count"] += 1
+                            continue
+                        else:
+                            # 真正的重名不同文档，添加序号后缀
+                            counter = 1
+                            while f"{unique_key}({counter})" in file_groups:
+                                counter += 1
+                            unique_key = f"{unique_key}({counter})"
+                    
+                    if unique_key not in file_groups:
+                        file_groups[unique_key] = {
+                            "id": metadata.get('document_id', node_id),  # 优先使用document_id，否则使用第一个node_id
                             "filename": original_filename,
                             "original_filename": original_filename,
+                            "hierarchy_path": hierarchy_path,  # 完整层级路径
+                            "archive_name": metadata.get('archive_name', ''),
+                            "archive_hierarchy": metadata.get('archive_hierarchy', ''),
+                            "folder_path": metadata.get('folder_path', ''),
                             "file_size": metadata.get('file_size', 0),
                             "file_type": metadata.get('file_type', metadata.get('mime_type', '')),
                             "status": "completed",
                             "created_at": metadata.get('upload_time', metadata.get('creation_date', '')),
-                            "chunk_count": 1
+                            "chunk_count": 1,
+                            "document_id": metadata.get('document_id', '')
                         }
                     else:
-                        file_groups[original_filename]["chunk_count"] += 1
+                        file_groups[unique_key]["chunk_count"] += 1
                 
                 vector_documents = list(file_groups.values())
-                logger.info(f"✅ 从 LlamaIndex 向量库加载了 {len(vector_documents)} 个文档")
+                logger.info(f"✅ 从 LlamaIndex 向量库加载: {len(vector_documents)} 个文档（共 {total_nodes} 个chunks/节点）")
         except Exception as e:
             logger.warning(f"⚠️ 从 LlamaIndex 加载失败: {e}，使用备用方法")
         
@@ -657,11 +693,12 @@ async def list_global_documents():
         json_documents = load_global_documents()
         
         # 合并两个数据源，去重（优先使用向量数据库的数据）
+        # 使用层级路径作为唯一标识，解决重名问题
         result_map = {}
         
-        # 先添加向量数据库中的文档
+        # 先添加向量数据库中的文档（使用层级路径作为key）
         for doc in vector_documents:
-            key = doc.get('original_filename', '')
+            key = doc.get('hierarchy_path') or doc.get('original_filename', '')
             if key not in result_map:
                 result_map[key] = doc
         
@@ -671,12 +708,17 @@ async def list_global_documents():
             if doc.get('is_archive', False):
                 continue
                 
-            key = doc.get('original_filename', '')
+            # 使用层级路径作为key，如果没有则使用original_filename
+            key = doc.get('hierarchy_path') or doc.get('original_filename', '')
             if key not in result_map:
                 result_map[key] = {
                     "id": doc.get('id', ''),
                     "filename": doc.get('filename', ''),
                     "original_filename": doc.get('original_filename', ''),
+                    "hierarchy_path": doc.get('hierarchy_path', ''),  # 层级路径
+                    "archive_name": doc.get('archive_name', ''),  # 压缩包名称
+                    "archive_hierarchy": doc.get('archive_hierarchy', ''),  # 嵌套压缩包路径
+                    "folder_path": doc.get('folder_path', ''),  # 文件夹路径
                     "file_size": doc.get('file_size', 0),
                     "file_type": doc.get('file_type', ''),
                     "status": doc.get('status', 'completed'),
@@ -688,7 +730,7 @@ async def list_global_documents():
         
         result_documents = list(result_map.values())
         
-        logger.info(f"全局文档列表: 向量数据库 {len(vector_documents)} 个，JSON文件 {len(json_documents)} 个，合并后 {len(result_documents)} 个")
+        logger.info(f"全局文档列表: 向量数据库 {len(vector_documents)} 个文档，JSON文件 {len(json_documents)} 个，合并后 {len(result_documents)} 个")
         
         return {
             "documents": result_documents,
