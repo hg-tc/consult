@@ -10,6 +10,8 @@ import uuid
 import logging
 from pathlib import Path
 from datetime import datetime
+import subprocess as _sp
+import threading as _th
 
 # 简化导入，避免复杂的依赖
 # from app.models.global_database import GlobalDatabaseService
@@ -85,6 +87,20 @@ def save_global_workspaces(workspaces):
             json.dump(workspaces, f, ensure_ascii=False, indent=2)
     except Exception as e:
         logger.error(f"保存全局工作区失败: {e}")
+
+
+# 后端重启助手（异步，失败不抛出）
+def _restart_backend_async():
+    def _runner():
+        try:
+            _sp.Popen(["bash", "/root/consult/stop.sh"], stdout=_sp.DEVNULL, stderr=_sp.DEVNULL)
+            # 给一点时间释放端口
+            import time as _time
+            _time.sleep(2)
+            _sp.Popen(["bash", "/root/consult/start.sh"], stdout=_sp.DEVNULL, stderr=_sp.DEVNULL)
+        except Exception:
+            pass
+    _th.Thread(target=_runner, daemon=True).start()
 
 def get_global_services():
     """获取简化的全局服务实例"""
@@ -1238,6 +1254,10 @@ async def delete_global_document(doc_id: str):
             # 持久化更改
             retriever.index.storage_context.persist(persist_dir=str(retriever.storage_dir))
             logger.info(f"成功删除 {deleted_count} 个节点并持久化")
+        except TimeoutError:
+            logger.error("导入 LlamaIndexRetriever 超时(>5s)，触发后端重启")
+            _restart_backend_async()
+            raise HTTPException(status_code=504, detail="后端重启中，请稍后重试")
         except Exception as e:
             logger.error(f"删除节点失败: {e}")
             import traceback

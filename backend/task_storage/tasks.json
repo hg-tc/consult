@@ -7010,5 +7010,1174 @@
       "chunk_count": 640
     },
     "workspace_id": "global"
+  },
+  {
+    "id": "dad31ba8-b414-4651-afd9-cc20767ad1be",
+    "task_type": "global_archive_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761795839.0366833,
+    "started_at": null,
+    "completed_at": 1761795944.5295599,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "遴选企业入园申请材料.zip",
+      "file_path": "uploads/global/55bc3130-4b61-4b34-a5c9-251f50b7fda5.zip",
+      "file_size": 14483587,
+      "document_id": "55bc3130-4b61-4b34-a5c9-251f50b7fda5",
+      "file_type": ".zip",
+      "hierarchy_path": "",
+      "success": true,
+      "total_files": 5,
+      "successful": 5,
+      "failed": 0,
+      "results": [
+        {
+          "filename": "附件1:梦工场推介手册.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "770a179d-a55d-4575-a5e1-9ce3f54ffe77",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_dad31ba8-b414-4651-afd9-cc20767ad1be_j6hc99ki/附件1:梦工场推介手册.pdf",
+            "relative_path": "附件1:梦工场推介手册.pdf",
+            "hierarchy_path": "遴选企业入园申请材料/附件1:梦工场推介手册.pdf",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 11150090,
+            "file_type": ".pdf",
+            "original_filename": "附件1:梦工场推介手册.pdf",
+            "original_zip_filename": "╕╜╝■1ú║├╬╣ñ│í═╞╜Θ╩╓▓ß.pdf"
+          }
+        },
+        {
+          "filename": "附件2:申请材料清单.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "07d8a5da-4eab-4262-a0fc-1e8804e389c3",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_dad31ba8-b414-4651-afd9-cc20767ad1be_j6hc99ki/附件2:申请材料清单.docx",
+            "relative_path": "附件2:申请材料清单.docx",
+            "hierarchy_path": "遴选企业入园申请材料/附件2:申请材料清单.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 15141,
+            "file_type": ".docx",
+            "original_filename": "附件2:申请材料清单.docx",
+            "original_zip_filename": "╕╜╝■2ú║╔Ω╟δ▓─┴╧╟σ╡Ñ.docx"
+          }
+        },
+        {
+          "filename": "附件3:创新创业企业入驻申请表.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "cf8a645c-a40d-4b1d-ae67-f4d31fae1d3c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_dad31ba8-b414-4651-afd9-cc20767ad1be_j6hc99ki/附件3:创新创业企业入驻申请表.docx",
+            "relative_path": "附件3:创新创业企业入驻申请表.docx",
+            "hierarchy_path": "遴选企业入园申请材料/附件3:创新创业企业入驻申请表.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 22417,
+            "file_type": ".docx",
+            "original_filename": "附件3:创新创业企业入驻申请表.docx",
+            "original_zip_filename": "╕╜╝■3ú║┤┤╨┬┤┤╥╡╞≤╥╡╚δ╫ñ╔Ω╟δ▒φ.docx"
+          }
+        },
+        {
+          "filename": "附件4:商业计划书(路演)ppt.pptx",
+          "success": true,
+          "file_type": ".pptx",
+          "file_id": "5345ad32-7211-445e-b5da-e9d4f8ff3bda",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_dad31ba8-b414-4651-afd9-cc20767ad1be_j6hc99ki/附件4:商业计划书(路演)ppt.pptx",
+            "relative_path": "附件4:商业计划书(路演)ppt.pptx",
+            "hierarchy_path": "遴选企业入园申请材料/附件4:商业计划书(路演)ppt.pptx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 67264,
+            "file_type": ".pptx",
+            "original_filename": "附件4:商业计划书(路演)ppt.pptx",
+            "original_zip_filename": "╕╜╝■4ú║╔╠╥╡╝╞╗«╩Θú¿┬╖╤▌ú⌐ppt.pptx"
+          }
+        },
+        {
+          "filename": "附件5:创新创业评分标准.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "08bc6c7e-2ecc-47aa-b2bd-72dfbfea4fc9",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_dad31ba8-b414-4651-afd9-cc20767ad1be_j6hc99ki/附件5:创新创业评分标准.docx",
+            "relative_path": "附件5:创新创业评分标准.docx",
+            "hierarchy_path": "遴选企业入园申请材料/附件5:创新创业评分标准.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 14869,
+            "file_type": ".docx",
+            "original_filename": "附件5:创新创业评分标准.docx",
+            "original_zip_filename": "╕╜╝■5ú║┤┤╨┬┤┤╥╡╞└╖╓▒Ω╫╝.docx"
+          }
+        }
+      ]
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "d755790f-4857-4d30-887d-0c58848d3720",
+    "task_type": "global_archive_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761796800.930964,
+    "started_at": null,
+    "completed_at": 1761796958.8818917,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "遴选企业入园申请材料.zip",
+      "file_path": "uploads/global/4ca5e4ce-3f89-4a28-a9c2-ced0c8584c97.zip",
+      "file_size": 14483587,
+      "document_id": "4ca5e4ce-3f89-4a28-a9c2-ced0c8584c97",
+      "file_type": ".zip",
+      "hierarchy_path": "",
+      "success": true,
+      "total_files": 6,
+      "successful": 6,
+      "failed": 0,
+      "results": [
+        {
+          "filename": "附件1:梦工场推介手册.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "64284389-830c-4ec9-8829-8103f9a9aba8",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_d755790f-4857-4d30-887d-0c58848d3720_yk2mk09k/附件1:梦工场推介手册.pdf",
+            "relative_path": "附件1:梦工场推介手册.pdf",
+            "hierarchy_path": "遴选企业入园申请材料/附件1:梦工场推介手册.pdf",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 11150090,
+            "file_type": ".pdf",
+            "original_filename": "附件1:梦工场推介手册.pdf",
+            "original_zip_filename": "╕╜╝■1ú║├╬╣ñ│í═╞╜Θ╩╓▓ß.pdf"
+          }
+        },
+        {
+          "filename": "附件2:申请材料清单.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "204b092c-7c9a-4062-9011-53783438ef8f",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_d755790f-4857-4d30-887d-0c58848d3720_yk2mk09k/附件2:申请材料清单.docx",
+            "relative_path": "附件2:申请材料清单.docx",
+            "hierarchy_path": "遴选企业入园申请材料/附件2:申请材料清单.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 15141,
+            "file_type": ".docx",
+            "original_filename": "附件2:申请材料清单.docx",
+            "original_zip_filename": "╕╜╝■2ú║╔Ω╟δ▓─┴╧╟σ╡Ñ.docx"
+          }
+        },
+        {
+          "filename": "附件3:创新创业企业入驻申请表.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "3eb18bcd-be0f-445d-a271-c62f49a1ba0a",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_d755790f-4857-4d30-887d-0c58848d3720_yk2mk09k/附件3:创新创业企业入驻申请表.docx",
+            "relative_path": "附件3:创新创业企业入驻申请表.docx",
+            "hierarchy_path": "遴选企业入园申请材料/附件3:创新创业企业入驻申请表.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 22417,
+            "file_type": ".docx",
+            "original_filename": "附件3:创新创业企业入驻申请表.docx",
+            "original_zip_filename": "╕╜╝■3ú║┤┤╨┬┤┤╥╡╞≤╥╡╚δ╫ñ╔Ω╟δ▒φ.docx"
+          }
+        },
+        {
+          "filename": "附件4:商业计划书(路演)ppt.pptx",
+          "success": true,
+          "file_type": ".pptx",
+          "file_id": "c313a693-ba3a-4800-8e3b-886b5a326a2b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_d755790f-4857-4d30-887d-0c58848d3720_yk2mk09k/附件4:商业计划书(路演)ppt.pptx",
+            "relative_path": "附件4:商业计划书(路演)ppt.pptx",
+            "hierarchy_path": "遴选企业入园申请材料/附件4:商业计划书(路演)ppt.pptx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 67264,
+            "file_type": ".pptx",
+            "original_filename": "附件4:商业计划书(路演)ppt.pptx",
+            "original_zip_filename": "╕╜╝■4ú║╔╠╥╡╝╞╗«╩Θú¿┬╖╤▌ú⌐ppt.pptx"
+          }
+        },
+        {
+          "filename": "附件5:创新创业评分标准.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "9be1d1aa-0605-4550-85f5-f2e10b6edcd4",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_d755790f-4857-4d30-887d-0c58848d3720_yk2mk09k/附件5:创新创业评分标准.docx",
+            "relative_path": "附件5:创新创业评分标准.docx",
+            "hierarchy_path": "遴选企业入园申请材料/附件5:创新创业评分标准.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 14869,
+            "file_type": ".docx",
+            "original_filename": "附件5:创新创业评分标准.docx",
+            "original_zip_filename": "╕╜╝■5ú║┤┤╨┬┤┤╥╡╞└╖╓▒Ω╫╝.docx"
+          }
+        },
+        {
+          "filename": "附件6:《深圳市前海深港现代服务业合作区管理局关于支持港澳青年在前海就业创业发展的十二条措施》.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "80412bc2-7fa2-4fab-81f5-ec10564fdc7c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_d755790f-4857-4d30-887d-0c58848d3720_yk2mk09k/附件6:《深圳市前海深港现代服务业合作区管理局关于支持港澳青年在前海就业创业发展的十二条措施》.pdf",
+            "relative_path": "附件6:《深圳市前海深港现代服务业合作区管理局关于支持港澳青年在前海就业创业发展的十二条措施》.pdf",
+            "hierarchy_path": "遴选企业入园申请材料/附件6:《深圳市前海深港现代服务业合作区管理局关于支持港澳青年在前海就业创业发展的十二条措施》.pdf",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 4137241,
+            "file_type": ".pdf",
+            "original_filename": "附件6:《深圳市前海深港现代服务业合作区管理局关于支持港澳青年在前海就业创业发展的十二条措施》.pdf",
+            "original_zip_filename": "╕╜╝■6ú║í╢╔ε█┌╩╨╟░║ú╔ε╕█╧╓┤·╖■╬±╥╡║╧╫≈╟°╣▄└φ╛╓╣╪╙┌╓º│╓╕█░─╟α─Ω╘┌╟░║ú╛═╥╡┤┤╥╡╖ó╒╣╡─╩«╢■╠⌡┤δ╩⌐í╖.pdf"
+          }
+        }
+      ]
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "f4797853-3e40-4c06-90a4-54170f4d1a8c",
+    "task_type": "global_archive_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761797089.043216,
+    "started_at": null,
+    "completed_at": 1761797199.4594398,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "2025政策申报服务协议签章版.rar",
+      "file_path": "uploads/global/80deed45-f962-4cb0-80e5-195f614d0fc4.rar",
+      "file_size": 9495343,
+      "document_id": "80deed45-f962-4cb0-80e5-195f614d0fc4",
+      "file_type": ".rar",
+      "hierarchy_path": "",
+      "success": true,
+      "total_files": 4,
+      "successful": 4,
+      "failed": 0,
+      "results": [
+        {
+          "filename": "2025年政策补贴项目咨询服务合同(双方签章版).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "f3fea8cf-5601-4f11-80dd-8eec752dce58",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_f4797853-3e40-4c06-90a4-54170f4d1a8c_ub5u2lvm/2025政策申报服务协议签章版/元觉-政策申报服务合同双方签章版/2025年政策补贴项目咨询服务合同(双方签章版).pdf",
+            "relative_path": "2025政策申报服务协议签章版/元觉-政策申报服务合同双方签章版/2025年政策补贴项目咨询服务合同(双方签章版).pdf",
+            "hierarchy_path": "2025政策申报服务协议签章版/2025政策申报服务协议签章版/元觉-政策申报服务合同双方签章版/2025年政策补贴项目咨询服务合同(双方签章版).pdf",
+            "archive_name": "2025政策申报服务协议签章版",
+            "archive_hierarchy": "",
+            "folder_path": "2025政策申报服务协议签章版/元觉-政策申报服务合同双方签章版",
+            "file_size": 3078527,
+            "file_type": ".pdf",
+            "original_filename": "2025年政策补贴项目咨询服务合同(双方签章版).pdf",
+            "original_zip_filename": "2025政策申报服务协议签章版/元觉-政策申报服务合同双方签章版/2025年政策补贴项目咨询服务合同（双方签章版）.pdf"
+          }
+        },
+        {
+          "filename": "程翔项目咨询服务协议(双方签章版).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "387b5e59-8390-4fe8-966c-4cc3bace0916",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_f4797853-3e40-4c06-90a4-54170f4d1a8c_ub5u2lvm/2025政策申报服务协议签章版/蓝地球-政策申报服务合同双方签章版/程翔项目咨询服务协议(双方签章版).pdf",
+            "relative_path": "2025政策申报服务协议签章版/蓝地球-政策申报服务合同双方签章版/程翔项目咨询服务协议(双方签章版).pdf",
+            "hierarchy_path": "2025政策申报服务协议签章版/2025政策申报服务协议签章版/蓝地球-政策申报服务合同双方签章版/程翔项目咨询服务协议(双方签章版).pdf",
+            "archive_name": "2025政策申报服务协议签章版",
+            "archive_hierarchy": "",
+            "folder_path": "2025政策申报服务协议签章版/蓝地球-政策申报服务合同双方签章版",
+            "file_size": 2057220,
+            "file_type": ".pdf",
+            "original_filename": "程翔项目咨询服务协议(双方签章版).pdf",
+            "original_zip_filename": "2025政策申报服务协议签章版/蓝地球-政策申报服务合同双方签章版/程翔项目咨询服务协议（双方签章版）.pdf"
+          }
+        },
+        {
+          "filename": "蓝地球(深圳)智能控制系统有限公司 项目咨询服务合同(双方用印).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "d4f232d0-6577-4222-b681-e1f94c4e29f6",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_f4797853-3e40-4c06-90a4-54170f4d1a8c_ub5u2lvm/2025政策申报服务协议签章版/蓝地球-政策申报服务合同双方签章版/蓝地球(深圳)智能控制系统有限公司 项目咨询服务合同(双方用印).pdf",
+            "relative_path": "2025政策申报服务协议签章版/蓝地球-政策申报服务合同双方签章版/蓝地球(深圳)智能控制系统有限公司 项目咨询服务合同(双方用印).pdf",
+            "hierarchy_path": "2025政策申报服务协议签章版/2025政策申报服务协议签章版/蓝地球-政策申报服务合同双方签章版/蓝地球(深圳)智能控制系统有限公司 项目咨询服务合同(双方用印).pdf",
+            "archive_name": "2025政策申报服务协议签章版",
+            "archive_hierarchy": "",
+            "folder_path": "2025政策申报服务协议签章版/蓝地球-政策申报服务合同双方签章版",
+            "file_size": 1335163,
+            "file_type": ".pdf",
+            "original_filename": "蓝地球(深圳)智能控制系统有限公司 项目咨询服务合同(双方用印).pdf",
+            "original_zip_filename": "2025政策申报服务协议签章版/蓝地球-政策申报服务合同双方签章版/蓝地球（深圳）智能控制系统有限公司 项目咨询服务合同(双方用印).pdf"
+          }
+        },
+        {
+          "filename": "领晋申报补贴服务协议.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "8235cc82-79a5-4a61-aae9-0297b6631049",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_f4797853-3e40-4c06-90a4-54170f4d1a8c_ub5u2lvm/2025政策申报服务协议签章版/领晋-政策申报服务合同双方签章版/领晋申报补贴服务协议.pdf",
+            "relative_path": "2025政策申报服务协议签章版/领晋-政策申报服务合同双方签章版/领晋申报补贴服务协议.pdf",
+            "hierarchy_path": "2025政策申报服务协议签章版/2025政策申报服务协议签章版/领晋-政策申报服务合同双方签章版/领晋申报补贴服务协议.pdf",
+            "archive_name": "2025政策申报服务协议签章版",
+            "archive_hierarchy": "",
+            "folder_path": "2025政策申报服务协议签章版/领晋-政策申报服务合同双方签章版",
+            "file_size": 4171504,
+            "file_type": ".pdf",
+            "original_filename": "领晋申报补贴服务协议.pdf",
+            "original_zip_filename": "2025政策申报服务协议签章版/领晋-政策申报服务合同双方签章版/领晋申报补贴服务协议.pdf"
+          }
+        }
+      ]
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "300806d4-a7cc-4b45-ae9a-8b751f18d64b",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761797268.5119965,
+    "started_at": 1761797268.5520556,
+    "completed_at": 1761797304.9803357,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.7创业载体认定或备案证明文件：首批粤港澳大湾区港澳青年创新创业基地拟授牌名单/关于首批粤港澳大湾区港澳青年创新创业基地拟授牌名单的公司.pdf",
+      "file_path": "uploads/global/e05a5571-e18b-4ed8-a90e-b777805f69d2.pdf",
+      "file_size": 237043,
+      "document_id": "e05a5571-e18b-4ed8-a90e-b777805f69d2",
+      "hierarchy_path": "1.7创业载体认定或备案证明文件：首批粤港澳大湾区港澳青年创新创业基地拟授牌名单/关于首批粤港澳大湾区港澳青年创新创业基地拟授牌名单的公司.pdf",
+      "chunk_count": 697
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "bf14d88d-015b-4578-b8e8-7e5594df83f5",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761797268.8932965,
+    "started_at": 1761797268.9331267,
+    "completed_at": 1761797303.663009,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "1.7创业载体认定或备案证明文件：首批粤港澳大湾区港澳青年创新创业基地拟授牌名单/首批粤港澳大湾区港澳青年创新创业基地拟授牌名单.doc",
+      "file_path": "uploads/global/a422db31-a729-4c81-8e4f-2c525d80f017.doc",
+      "file_size": 13312,
+      "document_id": "a422db31-a729-4c81-8e4f-2c525d80f017",
+      "hierarchy_path": "1.7创业载体认定或备案证明文件：首批粤港澳大湾区港澳青年创新创业基地拟授牌名单/首批粤港澳大湾区港澳青年创新创业基地拟授牌名单.doc"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "e1bad200-70ba-4baa-87c2-6c5f9a3b5445",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761797288.4896708,
+    "started_at": 1761797289.2280095,
+    "completed_at": 1761797315.8828323,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "公示/附件：2025年度支持港澳青年发展专项资金第一批次拟发放个人名单.xlsx",
+      "file_path": "uploads/global/320035e1-1183-464d-89b5-566850495827.xlsx",
+      "file_size": 13700,
+      "document_id": "320035e1-1183-464d-89b5-566850495827",
+      "hierarchy_path": "公示/附件：2025年度支持港澳青年发展专项资金第一批次拟发放个人名单.xlsx",
+      "chunk_count": 703
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "3bedb9a9-3a85-49cb-8ffd-8c7289cefda6",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761797302.5236487,
+    "started_at": 1761797302.56414,
+    "completed_at": 1761797329.3488765,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "公示/附件：2025年度支持港澳青年发展专项资金第三批次拟发放个人名单.xlsx",
+      "file_path": "uploads/global/a76dd509-7024-47ea-8950-ad60111d5d43.xlsx",
+      "file_size": 23181,
+      "document_id": "a76dd509-7024-47ea-8950-ad60111d5d43",
+      "hierarchy_path": "公示/附件：2025年度支持港澳青年发展专项资金第三批次拟发放个人名单.xlsx",
+      "chunk_count": 724
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "5964d557-20ad-47d0-b9ed-ee259c14b98f",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761797317.153425,
+    "started_at": 1761797317.4878628,
+    "completed_at": 1761797342.2958066,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "公示/附件：2025年度支持港澳青年发展专项资金第二批次拟发放个人名单.xlsx",
+      "file_path": "uploads/global/2c591bd7-49f5-473a-acfc-c1a281f76d10.xlsx",
+      "file_size": 14275,
+      "document_id": "2c591bd7-49f5-473a-acfc-c1a281f76d10",
+      "hierarchy_path": "公示/附件：2025年度支持港澳青年发展专项资金第二批次拟发放个人名单.xlsx",
+      "chunk_count": 731
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "a48a4ccb-c1d6-486d-a6bb-3994a145fd04",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761797328.0902321,
+    "started_at": 1761797328.440922,
+    "completed_at": 1761797354.024492,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "公示/附件：2025年度支持港澳青年发展专项资金第五批次拟发放个人名单.xlsx",
+      "file_path": "uploads/global/ba8e112d-f0e0-4df8-9742-d63cb81dcacc.xlsx",
+      "file_size": 21063,
+      "document_id": "ba8e112d-f0e0-4df8-9742-d63cb81dcacc",
+      "hierarchy_path": "公示/附件：2025年度支持港澳青年发展专项资金第五批次拟发放个人名单.xlsx",
+      "chunk_count": 749
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "e33873d7-aef5-4f1a-a6dd-78491cd3a3c8",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761797340.2330635,
+    "started_at": 1761797340.2745867,
+    "completed_at": 1761797360.5526865,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "公示/附件：2025年度支持港澳青年发展专项资金第四批次拟发放个人名单.xlsx",
+      "file_path": "uploads/global/e170cec9-5844-40ff-b721-1ac250ecbfcf.xlsx",
+      "file_size": 19373,
+      "document_id": "e170cec9-5844-40ff-b721-1ac250ecbfcf",
+      "hierarchy_path": "公示/附件：2025年度支持港澳青年发展专项资金第四批次拟发放个人名单.xlsx",
+      "chunk_count": 764
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "2ac42d96-8495-4a0b-b98c-1e8bbd1b9e5b",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761797409.258845,
+    "started_at": 1761797409.3027546,
+    "completed_at": 1761797416.4092877,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "首批粤港澳大湾区港澳青年创新创业基地拟授牌名单.doc",
+      "file_path": "uploads/global/3be07b22-0c64-4588-a9ed-11ae219b143a.doc",
+      "file_size": 13312,
+      "document_id": "3be07b22-0c64-4588-a9ed-11ae219b143a",
+      "hierarchy_path": ""
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "acf3c346-4e3b-431b-a1ed-7e56d15d2078",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761797575.9667826,
+    "started_at": 1761797576.0082958,
+    "completed_at": 1761797583.306417,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "首批粤港澳大湾区港澳青年创新创业基地拟授牌名单.doc",
+      "file_path": "uploads/global/f3b627ca-12ac-415b-b4ad-9df3d6312382.doc",
+      "file_size": 13312,
+      "document_id": "f3b627ca-12ac-415b-b4ad-9df3d6312382",
+      "hierarchy_path": ""
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "ef4a80c2-5aaf-4b1a-90a3-44273814e268",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761797607.9659574,
+    "started_at": 1761797608.0089154,
+    "completed_at": 1761797649.1813319,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "首批粤港澳大湾区港澳青年创新创业基地拟授牌名单.doc",
+      "file_path": "uploads/global/050cb577-c0dc-4d0d-8df6-b1c489a228b1.doc",
+      "file_size": 13312,
+      "document_id": "050cb577-c0dc-4d0d-8df6-b1c489a228b1",
+      "hierarchy_path": "",
+      "chunk_count": 765
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "c34845df-9f7b-43ef-996b-48d1585a33fd",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "indexing",
+      "progress": 90,
+      "message": "持久化索引中... 已等待 30s",
+      "details": {}
+    },
+    "created_at": 1761797671.452003,
+    "started_at": 1761797671.4930189,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.12示例/业务号：202508050107(1).pdf",
+      "file_path": "uploads/global/793accf7-0371-4547-bb2f-ec01bb342e91.pdf",
+      "file_size": 23750605,
+      "document_id": "793accf7-0371-4547-bb2f-ec01bb342e91",
+      "hierarchy_path": "1.12示例/业务号：202508050107(1).pdf"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "7724a466-5bd9-4105-9891-73ecefdc1d08",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761797672.1946194,
+    "started_at": 1761797672.2353733,
+    "completed_at": 1761797881.7697206,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.12示例/于蓉-2025年度港澳青年在前海就业创业资金申请表（个人类资助）-signed+.pdf",
+      "file_path": "uploads/global/5a0ca68b-9abe-4e61-8b14-5e519d6652ab.pdf",
+      "file_size": 3801423,
+      "document_id": "5a0ca68b-9abe-4e61-8b14-5e519d6652ab",
+      "hierarchy_path": "1.12示例/于蓉-2025年度港澳青年在前海就业创业资金申请表（个人类资助）-signed+.pdf",
+      "chunk_count": 773
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "9b07233e-7291-4c79-ab0b-06ada55e0e1d",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761797763.919863,
+    "started_at": 1761797764.0159144,
+    "completed_at": 1761797897.4647188,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.12示例/云怀萱 2025年度港澳青年在前海就业创业资金申请表(1)+.pdf",
+      "file_path": "uploads/global/1cecfe25-4dcd-4d0f-a79f-c623180402e4.pdf",
+      "file_size": 3237147,
+      "document_id": "1cecfe25-4dcd-4d0f-a79f-c623180402e4",
+      "hierarchy_path": "1.12示例/云怀萱 2025年度港澳青年在前海就业创业资金申请表(1)+.pdf",
+      "chunk_count": 794
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "7dcd848e-d92c-4150-a189-e0a28f0e64c9",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761797764.675924,
+    "started_at": 1761797764.768803,
+    "completed_at": 1761797907.750833,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.12示例/元觉企业申报成功截图.png",
+      "file_path": "uploads/global/fbef3e86-011f-431a-9a56-e32d94e14fd8.png",
+      "file_size": 126911,
+      "document_id": "fbef3e86-011f-431a-9a56-e32d94e14fd8",
+      "hierarchy_path": "1.12示例/元觉企业申报成功截图.png",
+      "chunk_count": 795
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "cdfe44c8-f611-4572-9c63-cce248c602c8",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761797765.4802191,
+    "started_at": 1761797765.5731053,
+    "completed_at": 1761797907.7016597,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.12示例/蓝地球企业+个人申报截图.png",
+      "file_path": "uploads/global/d5b0664d-a25c-4b8e-b647-ddcf1e398dac.png",
+      "file_size": 214782,
+      "document_id": "d5b0664d-a25c-4b8e-b647-ddcf1e398dac",
+      "hierarchy_path": "1.12示例/蓝地球企业+个人申报截图.png",
+      "chunk_count": 796
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "b21982d4-d227-4044-9052-111644f68913",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761797946.6650033,
+    "started_at": 1761797946.70698,
+    "completed_at": 1761797978.14581,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.12示例/陳小慧-2025年度港澳青年在前海就业创业资金申请表（个人类资助）(3)+.pdf",
+      "file_path": "uploads/global/5a7f5450-5d8d-49bb-8643-3de707e86daa.pdf",
+      "file_size": 2372446,
+      "document_id": "5a7f5450-5d8d-49bb-8643-3de707e86daa",
+      "hierarchy_path": "1.12示例/陳小慧-2025年度港澳青年在前海就业创业资金申请表（个人类资助）(3)+.pdf",
+      "chunk_count": 800
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "b7d9c787-6668-49ac-81b3-0a0cf67aca46",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798032.8469648,
+    "started_at": 1761798032.8910108,
+    "completed_at": 1761798059.0145667,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "客户申报提醒通知/关于前海港澳青年就业创业扶持政策申报的重要提醒.docx",
+      "file_path": "uploads/global/f15b12da-a8d7-4b48-879a-7d6728a5527a.docx",
+      "file_size": 17410,
+      "document_id": "f15b12da-a8d7-4b48-879a-7d6728a5527a",
+      "hierarchy_path": "客户申报提醒通知/关于前海港澳青年就业创业扶持政策申报的重要提醒.docx",
+      "chunk_count": 802
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "4ece22e1-6abb-424c-b2b6-08fbdb5ed63c",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798033.539812,
+    "started_at": 1761798033.5813148,
+    "completed_at": 1761798065.3582337,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "客户申报提醒通知/关于前海港澳青年就业创业扶持政策申报的重要提醒.pdf",
+      "file_path": "uploads/global/625d7544-c281-41ad-aff4-99091f606b25.pdf",
+      "file_size": 239421,
+      "document_id": "625d7544-c281-41ad-aff4-99091f606b25",
+      "hierarchy_path": "客户申报提醒通知/关于前海港澳青年就业创业扶持政策申报的重要提醒.pdf",
+      "chunk_count": 804
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "406e12f1-aa4d-4242-8274-1580eeeb4135",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798121.1763155,
+    "started_at": 1761798121.22081,
+    "completed_at": 1761798168.0774288,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.6材料附件/企业/实际经营承诺书.docx",
+      "file_path": "uploads/global/0e82021a-47fd-4d7e-bb84-5e0ee46a5c63.docx",
+      "file_size": 22197,
+      "document_id": "0e82021a-47fd-4d7e-bb84-5e0ee46a5c63",
+      "hierarchy_path": "1.6材料附件/企业/实际经营承诺书.docx",
+      "chunk_count": 805
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "ee387c53-523b-4def-ab4b-14b4c1163706",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798121.932271,
+    "started_at": 1761798121.9762154,
+    "completed_at": 1761798169.5790558,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.6材料附件/企业/港澳青年清单.xlsx",
+      "file_path": "uploads/global/39d94136-b718-462a-8a40-e1ddc5cf09f1.xlsx",
+      "file_size": 11169,
+      "document_id": "39d94136-b718-462a-8a40-e1ddc5cf09f1",
+      "hierarchy_path": "1.6材料附件/企业/港澳青年清单.xlsx",
+      "chunk_count": 806
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "544b7773-d354-40db-8aab-5a92799c1a64",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798122.26797,
+    "started_at": 1761798122.311639,
+    "completed_at": 1761798170.3874192,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.6材料附件/企业/申请表及承诺书（单位类）.docx",
+      "file_path": "uploads/global/0d675667-a9cf-43aa-b5a7-ea9a3eed4668.docx",
+      "file_size": 30966,
+      "document_id": "0d675667-a9cf-43aa-b5a7-ea9a3eed4668",
+      "hierarchy_path": "1.6材料附件/企业/申请表及承诺书（单位类）.docx",
+      "chunk_count": 809
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "5f374435-af65-4ba6-ba1f-fe27dd81b05c",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798129.7107785,
+    "started_at": 1761798130.0524065,
+    "completed_at": 1761798183.762422,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.6材料附件/企业/租金支付统计表.docx",
+      "file_path": "uploads/global/7614f839-c936-4939-b826-eb956f0063d6.docx",
+      "file_size": 23074,
+      "document_id": "7614f839-c936-4939-b826-eb956f0063d6",
+      "hierarchy_path": "1.6材料附件/企业/租金支付统计表.docx",
+      "chunk_count": 811
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "3cdae234-5118-4d44-9917-7051d98d623b",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798171.5791898,
+    "started_at": 1761798171.9380357,
+    "completed_at": 1761798190.359017,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.6材料附件/个人/申请表及承诺书（个人类）.docx",
+      "file_path": "uploads/global/af55e7c2-c105-44cd-8959-61c4bdfc713f.docx",
+      "file_size": 30269,
+      "document_id": "af55e7c2-c105-44cd-8959-61c4bdfc713f",
+      "hierarchy_path": "1.6材料附件/个人/申请表及承诺书（个人类）.docx",
+      "chunk_count": 815
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "d346f329-9a7e-4df6-9c63-3de812a8042d",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "indexing",
+      "progress": 90,
+      "message": "持久化索引中... 已等待 30s",
+      "details": {}
+    },
+    "created_at": 1761798321.1399124,
+    "started_at": 1761798321.184575,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.10 2025年8月4日前海是2条政策补贴宣讲会议纪要.doc",
+      "file_path": "uploads/global/bea809c1-995c-4628-9e84-ec76d92c774d.doc",
+      "file_size": 19456,
+      "document_id": "bea809c1-995c-4628-9e84-ec76d92c774d",
+      "hierarchy_path": ""
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "72e2624b-5eb6-41f3-ae48-a63034c4e60b",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "indexing",
+      "progress": 90,
+      "message": "持久化索引中... 已等待 30s",
+      "details": {}
+    },
+    "created_at": 1761798321.9982402,
+    "started_at": 1761798322.0407643,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.9《深圳市前海深港现代服务业合作区管理局关于支持港澳青年在前海就业创业发展的十二条措施》2025年度个人类补贴申报指南.pdf",
+      "file_path": "uploads/global/32ac1a42-be43-45f6-85ea-1dcf37db793a.pdf",
+      "file_size": 780926,
+      "document_id": "32ac1a42-be43-45f6-85ea-1dcf37db793a",
+      "hierarchy_path": ""
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "e710aac7-1f72-46ed-a73d-051aa0442efc",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798335.580346,
+    "started_at": 1761798335.947525,
+    "completed_at": 1761798422.5071173,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.8《深圳市前海深港现代服务业合作区管理局关于支持港澳青年在前海就业创业发展的十二条措施》2025年度单位类补贴申报指南.pdf",
+      "file_path": "uploads/global/49590db2-75b5-4d8e-857e-c1f7706df693.pdf",
+      "file_size": 1151986,
+      "document_id": "49590db2-75b5-4d8e-857e-c1f7706df693",
+      "hierarchy_path": "",
+      "chunk_count": 834
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "c708c920-9a76-46b4-9b22-f44fc8d840e3",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "indexing",
+      "progress": 90,
+      "message": "持久化索引中... 已等待 30s",
+      "details": {}
+    },
+    "created_at": 1761798422.01623,
+    "started_at": 1761798422.059115,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.5前海12条政策补贴申请流程（官网个人与企业绑定注册指南）.pdf",
+      "file_path": "uploads/global/5b5952d5-ee39-45ff-9519-2334504c9f28.pdf",
+      "file_size": 3629187,
+      "document_id": "5b5952d5-ee39-45ff-9519-2334504c9f28",
+      "hierarchy_path": ""
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "6eee01f8-97aa-48eb-bf16-05fd04e7a505",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798422.9503784,
+    "started_at": 1761798422.993386,
+    "completed_at": 1761798601.9155996,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.2个人类-相关材料获取链接及教程（详细版）.pdf",
+      "file_path": "uploads/global/c02027b7-1478-49d3-b0dc-0c6fd24f9579.pdf",
+      "file_size": 1550402,
+      "document_id": "c02027b7-1478-49d3-b0dc-0c6fd24f9579",
+      "hierarchy_path": "",
+      "chunk_count": 851
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "21dea39c-2237-4101-869f-66b08d284d7b",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798443.1547947,
+    "started_at": 1761798443.2577434,
+    "completed_at": 1761798603.4223707,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.11 深圳市前海管理局关于印发《深圳市前海深港现代服务业合作区管理局关于支持港澳青年在前海就业创业发展的十二条措施》的通知.docx",
+      "file_path": "uploads/global/daa8dabd-fc88-4e20-a4f8-8cb32facb471.docx",
+      "file_size": 49774,
+      "document_id": "daa8dabd-fc88-4e20-a4f8-8cb32facb471",
+      "hierarchy_path": "",
+      "chunk_count": 856
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "90c40a4f-918e-4248-9191-0c009353fa30",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798563.9331715,
+    "started_at": 1761798564.2988753,
+    "completed_at": 1761798636.4316478,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.4个人类与企业类申报相关材料获取链接及教程..pdf",
+      "file_path": "uploads/global/59749b54-9487-4db6-ba09-cb43799d6917.pdf",
+      "file_size": 107896,
+      "document_id": "59749b54-9487-4db6-ba09-cb43799d6917",
+      "hierarchy_path": "",
+      "chunk_count": 857
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "41c68f39-fc26-45e6-9502-60657a810680",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798601.9669845,
+    "started_at": 1761798602.0098276,
+    "completed_at": 1761798637.4104874,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.1个人类资助申请材料.pdf",
+      "file_path": "uploads/global/2ac965f9-978d-48e6-8ca1-29d25f90df55.pdf",
+      "file_size": 47829,
+      "document_id": "2ac965f9-978d-48e6-8ca1-29d25f90df55",
+      "hierarchy_path": "",
+      "chunk_count": 858
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "c1aa65df-4ca3-4f11-8584-8b3338ed3d16",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798604.3434517,
+    "started_at": 1761798605.4437559,
+    "completed_at": 1761798643.7194657,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "1.3单位类资助申请材料.pdf",
+      "file_path": "uploads/global/14bc936d-0d81-4f85-88b0-b20541d128bf.pdf",
+      "file_size": 79039,
+      "document_id": "14bc936d-0d81-4f85-88b0-b20541d128bf",
+      "hierarchy_path": "",
+      "chunk_count": 860
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "b8f64464-07f1-4118-be98-93dd7a57e33b",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798643.2893312,
+    "started_at": 1761798643.332876,
+    "completed_at": 1761798676.746078,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "政策补贴长图（企业）.png",
+      "file_path": "uploads/global/d87343e7-41e7-44e3-b41a-c208faab1321.png",
+      "file_size": 9340640,
+      "document_id": "d87343e7-41e7-44e3-b41a-c208faab1321",
+      "hierarchy_path": "",
+      "chunk_count": 862
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "51da37df-231d-408b-a90d-427e693299f4",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761798644.080005,
+    "started_at": 1761798644.1240816,
+    "completed_at": 1761798682.9665473,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "政策补贴长图（个人）.png",
+      "file_path": "uploads/global/9f6b6ee2-9abb-460b-9ba2-d7dd820abc45.png",
+      "file_size": 4251710,
+      "document_id": "9f6b6ee2-9abb-460b-9ba2-d7dd820abc45",
+      "hierarchy_path": "",
+      "chunk_count": 863
+    },
+    "workspace_id": "global"
   }
 ]

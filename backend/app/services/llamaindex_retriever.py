@@ -401,6 +401,7 @@ class LlamaIndexRetriever:
             suffix = _Path(file_path).suffix.lower()
             text: Optional[str] = None
             md_meta: Dict = {}
+            hierarchy_prefix = ""
 
             try:
                 if suffix in [".xlsx", ".xls"]:
@@ -460,6 +461,62 @@ class LlamaIndexRetriever:
                             text = res.get("content", "")
                             md_meta.update(res.get("metadata", {}))
                             md_meta["file_type"] = "powerpoint"
+                elif suffix in [".docx", ".doc"]:
+                    # WORD 处理：.docx 直接走处理器；.doc 尝试 LibreOffice 转换后解析
+                    from app.services.file_processor import FileProcessor
+                    try:
+                        if suffix == ".docx":
+                            fp = FileProcessor()
+                            res = fp.process_file(file_path)
+                            text = res.get("content", "")
+                            md_meta.update(res.get("metadata", {}))
+                            md_meta["file_type"] = "word"
+                        else:
+                            # .doc -> 优先转 PDF；失败再转 DOCX
+                            import subprocess, shutil
+                            from pathlib import Path as _P
+                            src = _P(file_path)
+                            outdir = src.parent
+                            # 转 PDF
+                            pdf_path = outdir / (src.stem + ".pdf")
+                            docx_path = outdir / (src.stem + ".docx")
+                            try:
+                                soffice = shutil.which("soffice")
+                                if not soffice:
+                                    raise FileNotFoundError("soffice 不存在")
+                                subprocess.run([soffice, "--headless", "--nologo", "--nofirststartwizard",
+                                                "--convert-to", "pdf", str(src), "--outdir", str(outdir)],
+                                               check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                if pdf_path.exists():
+                                    fp = FileProcessor()
+                                    res = fp.process_file(str(pdf_path))
+                                    text = res.get("content", "")
+                                    md_meta.update(res.get("metadata", {}))
+                                    md_meta["file_type"] = "pdf_from_doc"
+                                    md_meta["source_ext"] = "doc"
+                                else:
+                                    raise RuntimeError("doc->pdf 未生成文件")
+                            except Exception:
+                                # 转 DOCX 兜底
+                                try:
+                                    soffice = shutil.which("soffice")
+                                    if not soffice:
+                                        raise FileNotFoundError("soffice 不存在")
+                                    subprocess.run([soffice, "--headless", "--nologo", "--nofirststartwizard",
+                                                    "--convert-to", "docx", str(src), "--outdir", str(outdir)],
+                                                   check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                    if docx_path.exists():
+                                        fp = FileProcessor()
+                                        res = fp.process_file(str(docx_path))
+                                        text = res.get("content", "")
+                                        md_meta.update(res.get("metadata", {}))
+                                        md_meta["file_type"] = "word_from_doc"
+                                        md_meta["source_ext"] = "doc"
+                                except Exception:
+                                    text = None
+                    except Exception as _doc_err:
+                        logger.warning(f"WORD 处理失败: {_doc_err}")
+                        text = None
                 elif suffix in [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff"]:
                     from app.services.file_processor import FileProcessor
                     fp = FileProcessor()
@@ -485,7 +542,6 @@ class LlamaIndexRetriever:
             documents = []
             if text and text.strip():
                 # 构建层级信息前缀（如果有层级信息，添加到文档内容前端以确保向量化）
-                hierarchy_prefix = ""
                 if metadata and metadata.get('hierarchy_path'):
                     hierarchy_info = []
                     archive_name = metadata.get('archive_name')
