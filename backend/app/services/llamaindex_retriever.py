@@ -62,69 +62,65 @@ _retriever_lock = threading.Lock()
 _embed_lock = threading.Lock()
 
 # 模块导入时间统计（用于诊断导入性能问题）
-_import_start_time = time.time()
-logger.info(f"🔄 开始加载 LlamaIndex 模块（离线模式已启用）")
+_imports_ready = False
+_imports_lock = threading.Lock()
 
-try:
-    # 使用最小依赖集合，避免触发 LLM 模块
-    _module_times = {}
-    
-    # VectorStoreIndex
-    _t0 = time.time()
-    from llama_index.core.indices.vector_store import VectorStoreIndex
-    _module_times['VectorStoreIndex'] = time.time() - _t0
-    logger.info(f"✅ VectorStoreIndex 加载成功 ({_module_times['VectorStoreIndex']:.3f}s)")
-    
-    # StorageContext
-    _t0 = time.time()
-    from llama_index.core.storage.storage_context import StorageContext
-    _module_times['StorageContext'] = time.time() - _t0
-    logger.info(f"✅ StorageContext 加载成功 ({_module_times['StorageContext']:.3f}s)")
-    
-    # load_index_from_storage
-    _t0 = time.time()
-    from llama_index.core.indices.loading import load_index_from_storage
-    _module_times['load_index_from_storage'] = time.time() - _t0
-    logger.info(f"✅ load_index_from_storage 加载成功 ({_module_times['load_index_from_storage']:.3f}s)")
-    
-    # SemanticSplitterNodeParser
-    _t0 = time.time()
-    from llama_index.core.node_parser import SemanticSplitterNodeParser
-    _module_times['SemanticSplitterNodeParser'] = time.time() - _t0
-    logger.info(f"✅ SemanticSplitterNodeParser 加载成功 ({_module_times['SemanticSplitterNodeParser']:.3f}s)")
-    
-    # HuggingFaceEmbedding（可能最耗时，因为它会触发 transformers 导入）
-    _t0 = time.time()
-    from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-    _module_times['HuggingFaceEmbedding'] = time.time() - _t0
-    logger.info(f"✅ HuggingFaceEmbedding 加载成功 ({_module_times['HuggingFaceEmbedding']:.3f}s)")
-    
-    # SimpleDirectoryReader
-    _t0 = time.time()
-    from llama_index.core import SimpleDirectoryReader
-    _module_times['SimpleDirectoryReader'] = time.time() - _t0
-    logger.info(f"✅ SimpleDirectoryReader 加载成功 ({_module_times['SimpleDirectoryReader']:.3f}s)")
-    
-    _total_import_time = time.time() - _import_start_time
-    logger.info(f"✅ 所有 LlamaIndex 模块加载完成，总耗时: {_total_import_time:.3f}s")
-    logger.debug(f"模块加载时间明细: {_module_times}")
-    
-    # 如果总耗时超过5秒，发出警告
-    if _total_import_time > 5.0:
-        logger.warning(f"⚠️ 模块加载耗时较长 ({_total_import_time:.3f}s)，可能触发了网络请求或慢速检查")
-        if _module_times.get('HuggingFaceEmbedding', 0) > 3.0:
-            logger.warning(f"⚠️ HuggingFaceEmbedding 导入耗时 {_module_times['HuggingFaceEmbedding']:.3f}s，可能是 transformers 库触发了网络检查")
-            
-except ImportError as e:
-    # 0.10.x 备用导入路径（进一步最小化）
-    logger.error(f"❌ LlamaIndex 导入失败: {e}，尝试备用路径")
-    try:
-        from llama_index import VectorStoreIndex, StorageContext, load_index_from_storage, SimpleDirectoryReader
-        from llama_index.node_parser import SemanticSplitterNodeParser
-        from llama_index.embeddings import HuggingFaceEmbedding
-        logger.info(f"✅ 使用备用导入路径加载成功")
-    except ImportError:
-        raise ImportError("无法导入 LlamaIndex 模块，请检查安装")
+# 占位，延迟导入后赋值
+VectorStoreIndex = None
+StorageContext = None
+load_index_from_storage = None
+SemanticSplitterNodeParser = None
+HuggingFaceEmbedding = None
+SimpleDirectoryReader = None
+
+def _ensure_llamaindex_imported() -> None:
+    global _imports_ready, VectorStoreIndex, StorageContext, load_index_from_storage, SemanticSplitterNodeParser, HuggingFaceEmbedding, SimpleDirectoryReader
+    if _imports_ready:
+        return
+    with _imports_lock:
+        if _imports_ready:
+            return
+        _import_start_time = time.time()
+        logger.info(f"🔄 开始加载 LlamaIndex 模块（离线模式已启用）")
+        _module_times = {}
+        try:
+            _t0 = time.time()
+            from llama_index.core.indices.vector_store import VectorStoreIndex as _V
+            _module_times['VectorStoreIndex'] = time.time() - _t0
+            VectorStoreIndex = _V
+
+            _t0 = time.time()
+            from llama_index.core.storage.storage_context import StorageContext as _SC
+            _module_times['StorageContext'] = time.time() - _t0
+            StorageContext = _SC
+
+            _t0 = time.time()
+            from llama_index.core.indices.loading import load_index_from_storage as _L
+            _module_times['load_index_from_storage'] = time.time() - _t0
+            load_index_from_storage = _L
+
+            _t0 = time.time()
+            from llama_index.core.node_parser import SemanticSplitterNodeParser as _NP
+            _module_times['SemanticSplitterNodeParser'] = time.time() - _t0
+            SemanticSplitterNodeParser = _NP
+
+            _t0 = time.time()
+            from llama_index.embeddings.huggingface import HuggingFaceEmbedding as _HF
+            _module_times['HuggingFaceEmbedding'] = time.time() - _t0
+            HuggingFaceEmbedding = _HF
+
+            _t0 = time.time()
+            from llama_index.core import SimpleDirectoryReader as _SDR
+            _module_times['SimpleDirectoryReader'] = time.time() - _t0
+            SimpleDirectoryReader = _SDR
+
+            _total = time.time() - _import_start_time
+            logger.info(f"✅ 所有 LlamaIndex 模块加载完成，总耗时: {_total:.3f}s")
+            logger.debug(f"模块加载时间明细: {_module_times}")
+            _imports_ready = True
+        except Exception as e:
+            logger.error(f"❌ LlamaIndex 延迟导入失败: {e}")
+            raise
 
 def _get_shared_embed_model():
     """获取共享的嵌入模型（单例，避免重复加载）"""
@@ -134,6 +130,7 @@ def _get_shared_embed_model():
         with _embed_lock:
             # 双重检查
             if _embed_model_cache is None:
+                _ensure_llamaindex_imported()
                 local_model_dir = os.getenv("LOCAL_BGE_MODEL_DIR", "")
                 if not local_model_dir or not Path(local_model_dir).exists():
                     raise RuntimeError(
@@ -217,6 +214,7 @@ class LlamaIndexRetriever:
             self.embed_model = _get_shared_embed_model()
             logger.warning(f"⚠️ 直接创建 LlamaIndexRetriever 实例，建议使用 get_instance() 方法")
         
+        _ensure_llamaindex_imported()
         # 语义分块器（轻量，不需要缓存）
         self.node_parser = SemanticSplitterNodeParser(
             buffer_size=1,
@@ -239,6 +237,7 @@ class LlamaIndexRetriever:
     def _load_or_create_index(self):
         """加载或创建索引"""
         try:
+            _ensure_llamaindex_imported()
             if self.storage_dir.exists():
                 # 检查是否有必要的索引文件
                 docstore_file = self.storage_dir / "docstore.json"
@@ -298,6 +297,7 @@ class LlamaIndexRetriever:
     def _load_or_create_index(self):
         """加载或创建索引"""
         try:
+            _ensure_llamaindex_imported()
             if self.storage_dir.exists():
                 # 检查是否有必要的索引文件
                 docstore_file = self.storage_dir / "docstore.json"

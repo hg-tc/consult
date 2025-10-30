@@ -281,105 +281,90 @@ class WebSearchService:
         await asyncio.gather(*[fetch_with_semaphore(result) for result in results], return_exceptions=True)
     
     async def _fetch_single_content(self, result: SearchResult):
-        """抓取单个网页内容（带请求头、重试与编码探测）"""
-        try:
-            if not self.session or not result.url:
-                return
+        """抓取单个网页内容（带请求头、重试与编码探测），精简异常结构避免语法问题"""
+        if not self.session or not result.url:
+            return
 
-            parsed = urlparse(result.url)
-            referer = f"{parsed.scheme}://{parsed.netloc}/"
-            common_headers = {
-                'User-Agent': (
-                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                    'AppleWebKit/537.36 (KHTML, like Gecko) '
-                    'Chrome/117.0 Safari/537.36'
-                ),
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Referer': referer,
-                'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache',
-            }
+        parsed = urlparse(result.url)
+        referer = f"{parsed.scheme}://{parsed.netloc}/"
+        common_headers = {
+            'User-Agent': (
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                'AppleWebKit/537.36 (KHTML, like Gecko) '
+                'Chrome/117.0 Safari/537.36'
+            ),
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Referer': referer,
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+        }
 
-            async def fetch_once(url: str, ssl_ctx=None):
-                async with self.session.get(url, headers=common_headers, allow_redirects=True, ssl=ssl_ctx) as resp:
-                    status = resp.status
-                    if status != 200:
-                        raise aiohttp.ClientResponseError(resp.request_info, resp.history, status=status)
-                    raw = await resp.read()
-                    # 编码探测
-                    if detect_charset:
-                        try:
-                            best = detect_charset(raw).best()
-                            enc = (best.encoding if best else None) or 'utf-8'
-                            html_text = raw.decode(enc, errors='replace')
-                        except Exception:
-                            html_text = raw.decode('gb18030', errors='replace')
-                    else:
-                        try:
-                            html_text = raw.decode('utf-8')
-                        except Exception:
-                            html_text = raw.decode('gb18030', errors='replace')
-                    return html_text
-
-            tries = 0
-            max_tries = 2
-            url_to_fetch = result.url
-            while tries < max_tries:
-                try:
-                    html = await fetch_once(url_to_fetch, self.ssl_ctx)
-                    content = self._extract_text_from_html(html)
-                    if len(content) > 2000:
-                        content = content[:2000] + "..."
-                    result.content = content
-                    logger.debug(f"成功抓取内容: {url_to_fetch}")
-                    return
-                except aiohttp.ClientResponseError as cre:
-                    # 403 尝试切换移动端域名（常见如知乎）
-                    if cre.status == 403 and 'zhihu.com' in parsed.netloc and 'm.zhihu.com' not in parsed.netloc:
-                        url_to_fetch = result.url.replace('://www.zhihu.com', '://m.zhihu.com')
-                        tries += 1
-                        await asyncio.sleep(0.6 * tries)
-                        continue
-                    logger.warning(f"HTTP错误 {cre.status}: {url_to_fetch}")
-                    return
-                except ssl.SSLError as ssle:
-                    # SSL 失败：依次尝试 TLS1.2 / 关闭校验 兜底
-                    tries += 1
-                    tls_attempts = []
+        async def fetch_once(url: str, ssl_ctx=None):
+            async with self.session.get(url, headers=common_headers, allow_redirects=True, ssl=ssl_ctx) as resp:
+                if resp.status != 200:
+                    raise aiohttp.ClientResponseError(resp.request_info, resp.history, status=resp.status)
+                raw = await resp.read()
+                if detect_charset:
                     try:
-                        tls12_ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-                        tls12_ctx.check_hostname = True
-                        tls12_ctx.verify_mode = ssl.CERT_REQUIRED
-                        tls12_ctx.load_default_certs()
-                        tls_attempts.append(tls12_ctx)
+                        best = detect_charset(raw).best()
+                        enc = (best.encoding if best else None) or 'utf-8'
+                        return raw.decode(enc, errors='replace')
                     except Exception:
-                        pass
-                    tls_attempts.append(False)
-                    for alt_ctx in tls_attempts:
-                        try:
-                            html = await fetch_once(url_to_fetch, alt_ctx)
-                            content = self._extract_text_from_html(html)
-                            if len(content) > 2000:
-                                content = content[:2000] + "..."
-                            result.content = content
-                            mode = 'TLS1.2' if alt_ctx and isinstance(alt_ctx, ssl.SSLContext) else 'ssl=False'
-                            logger.debug(f"成功抓取内容({mode}): {url_to_fetch}")
-                            return
-                        except Exception:
-                            continue
-                    if tries >= max_tries:
-                        logger.warning(f"抓取内容失败(SSL): {url_to_fetch}: {ssle}")
-                        return
-                    await asyncio.sleep(0.6 * tries)
-                except Exception as e:
+                        return raw.decode('gb18030', errors='replace')
+                try:
+                    return raw.decode('utf-8')
+                except Exception:
+                    return raw.decode('gb18030', errors='replace')
+
+        tries = 0
+        max_tries = 2
+        url_to_fetch = result.url
+
+        while tries < max_tries:
+            html = None
+            # 首选默认 SSL 上下文
+            try:
+                html = await fetch_once(url_to_fetch, self.ssl_ctx)
+            except aiohttp.ClientResponseError as cre:
+                if cre.status == 403 and 'zhihu.com' in parsed.netloc and 'm.zhihu.com' not in parsed.netloc:
+                    url_to_fetch = result.url.replace('://www.zhihu.com', '://m.zhihu.com')
                     tries += 1
-                    if tries >= max_tries:
-                        logger.warning(f"抓取内容失败 {url_to_fetch}: {e}")
-                        return
                     await asyncio.sleep(0.6 * tries)
-    
+                    continue
+                logger.warning(f"HTTP错误 {cre.status}: {url_to_fetch}")
+                return
+            except ssl.SSLError:
+                # SSL 兜底：TLS1.2 → 关闭校验
+                for alt_ctx in (self._tls12_ctx() , False):
+                    if alt_ctx is None:
+                        continue
+                    try:
+                        html = await fetch_once(url_to_fetch, alt_ctx)
+                        break
+                    except Exception:
+                        continue
+            except Exception as e:
+                tries += 1
+                if tries >= max_tries:
+                    logger.warning(f"抓取内容失败 {url_to_fetch}: {e}")
+                    return
+                await asyncio.sleep(0.6 * tries)
+                continue
+
+            if html is None:
+                tries += 1
+                await asyncio.sleep(0.6 * tries)
+                continue
+
+            content = self._extract_text_from_html(html)
+            if len(content) > 2000:
+                content = content[:2000] + "..."
+            result.content = content
+            logger.debug(f"成功抓取内容: {url_to_fetch}")
+            return
+
     def _extract_text_from_html(self, html: str) -> str:
         """从HTML提取文本内容"""
         try:
