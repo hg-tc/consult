@@ -163,29 +163,17 @@ class ZipProcessor:
                         continue
                     
                     try:
-                        # 解压文件到目标目录
-                        zip_ref.extract(file_info, extract_dir)
-                        # 取出 zip 内原始名并尝试中文纠正
+                        # 准备安全文件名与目标路径（避免原始过长名称导致 extract 失败）
                         original_zip_name = file_info.filename
                         decoded_name = ZipProcessor._decode_zip_filename(original_zip_name)
-                        # 再进行安全化与截断，避免过长路径
                         safe_name = ZipProcessor._sanitize_relative_name(decoded_name)
-                        file_path = extract_dir / original_zip_name
-                        # 若目标安全名不同，则将已解压文件移动到安全路径
-                        if safe_name != original_zip_name:
-                            target_path = extract_dir / safe_name
-                            target_path.parent.mkdir(parents=True, exist_ok=True)
-                            if file_path.exists():
-                                try:
-                                    file_path.rename(target_path)
-                                    file_path = target_path
-                                except Exception:
-                                    # 如果 rename 失败，尝试拷贝再删除
-                                    shutil.copy2(file_path, target_path)
-                                    try:
-                                        file_path.unlink()
-                                    except Exception:
-                                        pass
+                        target_path = extract_dir / safe_name
+                        target_path.parent.mkdir(parents=True, exist_ok=True)
+                        
+                        # 以流方式写入，避免使用 extract 导致过长文件名报错
+                        with zip_ref.open(file_info, 'r') as src, open(target_path, 'wb') as dst:
+                            shutil.copyfileobj(src, dst)
+                        file_path = target_path
                         
                         # 跳过目录
                         if file_path.is_dir():
@@ -353,25 +341,17 @@ class ZipProcessor:
                         continue
                     
                     try:
-                        # 解压文件到目标目录
-                        rar_ref.extract(file_info, extract_dir)
+                        # 准备安全文件名与目标路径（避免原始过长名称导致 extract 失败）
                         original_rar_name = file_info.filename
                         decoded_name = ZipProcessor._decode_zip_filename(original_rar_name)
                         safe_name = ZipProcessor._sanitize_relative_name(decoded_name)
-                        file_path = extract_dir / original_rar_name
-                        if safe_name != original_rar_name:
-                            target_path = extract_dir / safe_name
-                            target_path.parent.mkdir(parents=True, exist_ok=True)
-                            if file_path.exists():
-                                try:
-                                    file_path.rename(target_path)
-                                    file_path = target_path
-                                except Exception:
-                                    shutil.copy2(file_path, target_path)
-                                    try:
-                                        file_path.unlink()
-                                    except Exception:
-                                        pass
+                        target_path = extract_dir / safe_name
+                        target_path.parent.mkdir(parents=True, exist_ok=True)
+                        
+                        # 以流方式写入
+                        with rar_ref.open(file_info) as src, open(target_path, 'wb') as dst:
+                            shutil.copyfileobj(src, dst)
+                        file_path = target_path
                         
                         # 验证文件是否真的存在且为文件
                         if not file_path.exists() or not file_path.is_file():
