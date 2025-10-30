@@ -6851,23 +6851,163 @@
   {
     "id": "5619c2ff-c05c-473a-a573-098cb961263f",
     "task_type": "global_document_processing",
-    "status": "processing",
+    "status": "completed",
     "progress": {
-      "stage": "vectorizing",
-      "progress": 60,
-      "message": "正在生成向量...",
-      "details": {}
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
     },
     "created_at": 1761794753.668415,
     "started_at": 1761794753.7062223,
-    "completed_at": null,
+    "completed_at": 1761794789.4130068,
     "error_message": null,
     "metadata": {
       "original_filename": "附件5：商业计划书（路演）ppt.pptx",
       "file_path": "uploads/global/243ebf0b-9b91-4aa2-acf4-40eceb103dab.pptx",
       "file_size": 67955,
       "document_id": "243ebf0b-9b91-4aa2-acf4-40eceb103dab",
-      "hierarchy_path": ""
+      "hierarchy_path": "",
+      "chunk_count": 651
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "3e50a568-ffed-43d8-833d-62cf885f3da2",
+    "task_type": "global_archive_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761794844.228196,
+    "started_at": null,
+    "completed_at": 1761794946.2803893,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "遴选企业入园申请材料.zip",
+      "file_path": "uploads/global/df4ca8d3-1a91-4b7f-bc5a-b60d4af190b1.zip",
+      "file_size": 14483587,
+      "document_id": "df4ca8d3-1a91-4b7f-bc5a-b60d4af190b1",
+      "file_type": ".zip",
+      "hierarchy_path": "",
+      "success": true,
+      "total_files": 5,
+      "successful": 5,
+      "failed": 0,
+      "results": [
+        {
+          "filename": "附件1：梦工场推介手册.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "1b570431-2399-4f40-acc4-49e6fb9f75b5",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_3e50a568-ffed-43d8-833d-62cf885f3da2_52x0g76l/附件1：梦工场推介手册.pdf",
+            "relative_path": "附件1：梦工场推介手册.pdf",
+            "hierarchy_path": "遴选企业入园申请材料/附件1：梦工场推介手册.pdf",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 11150090,
+            "file_type": ".pdf",
+            "original_filename": "附件1：梦工场推介手册.pdf"
+          }
+        },
+        {
+          "filename": "附件2：申请材料清单.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "464888a2-8569-4fb4-9ee4-6402b6f36790",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_3e50a568-ffed-43d8-833d-62cf885f3da2_52x0g76l/附件2：申请材料清单.docx",
+            "relative_path": "附件2：申请材料清单.docx",
+            "hierarchy_path": "遴选企业入园申请材料/附件2：申请材料清单.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 15141,
+            "file_type": ".docx",
+            "original_filename": "附件2：申请材料清单.docx"
+          }
+        },
+        {
+          "filename": "附件3：创新创业企业入驻申请表.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "044f9433-95a5-40a5-a74e-4488a7567a55",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_3e50a568-ffed-43d8-833d-62cf885f3da2_52x0g76l/附件3：创新创业企业入驻申请表.docx",
+            "relative_path": "附件3：创新创业企业入驻申请表.docx",
+            "hierarchy_path": "遴选企业入园申请材料/附件3：创新创业企业入驻申请表.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 22417,
+            "file_type": ".docx",
+            "original_filename": "附件3：创新创业企业入驻申请表.docx"
+          }
+        },
+        {
+          "filename": "附件4：商业计划书（路演）ppt.pptx",
+          "success": true,
+          "file_type": ".pptx",
+          "file_id": "e539b404-5ab1-4e27-ae6f-2677e6692c7d",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_3e50a568-ffed-43d8-833d-62cf885f3da2_52x0g76l/附件4：商业计划书（路演）ppt.pptx",
+            "relative_path": "附件4：商业计划书（路演）ppt.pptx",
+            "hierarchy_path": "遴选企业入园申请材料/附件4：商业计划书（路演）ppt.pptx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 67264,
+            "file_type": ".pptx",
+            "original_filename": "附件4：商业计划书（路演）ppt.pptx"
+          }
+        },
+        {
+          "filename": "附件5：创新创业评分标准.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "03a707f5-5250-4d32-a090-83cda284498b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_3e50a568-ffed-43d8-833d-62cf885f3da2_52x0g76l/附件5：创新创业评分标准.docx",
+            "relative_path": "附件5：创新创业评分标准.docx",
+            "hierarchy_path": "遴选企业入园申请材料/附件5：创新创业评分标准.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 14869,
+            "file_type": ".docx",
+            "original_filename": "附件5：创新创业评分标准.docx"
+          }
+        }
+      ]
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "866995e3-aedc-4a76-afd6-72bc73530fb2",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761795019.324859,
+    "started_at": 1761795019.362837,
+    "completed_at": 1761795076.1325905,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "附件8：《深圳市前海深港现代服务.pdf",
+      "file_path": "uploads/global/b0714290-96b6-470e-b539-f8ca8412c388.pdf",
+      "file_size": 4137241,
+      "document_id": "b0714290-96b6-470e-b539-f8ca8412c388",
+      "hierarchy_path": "",
+      "chunk_count": 640
     },
     "workspace_id": "global"
   }

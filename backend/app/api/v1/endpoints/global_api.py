@@ -704,14 +704,19 @@ async def list_global_documents():
         json_documents = load_global_documents()
         
         # 合并两个数据源，去重（优先使用向量数据库的数据）
-        # 使用层级路径作为唯一标识，解决重名问题
+        # 使用显示键(层级路径优先，其次原始文件名)做“对用户可见层级”的去重，同时保留ID作内部唯一标识
         result_map = {}
+        display_key_set = set()
         
-        # 先添加向量数据库中的文档（使用层级路径作为key）
+        # 先添加向量数据库中的文档
         for doc in vector_documents:
-            key = doc.get('hierarchy_path') or doc.get('original_filename', '')
-            if key not in result_map:
-                result_map[key] = doc
+            base_key = doc.get('hierarchy_path') or doc.get('original_filename', '')
+            doc_id_key = doc.get('id') or doc.get('document_id', '')
+            key = f"{base_key}|{doc_id_key}" if doc_id_key else base_key
+            # 若同一 base_key 已存在其他文档，仍保留（通过复合键区分）
+            result_map[key] = doc
+            if base_key:
+                display_key_set.add(base_key)
         
         # 再添加JSON文件中不存在于向量数据库的文档
         for doc in json_documents:
@@ -719,9 +724,12 @@ async def list_global_documents():
             if doc.get('is_archive', False):
                 continue
                 
-            # 使用层级路径作为key，如果没有则使用original_filename
-            key = doc.get('hierarchy_path') or doc.get('original_filename', '')
-            if key not in result_map:
+            # 使用 层级路径 + 文档ID 作为key，避免覆盖
+            base_key = doc.get('hierarchy_path') or doc.get('original_filename', '')
+            doc_id_key = doc.get('id', '')
+            key = f"{base_key}|{doc_id_key}" if doc_id_key else base_key
+            # 去重规则：若显示键在向量库已存在，则跳过JSON同名记录
+            if key not in result_map and (not base_key or base_key not in display_key_set):
                 result_map[key] = {
                     "id": doc.get('id', ''),
                     "filename": doc.get('filename', ''),
@@ -738,6 +746,8 @@ async def list_global_documents():
                     # 添加chunk_ids字段，使用id作为第一个chunk ID
                     "chunk_ids": [doc.get('id', '')]
                 }
+                if base_key:
+                    display_key_set.add(base_key)
         
         result_documents = list(result_map.values())
         
