@@ -51,6 +51,11 @@ class Settings(BaseSettings):
     VECTOR_DB_PATH: str = "vector_db"
     CHUNK_SIZE: int = 1000
     CHUNK_OVERLAP: int = 200
+
+    # 互联网搜索提供商配置
+    SEARXNG_ENDPOINT: Optional[str] = os.getenv("SEARXNG_ENDPOINT")  # 例如 http://localhost:8080
+    HTTP_PROXY: Optional[str] = os.getenv("HTTP_PROXY")
+    HTTPS_PROXY: Optional[str] = os.getenv("HTTPS_PROXY")
     
     # 存储路径配置（支持环境变量，默认使用 /home 目录）
     # 先获取基础路径

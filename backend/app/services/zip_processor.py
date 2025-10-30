@@ -45,6 +45,32 @@ class ZipProcessor:
     ]
     
     @staticmethod
+    def _prefer_chinese_decoding(original: str, candidate: str) -> bool:
+        """简单启发式：若候选文本包含更多中日韩字符，且非空，则认为更优。"""
+        def cjk_count(s: str) -> int:
+            return sum(1 for ch in s if (
+                '\u4e00' <= ch <= '\u9fff' or  # CJK Unified
+                '\u3400' <= ch <= '\u4dbf' or  # CJK Ext A
+                '\uf900' <= ch <= '\ufaff' or  # CJK Compatibility Ideographs
+                '\u3040' <= ch <= '\u30ff' or  # JP Kana
+                '\uac00' <= ch <= '\ud7af'     # Hangul
+            ))
+        return cjk_count(candidate) > cjk_count(original) and candidate.strip() != ''
+
+    @staticmethod
+    def _decode_zip_filename(name: str) -> str:
+        """尝试将因 CP437 解码导致的乱码还原为 GB18030（常见于中文 Windows 打包）。"""
+        try:
+            # zipfile 在未设置 UTF-8 标志时使用 CP437 解码为 str，这里尝试逆向回 bytes 再用 GB18030 还原
+            raw_bytes = name.encode('cp437', errors='ignore')
+            candidate = raw_bytes.decode('gb18030', errors='ignore')
+            if ZipProcessor._prefer_chinese_decoding(name, candidate):
+                return candidate
+        except Exception:
+            pass
+        return name
+    
+    @staticmethod
     async def extract_archive(archive_path: str, extract_to: str, max_depth: int = 5, archive_name: str = None) -> List[Dict]:
         """
         解压归档文件（ZIP或RAR）并返回文件列表（支持递归解压嵌套压缩文件）
@@ -121,31 +147,49 @@ class ZipProcessor:
                     try:
                         # 解压文件到目标目录
                         zip_ref.extract(file_info, extract_dir)
-                        file_path = extract_dir / file_info.filename
+                        # 取出 zip 内原始名并尝试中文纠正
+                        original_zip_name = file_info.filename
+                        decoded_name = ZipProcessor._decode_zip_filename(original_zip_name)
+                        file_path = extract_dir / original_zip_name
+                        # 若解码后名称不同，则将已解压文件移动到修正后的路径
+                        if decoded_name != original_zip_name:
+                            target_path = extract_dir / decoded_name
+                            target_path.parent.mkdir(parents=True, exist_ok=True)
+                            if file_path.exists():
+                                try:
+                                    file_path.rename(target_path)
+                                    file_path = target_path
+                                except Exception:
+                                    # 如果 rename 失败，尝试拷贝再删除
+                                    shutil.copy2(file_path, target_path)
+                                    try:
+                                        file_path.unlink()
+                                    except Exception:
+                                        pass
                         
                         # 跳过目录
                         if file_path.is_dir():
                             continue
                         
                         # 检查文件扩展名
-                        file_ext = Path(file_info.filename).suffix.lower()
+                        file_ext = Path(decoded_name).suffix.lower()
                         
                         # 检查是否是嵌套的压缩文件
                         if file_ext in ZipProcessor.ARCHIVE_EXTENSIONS:
                             # 记录嵌套压缩文件，稍后递归处理
                             nested_archives.append({
                                 'archive_path': str(file_path),
-                                'relative_path': file_info.filename,
-                                'original_filename': Path(file_info.filename).name
+                                'relative_path': decoded_name,
+                                'original_filename': Path(decoded_name).name
                             })
-                            logger.info(f"[ZIP] 发现嵌套压缩文件: {file_info.filename}")
+                            logger.info(f"[ZIP] 发现嵌套压缩文件: {decoded_name}")
                             continue
                         
                         # 检查是否是支持的文件类型（包括图片）
                         if file_ext in ZipProcessor.SUPPORTED_EXTENSIONS:
                             if file_path.exists() and file_path.is_file():
                                 # 构建相对路径
-                                relative_path = f"{parent_path}/{file_info.filename}".lstrip('/') if parent_path else file_info.filename
+                                relative_path = f"{parent_path}/{decoded_name}".lstrip('/') if parent_path else decoded_name
                                 
                                 # 构建完整层级路径（用于唯一标识和显示）
                                 # 格式：压缩包名/嵌套压缩包/文件夹/文件名
@@ -156,12 +200,12 @@ class ZipProcessor:
                                     hierarchy_parts.append(archive_hierarchy)
                                 
                                 # 提取文件夹路径（去掉文件名）
-                                dir_path = str(Path(file_info.filename).parent)
+                                dir_path = str(Path(decoded_name).parent)
                                 if dir_path and dir_path != '.':
                                     hierarchy_parts.append(dir_path)
                                 
                                 hierarchy_path = '/'.join(hierarchy_parts) if hierarchy_parts else ''
-                                full_hierarchy_path = f"{hierarchy_path}/{Path(file_info.filename).name}" if hierarchy_path else Path(file_info.filename).name
+                                full_hierarchy_path = f"{hierarchy_path}/{Path(decoded_name).name}" if hierarchy_path else Path(decoded_name).name
                                 
                                 extracted_files.append({
                                     'file_path': str(file_path),
@@ -172,11 +216,11 @@ class ZipProcessor:
                                     'folder_path': dir_path if dir_path and dir_path != '.' else '',  # 文件夹路径
                                     'file_size': file_info.file_size,
                                     'file_type': file_ext,
-                                    'original_filename': Path(file_info.filename).name
+                                    'original_filename': Path(decoded_name).name
                                 })
                                 logger.info(f"[ZIP] 解压文件: {full_hierarchy_path} ({file_info.file_size} bytes)")
                         else:
-                            logger.debug(f"[ZIP] 跳过不支持的文件类型: {file_info.filename} (类型: {file_ext})")
+                            logger.debug(f"[ZIP] 跳过不支持的文件类型: {decoded_name} (类型: {file_ext})")
                             
                     except Exception as e:
                         logger.warning(f"[ZIP] 解压文件失败: {file_info.filename}, 错误: {e}")
@@ -199,7 +243,9 @@ class ZipProcessor:
                                 str(nested_extract_dir),
                                 max_depth=max_depth,
                                 current_depth=current_depth + 1,
-                                parent_path=nested_parent_path
+                                parent_path=nested_parent_path,
+                                top_level_archive_name=top_level_archive_name,
+                                archive_hierarchy=(f"{archive_hierarchy}/{Path(nested_archive['relative_path']).stem}".lstrip('/') if archive_hierarchy else Path(nested_archive['relative_path']).stem)
                             )
                         elif nested_archive['archive_path'].endswith('.rar'):
                             nested_files = await ZipProcessor.extract_rar(
@@ -288,30 +334,45 @@ class ZipProcessor:
                     try:
                         # 解压文件到目标目录
                         rar_ref.extract(file_info, extract_dir)
-                        file_path = extract_dir / file_info.filename
+                        original_rar_name = file_info.filename
+                        decoded_name = ZipProcessor._decode_zip_filename(original_rar_name)
+                        file_path = extract_dir / original_rar_name
+                        if decoded_name != original_rar_name:
+                            target_path = extract_dir / decoded_name
+                            target_path.parent.mkdir(parents=True, exist_ok=True)
+                            if file_path.exists():
+                                try:
+                                    file_path.rename(target_path)
+                                    file_path = target_path
+                                except Exception:
+                                    shutil.copy2(file_path, target_path)
+                                    try:
+                                        file_path.unlink()
+                                    except Exception:
+                                        pass
                         
                         # 验证文件是否真的存在且为文件
                         if not file_path.exists() or not file_path.is_file():
                             continue
                         
                         # 检查文件扩展名
-                        file_ext = Path(file_info.filename).suffix.lower()
+                        file_ext = Path(decoded_name).suffix.lower()
                         
                         # 检查是否是嵌套的压缩文件
                         if file_ext in ZipProcessor.ARCHIVE_EXTENSIONS:
                             # 记录嵌套压缩文件，稍后递归处理
                             nested_archives.append({
                                 'archive_path': str(file_path),
-                                'relative_path': file_info.filename,
-                                'original_filename': Path(file_info.filename).name
+                                'relative_path': decoded_name,
+                                'original_filename': Path(decoded_name).name
                             })
-                            logger.info(f"[RAR] 发现嵌套压缩文件: {file_info.filename}")
+                            logger.info(f"[RAR] 发现嵌套压缩文件: {decoded_name}")
                             continue
                         
                         # 检查是否是支持的文件类型（包括图片）
                         if file_ext in ZipProcessor.SUPPORTED_EXTENSIONS:
                             # 构建相对路径
-                            relative_path = f"{parent_path}/{file_info.filename}".lstrip('/') if parent_path else file_info.filename
+                            relative_path = f"{parent_path}/{decoded_name}".lstrip('/') if parent_path else decoded_name
                             
                             # 构建完整层级路径（用于唯一标识和显示）
                             hierarchy_parts = []
@@ -321,12 +382,12 @@ class ZipProcessor:
                                 hierarchy_parts.append(archive_hierarchy)
                             
                             # 提取文件夹路径（去掉文件名）
-                            dir_path = str(Path(file_info.filename).parent)
+                            dir_path = str(Path(decoded_name).parent)
                             if dir_path and dir_path != '.':
                                 hierarchy_parts.append(dir_path)
                             
                             hierarchy_path = '/'.join(hierarchy_parts) if hierarchy_parts else ''
-                            full_hierarchy_path = f"{hierarchy_path}/{Path(file_info.filename).name}" if hierarchy_path else Path(file_info.filename).name
+                            full_hierarchy_path = f"{hierarchy_path}/{Path(decoded_name).name}" if hierarchy_path else Path(decoded_name).name
                             
                             extracted_files.append({
                                 'file_path': str(file_path),
@@ -337,11 +398,11 @@ class ZipProcessor:
                                 'folder_path': dir_path if dir_path and dir_path != '.' else '',  # 文件夹路径
                                 'file_size': file_info.file_size,
                                 'file_type': file_ext,
-                                'original_filename': Path(file_info.filename).name
+                                'original_filename': Path(decoded_name).name
                             })
                             logger.info(f"[RAR] 解压文件: {full_hierarchy_path} ({file_info.file_size} bytes)")
                         else:
-                            logger.debug(f"[RAR] 跳过不支持的文件类型: {file_info.filename} (类型: {file_ext})")
+                            logger.debug(f"[RAR] 跳过不支持的文件类型: {decoded_name} (类型: {file_ext})")
                             
                     except Exception as e:
                         logger.warning(f"[RAR] 解压文件失败: {file_info.filename}, 错误: {e}")

@@ -19,6 +19,7 @@ export function DatabasePanel() {
   const [uploadStatus, setUploadStatus] = useState<"idle" | "success" | "error">("idle")
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set())
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const dirInputRef = useRef<HTMLInputElement>(null)
 
   // 确保事件处理器在客户端正确绑定
   useEffect(() => {
@@ -51,6 +52,48 @@ export function DatabasePanel() {
           setTimeout(() => setUploadStatus("idle"), 3000)
         }
         // 清空input，避免重复上传同一个文件
+        target.value = ''
+      }
+
+      input.addEventListener('change', handleChange)
+      return () => input.removeEventListener('change', handleChange)
+    }
+  }, [uploadDocument])
+
+
+  // 目录选择上传（保留层级）
+  useEffect(() => {
+    const input = dirInputRef.current
+    if (input) {
+      const handleChange = async (e: Event) => {
+        const target = e.target as HTMLInputElement
+        const files = target.files
+        if (!files || files.length === 0) {
+          console.log("[v0] No directory selected")
+          return
+        }
+
+        console.log("[v0] Directory selected:", files.length, "files")
+        try {
+          setUploadStatus("idle")
+          console.log("[v0] Starting directory upload...")
+
+          // 逐个上传文件，传递 webkitRelativePath 作为层级信息
+          for (const file of Array.from(files)) {
+            const anyFile = file as File & { webkitRelativePath?: string }
+            const relPath = anyFile.webkitRelativePath || file.name
+            console.log("[v0] Uploading file from directory:", relPath, "size:", file.size)
+            await uploadDocument(file, relPath)
+          }
+
+          setUploadStatus("success")
+          setTimeout(() => setUploadStatus("idle"), 3000)
+        } catch (error) {
+          console.error("[v0] Directory upload error:", error)
+          setUploadStatus("error")
+          setTimeout(() => setUploadStatus("idle"), 3000)
+        }
+        // 清空input，避免重复触发
         target.value = ''
       }
 
@@ -171,6 +214,47 @@ export function DatabasePanel() {
               type="file"
               className="hidden"
               accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt,.md,.zip,.rar,.jpg,.jpeg,.png,.gif,.bmp,.tiff"
+              multiple
+              disabled={isUploading}
+            />
+          </div>
+
+          <div className="relative">
+            <label htmlFor="directory-upload">
+              <Button
+                className="cursor-pointer"
+                variant="outline"
+                disabled={isUploading}
+                onClick={() => {
+                  console.log("[v0] Directory Upload button clicked")
+                  const input = document.getElementById('directory-upload') as HTMLInputElement
+                  if (input) {
+                    input.click()
+                  }
+                }}
+              >
+                {isUploading ? (
+                  <>
+                    <Spinner className="w-4 h-4 mr-2" />
+                    上传中...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4 mr-2" />
+                    选择文件夹（保留层级）
+                  </>
+                )}
+              </Button>
+            </label>
+            <input
+              ref={dirInputRef}
+              id="directory-upload"
+              type="file"
+              className="hidden"
+              // 目录选择：Chrome/Edge 支持
+              // @ts-ignore
+              webkitdirectory=""
+              // FireFox 尚不支持；会被忽略
               multiple
               disabled={isUploading}
             />

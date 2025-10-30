@@ -3,12 +3,14 @@
 // 全局文档操作的自定义Hook（用于数据库管理页面）
 import { useState, useEffect } from "react"
 import useSWR, { mutate as globalMutate } from "swr"
+
+type GlobalDocumentsResponse = { documents: any[] }
 import { globalDocumentApi } from "@/lib/api-client"
 
 export function useGlobalDocuments() {
   const [isUploading, setIsUploading] = useState(false)
 
-  const { data, error, mutate } = useSWR("/global/documents", () => globalDocumentApi.getDocuments(), {
+  const { data, error, mutate } = useSWR<GlobalDocumentsResponse>("/global/documents", () => globalDocumentApi.getDocuments(), {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     fallbackData: { documents: [] },
@@ -39,12 +41,12 @@ export function useGlobalDocuments() {
     }
   }, [mutate])
 
-  const uploadDocument = async (file: File) => {
+  const uploadDocument = async (file: File, hierarchyPath?: string) => {
     console.log("[v0] uploadGlobalDocument called with file:", file.name)
     setIsUploading(true)
     try {
       console.log("[v0] Calling global upload API...")
-      const result = await globalDocumentApi.uploadDocument(file)
+      const result = await globalDocumentApi.uploadDocument(file, hierarchyPath)
       console.log("[v0] Global upload API response:", result)
       
       // 保存task_id用于状态追踪
@@ -69,7 +71,7 @@ export function useGlobalDocuments() {
       console.log("[v0] Starting global delete for document:", id)
       
       // 立即更新本地缓存，移除被删除的文档
-      mutate((currentData) => {
+      mutate((currentData: GlobalDocumentsResponse | undefined) => {
         if (!currentData?.documents) return currentData
         
         const updatedDocuments = currentData.documents.filter((doc: any) => doc.id !== id)

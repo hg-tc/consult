@@ -3,7 +3,7 @@
 支持公共文档库和工作区分离的架构
 """
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, BackgroundTasks, Form
 from typing import List, Dict, Any, Optional
 import os
 import uuid
@@ -96,9 +96,11 @@ def get_global_services():
 @router.post("/documents/upload")
 async def upload_global_document(
     background_tasks: BackgroundTasks,
-    file: UploadFile = File(...)
+    file: UploadFile = File(...),
+    hierarchy_path: Optional[str] = Form(None)
 ):
     """上传文档到全局文档库"""
+    logger.info(f"上传文档到全局文档库")
     try:
         # 检查文件类型
         if not file.filename:
@@ -144,7 +146,8 @@ async def upload_global_document(
             'processing_started': None,
             'processing_completed': None,
             'chunk_count': 0,
-            'quality_score': 0.0
+            'quality_score': 0.0,
+            'hierarchy_path': hierarchy_path or ''
         }
         
         # 如果是ZIP或RAR文件，使用专门的归档处理
@@ -158,9 +161,10 @@ async def upload_global_document(
                 metadata={
                     'original_filename': file.filename,
                     'file_path': str(file_path),
-                    'file_size': file_size,
+                'file_size': file_size,
                     'document_id': file_id,
-                    'file_type': file_ext
+                'file_type': file_ext,
+                'hierarchy_path': hierarchy_path or ''
                 },
                 workspace_id="global"
             )
@@ -206,7 +210,8 @@ async def upload_global_document(
                 'original_filename': file.filename,
                 'file_path': str(file_path),
                 'file_size': file_size,
-                'document_id': file_id
+                'document_id': file_id,
+                'hierarchy_path': hierarchy_path or ''
             },
             workspace_id="global"
         )
@@ -1172,9 +1177,17 @@ async def delete_global_document(doc_id: str):
         
         logger.info(f"找到文件: {original_filename}, nodes: {len(all_node_ids)}")
         
+        not_found_in_vector_store = False
         if not original_filename:
-            logger.warning(f"文档 {doc_id} 在向量数据库中未找到")
-            raise HTTPException(status_code=404, detail="文档未找到")
+            # 向量库未找到时不再直接返回404，尝试从JSON文件中查找并继续删除
+            logger.warning(f"文档 {doc_id} 在向量数据库中未找到，尝试从JSON记录中删除")
+            not_found_in_vector_store = True
+            # 尝试从JSON中获取原始信息
+            documents = load_global_documents()
+            json_doc = next((d for d in documents if d.get('id') == doc_id), None)
+            if json_doc:
+                original_filename = json_doc.get('original_filename')
+                file_path = json_doc.get('file_path')
         
         # 从 LlamaIndex 向量存储中删除所有相关节点
         deleted_count = 0
@@ -1243,8 +1256,13 @@ async def delete_global_document(doc_id: str):
         documents = load_global_documents()
         documents_before = len(documents)
         
-        # 删除所有同名文件记录
-        documents = [doc for doc in documents if doc.get('original_filename') != original_filename]
+        # 优先按 doc_id 删除；若无匹配则回退按 original_filename 删除
+        by_id_filtered = [doc for doc in documents if doc.get('id') != doc_id]
+        if len(by_id_filtered) == documents_before:
+            # doc_id 未命中，按文件名兜底
+            documents = [doc for doc in documents if doc.get('original_filename') != original_filename]
+        else:
+            documents = by_id_filtered
         
         documents_after = len(documents)
         removed_from_json = documents_before - documents_after
@@ -1259,8 +1277,10 @@ async def delete_global_document(doc_id: str):
         return {
             "status": "deleted",
             "id": doc_id,
-            "filename": original_filename,
-            "message": f"文档 {original_filename} 已成功删除"
+            "filename": original_filename or "",
+            "message": f"文档已删除（向量库{'未命中' if not_found_in_vector_store else '已清理'}，JSON移除{removed_from_json}条记录)",
+            "vector_store_found": not not_found_in_vector_store,
+            "json_removed": removed_from_json
         }
         
     except HTTPException:

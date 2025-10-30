@@ -410,11 +410,56 @@ class LlamaIndexRetriever:
                     md_meta.update(res.get("metadata", {}))
                     md_meta["file_type"] = "excel"
                 elif suffix in [".pptx", ".ppt"]:
-                    from app.services.ppt_processor import process_ppt_to_markdown
-                    res = process_ppt_to_markdown(file_path)
-                    text = res.get("content", "")
-                    md_meta.update(res.get("metadata", {}))
-                    md_meta["file_type"] = "powerpoint"
+                    # 优先尝试自定义 PPT 处理器；失败则离线回退：用 LibreOffice 转 PDF 再解析
+                    try:
+                        from app.services.ppt_processor import process_ppt_to_markdown
+                        res = process_ppt_to_markdown(file_path)
+                        text = res.get("content", "")
+                        md_meta.update(res.get("metadata", {}))
+                        md_meta["file_type"] = "powerpoint"
+                    except Exception as _ppt_err:
+                        logger.warning(f"PPT 处理器失败，改用 LibreOffice 转 PDF 回退: {_ppt_err}")
+                        try:
+                            import subprocess, shutil
+                            from pathlib import Path as _P
+                            src = _P(file_path)
+                            outdir = src.parent
+                            # 检查 soffice 是否可用
+                            soffice_path = shutil.which("soffice")
+                            if not soffice_path:
+                                raise FileNotFoundError("soffice 不存在，请安装 LibreOffice")
+                            # 转换为 PDF（无头）
+                            cmd = [
+                                soffice_path, "--headless", "--nologo", "--nofirststartwizard",
+                                "--convert-to", "pdf", str(src), "--outdir", str(outdir)
+                            ]
+                            subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                            pdf_path = outdir / (src.stem + ".pdf")
+                            if pdf_path.exists():
+                                from app.services.file_processor import FileProcessor
+                                fp = FileProcessor()
+                                res = fp.process_file(str(pdf_path))
+                                text = res.get("content", "")
+                                md_meta.update(res.get("metadata", {}))
+                                md_meta["file_type"] = "pdf_from_ppt"
+                                # 附加原始扩展信息
+                                md_meta["source_ext"] = suffix.lstrip('.')
+                            else:
+                                logger.error("LibreOffice 转换未生成 PDF，回退 python-pptx 文本提取")
+                                from app.services.file_processor import FileProcessor
+                                fp = FileProcessor()
+                                res = fp._process_powerpoint(file_path)
+                                text = res.get("content", "")
+                                md_meta.update(res.get("metadata", {}))
+                                md_meta["file_type"] = "powerpoint"
+                        except Exception as _lo_err:
+                            logger.error(f"LibreOffice 转换失败: {_lo_err}，回退 python-pptx 文本提取")
+                            from app.services.file_processor import FileProcessor
+                            fp = FileProcessor()
+                            res = fp._process_powerpoint(file_path)
+                            text = res.get("content", "")
+                            md_meta.update(res.get("metadata", {}))
+                            md_meta["file_type"] = "powerpoint"
                 elif suffix in [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff"]:
                     from app.services.file_processor import FileProcessor
                     fp = FileProcessor()

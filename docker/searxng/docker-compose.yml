@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  searxng:
+    image: searxng/searxng:latest
+    container_name: searxng
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:8080
+    volumes:
+      # 可选：映射自定义 settings.yml 以启用/禁用引擎
+      # - ./settings.yml:/etc/searxng/settings.yml:ro
+      - searxng-data:/etc/searxng
+volumes:
+  searxng-data:
+    driver: local
+
+

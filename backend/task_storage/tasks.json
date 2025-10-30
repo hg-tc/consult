@@ -5762,5 +5762,1113 @@
       ]
     },
     "workspace_id": "global"
+  },
+  {
+    "id": "bcaba863-0458-4d16-9be5-6aa90d5b7b9e",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761788474.4896696,
+    "started_at": 1761788474.5211172,
+    "completed_at": 1761788522.2719746,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "TTPS Online Application.pdf",
+      "file_path": "uploads/global/bf18266c-e6da-4454-960b-40fa88fe02f7.pdf",
+      "file_size": 1786901,
+      "document_id": "bf18266c-e6da-4454-960b-40fa88fe02f7",
+      "chunk_count": 439
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "09d6d2f5-50ef-4c91-9163-6e6142441d26",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761789105.1960511,
+    "started_at": 1761789105.2274995,
+    "completed_at": 1761789230.2025526,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "test_200mb.pdf",
+      "file_path": "uploads/global/4316c5eb-5580-4319-9d0e-fcfa74ed1603.pdf",
+      "file_size": 209715200,
+      "document_id": "4316c5eb-5580-4319-9d0e-fcfa74ed1603",
+      "chunk_count": 434
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "6c258aeb-116f-4f78-9402-51492049d4a4",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761791919.0511808,
+    "started_at": 1761791919.0869856,
+    "completed_at": 1761791953.6188629,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "附件9：入孵企业基本信息表.xlsx",
+      "file_path": "uploads/global/5f314051-75e9-482a-b168-39a7be319d4d.xlsx",
+      "file_size": 34074,
+      "document_id": "5f314051-75e9-482a-b168-39a7be319d4d",
+      "chunk_count": 435
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "79b35366-14eb-4850-8251-085d55ee05ed",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761791919.3850152,
+    "started_at": 1761791919.4186013,
+    "completed_at": 1761791953.6854303,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "遴选梦工场创新创业企业申请条件.pdf",
+      "file_path": "uploads/global/9b76446e-0f76-409d-b480-108bf12c9d85.pdf",
+      "file_size": 83244,
+      "document_id": "9b76446e-0f76-409d-b480-108bf12c9d85",
+      "chunk_count": 437
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "3ce6c19b-2964-4a62-9ea5-55e9f8ead699",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761791919.6000965,
+    "started_at": 1761791919.637058,
+    "completed_at": 1761791953.6524725,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "遴选梦工场创新创业企业申请条件.docx",
+      "file_path": "uploads/global/11d3ec16-0af9-4c62-b4e6-09e26fecdc75.docx",
+      "file_size": 17068,
+      "document_id": "11d3ec16-0af9-4c62-b4e6-09e26fecdc75",
+      "chunk_count": 439
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "9d84b5b9-5ee4-4a97-a7df-6734b0df76f1",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761791953.4924304,
+    "started_at": 1761791953.5243952,
+    "completed_at": 1761792025.4086866,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "附件1：梦工场推介手册.pdf",
+      "file_path": "uploads/global/c2aeaa35-266a-4000-a79c-4678a36b9373.pdf",
+      "file_size": 11150090,
+      "document_id": "c2aeaa35-266a-4000-a79c-4678a36b9373",
+      "chunk_count": 452
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "ddb4f205-066c-4c7c-99d9-df5090b58224",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761791953.9075115,
+    "started_at": 1761791953.9434216,
+    "completed_at": 1761792033.5735369,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "附件2：申请材料清单.docx",
+      "file_path": "uploads/global/e7f515bc-e0c2-4f1b-9fb1-50eacdf31327.docx",
+      "file_size": 15326,
+      "document_id": "e7f515bc-e0c2-4f1b-9fb1-50eacdf31327",
+      "chunk_count": 454
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "1668763a-c3a8-4369-9c27-f0eac0ed6b9b",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761791954.133573,
+    "started_at": 1761791954.165578,
+    "completed_at": 1761792033.1575975,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "附件3：创新创业企业入驻申请表.docx",
+      "file_path": "uploads/global/c78be5cb-f0c2-4edf-814c-a51c3e991c1e.docx",
+      "file_size": 23320,
+      "document_id": "c78be5cb-f0c2-4edf-814c-a51c3e991c1e",
+      "chunk_count": 463
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "b8096b7c-4d61-4722-b6c2-b749d3f78d43",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761791954.5606968,
+    "started_at": 1761791954.592606,
+    "completed_at": 1761792034.51545,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "附件4：申报材料填写指引.docx",
+      "file_path": "uploads/global/10e70b2d-614b-4624-ae6b-6bf13583f3ce.docx",
+      "file_size": 378320,
+      "document_id": "10e70b2d-614b-4624-ae6b-6bf13583f3ce",
+      "chunk_count": 466
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "4e6a0289-a3af-4d98-be5c-7d82159cacd9",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761792028.09986,
+    "started_at": 1761792029.8284278,
+    "completed_at": 1761792042.0125382,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "附件5：商业计划书（路演）ppt.pptx",
+      "file_path": "uploads/global/978a556d-dab7-482d-a9de-d63e94944ab7.pptx",
+      "file_size": 67955,
+      "document_id": "978a556d-dab7-482d-a9de-d63e94944ab7"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "8e2a001b-49b4-4133-9f5e-8b975fcfa2fe",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761792035.124147,
+    "started_at": 1761792035.4221153,
+    "completed_at": 1761792091.4085846,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "附件6：创新创业评分标准.docx",
+      "file_path": "uploads/global/8f66519c-d644-45de-af0f-2299524338ef.docx",
+      "file_size": 14869,
+      "document_id": "8f66519c-d644-45de-af0f-2299524338ef",
+      "chunk_count": 469
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "088a355d-2d06-4e67-af88-fc1ccc854362",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761792044.3633077,
+    "started_at": 1761792044.4390187,
+    "completed_at": 1761792121.93966,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "附件8：《深圳市前海深港现代服务.pdf",
+      "file_path": "uploads/global/03718279-77a1-4dee-9284-22d3f0536bb1.pdf",
+      "file_size": 4137241,
+      "document_id": "03718279-77a1-4dee-9284-22d3f0536bb1",
+      "chunk_count": 482
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "fa771022-bfad-4d97-a205-98bdfb617a68",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761792045.7860746,
+    "started_at": 1761792045.818592,
+    "completed_at": 1761792133.2384996,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "附件7：《前海深港青年梦工场创新.pdf",
+      "file_path": "uploads/global/d7cffe5a-a57b-44ef-8430-ce7d21f8ba2a.pdf",
+      "file_size": 2862779,
+      "document_id": "d7cffe5a-a57b-44ef-8430-ce7d21f8ba2a",
+      "chunk_count": 485
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "b698cb08-38f3-4479-9211-89a9efc2a37f",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761792091.3726835,
+    "started_at": 1761792091.476951,
+    "completed_at": 1761792132.748949,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "增资协议模板 .docx",
+      "file_path": "uploads/global/a16154d1-72d3-401f-9142-0046c54a4696.docx",
+      "file_size": 33096,
+      "document_id": "a16154d1-72d3-401f-9142-0046c54a4696",
+      "chunk_count": 491
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "c423f964-e614-432c-aaa5-3ec750b05ba3",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761792125.2093627,
+    "started_at": 1761792125.3509743,
+    "completed_at": 1761792136.4702682,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "战略合作协议投资模板模板 .docx",
+      "file_path": "uploads/global/54b3a8c3-9bcb-4cee-b69c-d983f00549ad.docx",
+      "file_size": 24939,
+      "document_id": "54b3a8c3-9bcb-4cee-b69c-d983f00549ad",
+      "chunk_count": 495
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "03afa3ed-3959-4566-98cb-b088ce19db56",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761792650.4212995,
+    "started_at": 1761792650.456327,
+    "completed_at": 1761792684.779164,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "遴选给梦工场的清单/副本入驻客户面积统计表-2504-v3(1).xlsx",
+      "file_path": "uploads/global/8cd1c403-aee0-495b-b16a-1c186b223536.xlsx",
+      "file_size": 12459,
+      "document_id": "8cd1c403-aee0-495b-b16a-1c186b223536",
+      "hierarchy_path": "遴选给梦工场的清单/副本入驻客户面积统计表-2504-v3(1).xlsx",
+      "chunk_count": 496
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "0d3453d0-af38-4705-a152-c22aed2bcd69",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761792650.7456753,
+    "started_at": 1761792650.7819154,
+    "completed_at": 1761792684.819742,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "遴选给梦工场的清单/智造未来孵化器-意向参与项目遴选企业清单..xlsx",
+      "file_path": "uploads/global/ad74455e-4f0b-48b7-b9e9-884da66f50dc.xlsx",
+      "file_size": 12672,
+      "document_id": "ad74455e-4f0b-48b7-b9e9-884da66f50dc",
+      "hierarchy_path": "遴选给梦工场的清单/智造未来孵化器-意向参与项目遴选企业清单..xlsx",
+      "chunk_count": 498
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "a220ec1f-1c69-4d06-ada4-494077536f14",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761792720.2431555,
+    "started_at": 1761792720.2762008,
+    "completed_at": 1761792774.4614642,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "遴选企业清单/智造未来孵化器-意向参与项目遴选企业清单V2.pdf",
+      "file_path": "uploads/global/f61d1b71-3078-4f85-b2af-2b4d78126174.pdf",
+      "file_size": 267063,
+      "document_id": "f61d1b71-3078-4f85-b2af-2b4d78126174",
+      "hierarchy_path": "遴选企业清单/智造未来孵化器-意向参与项目遴选企业清单V2.pdf",
+      "chunk_count": 504
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "3c62ba5d-f4c9-4921-90e9-83eea51556bc",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761792720.5341706,
+    "started_at": 1761792720.5696309,
+    "completed_at": 1761792784.6852226,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "遴选企业清单/智造未来孵化器-意向参与项目遴选企业清单V2.xlsx",
+      "file_path": "uploads/global/f73d43c5-5ab7-43d7-95b7-eb5cb4914de7.xlsx",
+      "file_size": 15951,
+      "document_id": "f73d43c5-5ab7-43d7-95b7-eb5cb4914de7",
+      "hierarchy_path": "遴选企业清单/智造未来孵化器-意向参与项目遴选企业清单V2.xlsx",
+      "chunk_count": 510
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "b321a4be-15df-42dc-aafb-5904bc7c4363",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761792720.802428,
+    "started_at": 1761792720.8383157,
+    "completed_at": 1761792782.9593205,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "遴选企业清单/智造未来孵化器—意向参与项目遴选企业清单 的複本.xlsx",
+      "file_path": "uploads/global/c98afae4-6ff4-4d5a-8056-a0985d399384.xlsx",
+      "file_size": 11341,
+      "document_id": "c98afae4-6ff4-4d5a-8056-a0985d399384",
+      "hierarchy_path": "遴选企业清单/智造未来孵化器—意向参与项目遴选企业清单 的複本.xlsx",
+      "chunk_count": 511
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "799bbcc8-69f3-4bdc-8dac-2d40d635b386",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761792721.0700116,
+    "started_at": 1761792721.1048393,
+    "completed_at": 1761792784.2003481,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "遴选企业清单/智造未来孵化器遴选企业名单.xlsx",
+      "file_path": "uploads/global/16588c4e-897d-4ddf-9efb-7690265dbbf8.xlsx",
+      "file_size": 12132,
+      "document_id": "16588c4e-897d-4ddf-9efb-7690265dbbf8",
+      "hierarchy_path": "遴选企业清单/智造未来孵化器遴选企业名单.xlsx",
+      "chunk_count": 512
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "bba86f3a-bd4e-4562-8ba0-fd50b4d9bf53",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "indexing",
+      "progress": 90,
+      "message": "持久化索引中... 已等待 30s",
+      "details": {}
+    },
+    "created_at": 1761792821.3314915,
+    "started_at": 1761792821.36517,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "企业资料/四方移动/Fund Agrement-ITF 2013.pdf",
+      "file_path": "uploads/global/7d84b605-ea4d-4825-8b2b-ceaf70dbe043.pdf",
+      "file_size": 1508055,
+      "document_id": "7d84b605-ea4d-4825-8b2b-ceaf70dbe043",
+      "hierarchy_path": "企业资料/四方移动/Fund Agrement-ITF 2013.pdf"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "d940b830-2a2f-4ef5-93ed-d8ac4337eb17",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "indexing",
+      "progress": 90,
+      "message": "持久化索引中... 已等待 30s",
+      "details": {}
+    },
+    "created_at": 1761792821.6494536,
+    "started_at": 1761792821.684009,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "企业资料/四方移动/企业服务协议——四方移动.pdf",
+      "file_path": "uploads/global/8f57540e-27f2-4dae-8add-188aed53b035.pdf",
+      "file_size": 314819,
+      "document_id": "8f57540e-27f2-4dae-8add-188aed53b035",
+      "hierarchy_path": "企业资料/四方移动/企业服务协议——四方移动.pdf"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "966fb1e1-2ca8-45d4-b4f8-beda318d1048",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761792822.119994,
+    "started_at": 1761792822.1539383,
+    "completed_at": 1761793116.629499,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "企业资料/四方移动/前海深港青年夢工場一期項目物業管理協議.pdf",
+      "file_path": "uploads/global/9a2628c3-63d0-49ac-93dc-732eb49a600d.pdf",
+      "file_size": 2435198,
+      "document_id": "9a2628c3-63d0-49ac-93dc-732eb49a600d",
+      "hierarchy_path": "企业资料/四方移动/前海深港青年夢工場一期項目物業管理協議.pdf",
+      "chunk_count": 577
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "0b81f2a1-0d79-44c5-a39c-d7f3abd420f7",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761793116.4103463,
+    "started_at": 1761793116.4447167,
+    "completed_at": 1761793184.6239064,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "企业资料/四方移动/前海深港青年夢工場創新創業企業服務協議.pdf",
+      "file_path": "uploads/global/1e42219e-589f-426d-8c2b-a963dad9ce0e.pdf",
+      "file_size": 2747976,
+      "document_id": "1e42219e-589f-426d-8c2b-a963dad9ce0e",
+      "hierarchy_path": "企业资料/四方移动/前海深港青年夢工場創新創業企業服務協議.pdf",
+      "chunk_count": 598
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "cfe34b57-0f41-406e-8e5d-72fed9acff60",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761793169.3116057,
+    "started_at": 1761793169.6367767,
+    "completed_at": 1761793194.0744631,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "企业资料/四方移动/李建和（港澳通行证）.pdf",
+      "file_path": "uploads/global/2810a685-32d7-429b-bdc6-fcad186d2313.pdf",
+      "file_size": 230647,
+      "document_id": "2810a685-32d7-429b-bdc6-fcad186d2313",
+      "hierarchy_path": "企业资料/四方移动/李建和（港澳通行证）.pdf",
+      "chunk_count": 599
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "95aa9d52-fd0c-4828-8446-ede9134adc86",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761793183.492622,
+    "started_at": 1761793183.8142562,
+    "completed_at": 1761793222.4997172,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "企业资料/四方移动/附件3：创新创业企业入驻申请表 .docx",
+      "file_path": "uploads/global/d4b64871-786f-45bc-85ea-460b8d77e2e5.docx",
+      "file_size": 26543,
+      "document_id": "d4b64871-786f-45bc-85ea-460b8d77e2e5",
+      "hierarchy_path": "企业资料/四方移动/附件3：创新创业企业入驻申请表 .docx",
+      "chunk_count": 607
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "8cf1d5d0-edf6-4d9f-9fb2-69fd017356e7",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761793194.9125407,
+    "started_at": 1761793195.2314377,
+    "completed_at": 1761793260.1151,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "企业资料/四方移动/附件3：创新创业企业入驻申请表.pdf",
+      "file_path": "uploads/global/2efd860f-5442-4cd6-8934-7541d6e5d2cd.pdf",
+      "file_size": 619614,
+      "document_id": "2efd860f-5442-4cd6-8934-7541d6e5d2cd",
+      "hierarchy_path": "企业资料/四方移动/附件3：创新创业企业入驻申请表.pdf",
+      "chunk_count": 611
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "42f3c167-77c5-41ff-9423-0b297adba149",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "indexing",
+      "progress": 90,
+      "message": "持久化索引中... 已等待 30s",
+      "details": {}
+    },
+    "created_at": 1761793197.4280775,
+    "started_at": 1761793197.6915255,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "企业资料/Tooplastic/205e4e0dc60b7733995e5aebcbe8ee9.jpg",
+      "file_path": "uploads/global/d54243f1-2113-4e32-b999-045dd46d4f54.jpg",
+      "file_size": 344311,
+      "document_id": "d54243f1-2113-4e32-b999-045dd46d4f54",
+      "hierarchy_path": "企业资料/Tooplastic/205e4e0dc60b7733995e5aebcbe8ee9.jpg"
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "799900eb-e1bb-4535-81fc-648646e5ae95",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761793220.6540263,
+    "started_at": 1761793220.9731565,
+    "completed_at": 1761793265.359833,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "企业资料/Tooplastic/DIP IV - Tooplastic Art Toy Limited - reimbursement summary (new version eff 1 Feb 2021).pdf",
+      "file_path": "uploads/global/8ca9a72f-28b0-46b1-acf8-6ee8b5186d69.pdf",
+      "file_size": 94573,
+      "document_id": "8ca9a72f-28b0-46b1-acf8-6ee8b5186d69",
+      "hierarchy_path": "企业资料/Tooplastic/DIP IV - Tooplastic Art Toy Limited - reimbursement summary (new version eff 1 Feb 2021).pdf",
+      "chunk_count": 616
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "2d5421cf-19dd-4397-af81-2b1f78be0771",
+    "task_type": "global_archive_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761793315.347683,
+    "started_at": null,
+    "completed_at": 1761793398.5875902,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "遴选企业入园申请材料.zip",
+      "file_path": "uploads/global/5019452c-2772-44f4-9619-550e45b790bb.zip",
+      "file_size": 14483587,
+      "document_id": "5019452c-2772-44f4-9619-550e45b790bb",
+      "file_type": ".zip",
+      "hierarchy_path": "",
+      "success": true,
+      "total_files": 5,
+      "successful": 4,
+      "failed": 1,
+      "results": [
+        {
+          "filename": "╕╜╝■1ú║├╬╣ñ│í═╞╜Θ╩╓▓ß.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "c505e7c1-9cea-4339-9b3b-21f0032f0aae",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_2d5421cf-19dd-4397-af81-2b1f78be0771_sdzi5kj6/╕╜╝■1ú║├╬╣ñ│í═╞╜Θ╩╓▓ß.pdf",
+            "relative_path": "╕╜╝■1ú║├╬╣ñ│í═╞╜Θ╩╓▓ß.pdf",
+            "hierarchy_path": "遴选企业入园申请材料/╕╜╝■1ú║├╬╣ñ│í═╞╜Θ╩╓▓ß.pdf",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 11150090,
+            "file_type": ".pdf",
+            "original_filename": "╕╜╝■1ú║├╬╣ñ│í═╞╜Θ╩╓▓ß.pdf"
+          }
+        },
+        {
+          "filename": "╕╜╝■2ú║╔Ω╟δ▓─┴╧╟σ╡Ñ.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "7dff116e-f588-4602-a8b7-ee783c3a9ca0",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_2d5421cf-19dd-4397-af81-2b1f78be0771_sdzi5kj6/╕╜╝■2ú║╔Ω╟δ▓─┴╧╟σ╡Ñ.docx",
+            "relative_path": "╕╜╝■2ú║╔Ω╟δ▓─┴╧╟σ╡Ñ.docx",
+            "hierarchy_path": "遴选企业入园申请材料/╕╜╝■2ú║╔Ω╟δ▓─┴╧╟σ╡Ñ.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 15141,
+            "file_type": ".docx",
+            "original_filename": "╕╜╝■2ú║╔Ω╟δ▓─┴╧╟σ╡Ñ.docx"
+          }
+        },
+        {
+          "filename": "╕╜╝■3ú║┤┤╨┬┤┤╥╡╞≤╥╡╚δ╫ñ╔Ω╟δ▒φ.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "01afde02-38cf-442f-bb37-fea02d9ac64c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_2d5421cf-19dd-4397-af81-2b1f78be0771_sdzi5kj6/╕╜╝■3ú║┤┤╨┬┤┤╥╡╞≤╥╡╚δ╫ñ╔Ω╟δ▒φ.docx",
+            "relative_path": "╕╜╝■3ú║┤┤╨┬┤┤╥╡╞≤╥╡╚δ╫ñ╔Ω╟δ▒φ.docx",
+            "hierarchy_path": "遴选企业入园申请材料/╕╜╝■3ú║┤┤╨┬┤┤╥╡╞≤╥╡╚δ╫ñ╔Ω╟δ▒φ.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 22417,
+            "file_type": ".docx",
+            "original_filename": "╕╜╝■3ú║┤┤╨┬┤┤╥╡╞≤╥╡╚δ╫ñ╔Ω╟δ▒φ.docx"
+          }
+        },
+        {
+          "filename": "╕╜╝■4ú║╔╠╥╡╝╞╗«╩Θú¿┬╖╤▌ú⌐ppt.pptx",
+          "success": false,
+          "file_type": ".pptx",
+          "file_id": null,
+          "file_info": null
+        },
+        {
+          "filename": "╕╜╝■5ú║┤┤╨┬┤┤╥╡╞└╖╓▒Ω╫╝.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "96616bbc-3573-4efe-be00-a15fbd6f657e",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_2d5421cf-19dd-4397-af81-2b1f78be0771_sdzi5kj6/╕╜╝■5ú║┤┤╨┬┤┤╥╡╞└╖╓▒Ω╫╝.docx",
+            "relative_path": "╕╜╝■5ú║┤┤╨┬┤┤╥╡╞└╖╓▒Ω╫╝.docx",
+            "hierarchy_path": "遴选企业入园申请材料/╕╜╝■5ú║┤┤╨┬┤┤╥╡╞└╖╓▒Ω╫╝.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 14869,
+            "file_type": ".docx",
+            "original_filename": "╕╜╝■5ú║┤┤╨┬┤┤╥╡╞└╖╓▒Ω╫╝.docx"
+          }
+        }
+      ]
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "a1dcee7d-f951-4382-98d2-f2149fed2cc3",
+    "task_type": "global_archive_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761793493.6533058,
+    "started_at": null,
+    "completed_at": 1761793576.5307062,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "遴选企业入园申请材料.zip",
+      "file_path": "uploads/global/019e3ca4-c92e-4324-9425-3b5fca509992.zip",
+      "file_size": 14483587,
+      "document_id": "019e3ca4-c92e-4324-9425-3b5fca509992",
+      "file_type": ".zip",
+      "hierarchy_path": "",
+      "success": true,
+      "total_files": 5,
+      "successful": 4,
+      "failed": 1,
+      "results": [
+        {
+          "filename": "╕╜╝■1ú║├╬╣ñ│í═╞╜Θ╩╓▓ß.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "ec810d62-8fc3-46be-a87e-87614e1a6eb5",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_a1dcee7d-f951-4382-98d2-f2149fed2cc3_sckum92f/╕╜╝■1ú║├╬╣ñ│í═╞╜Θ╩╓▓ß.pdf",
+            "relative_path": "╕╜╝■1ú║├╬╣ñ│í═╞╜Θ╩╓▓ß.pdf",
+            "hierarchy_path": "遴选企业入园申请材料/╕╜╝■1ú║├╬╣ñ│í═╞╜Θ╩╓▓ß.pdf",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 11150090,
+            "file_type": ".pdf",
+            "original_filename": "╕╜╝■1ú║├╬╣ñ│í═╞╜Θ╩╓▓ß.pdf"
+          }
+        },
+        {
+          "filename": "╕╜╝■2ú║╔Ω╟δ▓─┴╧╟σ╡Ñ.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "6dfafa8e-b324-40f8-b722-aa854153b10f",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_a1dcee7d-f951-4382-98d2-f2149fed2cc3_sckum92f/╕╜╝■2ú║╔Ω╟δ▓─┴╧╟σ╡Ñ.docx",
+            "relative_path": "╕╜╝■2ú║╔Ω╟δ▓─┴╧╟σ╡Ñ.docx",
+            "hierarchy_path": "遴选企业入园申请材料/╕╜╝■2ú║╔Ω╟δ▓─┴╧╟σ╡Ñ.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 15141,
+            "file_type": ".docx",
+            "original_filename": "╕╜╝■2ú║╔Ω╟δ▓─┴╧╟σ╡Ñ.docx"
+          }
+        },
+        {
+          "filename": "╕╜╝■3ú║┤┤╨┬┤┤╥╡╞≤╥╡╚δ╫ñ╔Ω╟δ▒φ.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "d596b16b-b207-456d-812d-ca0d20f2f572",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_a1dcee7d-f951-4382-98d2-f2149fed2cc3_sckum92f/╕╜╝■3ú║┤┤╨┬┤┤╥╡╞≤╥╡╚δ╫ñ╔Ω╟δ▒φ.docx",
+            "relative_path": "╕╜╝■3ú║┤┤╨┬┤┤╥╡╞≤╥╡╚δ╫ñ╔Ω╟δ▒φ.docx",
+            "hierarchy_path": "遴选企业入园申请材料/╕╜╝■3ú║┤┤╨┬┤┤╥╡╞≤╥╡╚δ╫ñ╔Ω╟δ▒φ.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 22417,
+            "file_type": ".docx",
+            "original_filename": "╕╜╝■3ú║┤┤╨┬┤┤╥╡╞≤╥╡╚δ╫ñ╔Ω╟δ▒φ.docx"
+          }
+        },
+        {
+          "filename": "╕╜╝■4ú║╔╠╥╡╝╞╗«╩Θú¿┬╖╤▌ú⌐ppt.pptx",
+          "success": false,
+          "file_type": ".pptx",
+          "file_id": null,
+          "file_info": null
+        },
+        {
+          "filename": "╕╜╝■5ú║┤┤╨┬┤┤╥╡╞└╖╓▒Ω╫╝.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "8f94d233-0092-4dbe-9318-d1a4888d8407",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_a1dcee7d-f951-4382-98d2-f2149fed2cc3_sckum92f/╕╜╝■5ú║┤┤╨┬┤┤╥╡╞└╖╓▒Ω╫╝.docx",
+            "relative_path": "╕╜╝■5ú║┤┤╨┬┤┤╥╡╞└╖╓▒Ω╫╝.docx",
+            "hierarchy_path": "遴选企业入园申请材料/╕╜╝■5ú║┤┤╨┬┤┤╥╡╞└╖╓▒Ω╫╝.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 14869,
+            "file_type": ".docx",
+            "original_filename": "╕╜╝■5ú║┤┤╨┬┤┤╥╡╞└╖╓▒Ω╫╝.docx"
+          }
+        }
+      ]
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "f8a91a67-9b74-4596-94c8-31201a1861f4",
+    "task_type": "global_archive_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761793895.084214,
+    "started_at": null,
+    "completed_at": 1761793995.6222343,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "遴选企业入园申请材料.zip",
+      "file_path": "uploads/global/f428725b-3e30-4fe3-a4a1-feb5fa912310.zip",
+      "file_size": 14483587,
+      "document_id": "f428725b-3e30-4fe3-a4a1-feb5fa912310",
+      "file_type": ".zip",
+      "hierarchy_path": "",
+      "success": true,
+      "total_files": 5,
+      "successful": 4,
+      "failed": 1,
+      "results": [
+        {
+          "filename": "附件1：梦工场推介手册.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "fdccbe0a-4f33-4c61-b3b3-a380f6b73ae8",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_f8a91a67-9b74-4596-94c8-31201a1861f4_c6f30zc_/附件1：梦工场推介手册.pdf",
+            "relative_path": "附件1：梦工场推介手册.pdf",
+            "hierarchy_path": "遴选企业入园申请材料/附件1：梦工场推介手册.pdf",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 11150090,
+            "file_type": ".pdf",
+            "original_filename": "附件1：梦工场推介手册.pdf"
+          }
+        },
+        {
+          "filename": "附件2：申请材料清单.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "18381688-e9cf-4403-9c0c-a84110aa6e16",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_f8a91a67-9b74-4596-94c8-31201a1861f4_c6f30zc_/附件2：申请材料清单.docx",
+            "relative_path": "附件2：申请材料清单.docx",
+            "hierarchy_path": "遴选企业入园申请材料/附件2：申请材料清单.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 15141,
+            "file_type": ".docx",
+            "original_filename": "附件2：申请材料清单.docx"
+          }
+        },
+        {
+          "filename": "附件3：创新创业企业入驻申请表.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "a3c523fa-3b0c-4c15-b0e6-ac7048c7f846",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_f8a91a67-9b74-4596-94c8-31201a1861f4_c6f30zc_/附件3：创新创业企业入驻申请表.docx",
+            "relative_path": "附件3：创新创业企业入驻申请表.docx",
+            "hierarchy_path": "遴选企业入园申请材料/附件3：创新创业企业入驻申请表.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 22417,
+            "file_type": ".docx",
+            "original_filename": "附件3：创新创业企业入驻申请表.docx"
+          }
+        },
+        {
+          "filename": "附件4：商业计划书（路演）ppt.pptx",
+          "success": false,
+          "file_type": ".pptx",
+          "file_id": null,
+          "file_info": null
+        },
+        {
+          "filename": "附件5：创新创业评分标准.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "93c07a91-767c-4579-9331-24be393ee475",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_f8a91a67-9b74-4596-94c8-31201a1861f4_c6f30zc_/附件5：创新创业评分标准.docx",
+            "relative_path": "附件5：创新创业评分标准.docx",
+            "hierarchy_path": "遴选企业入园申请材料/附件5：创新创业评分标准.docx",
+            "archive_name": "遴选企业入园申请材料",
+            "archive_hierarchy": "",
+            "folder_path": "",
+            "file_size": 14869,
+            "file_type": ".docx",
+            "original_filename": "附件5：创新创业评分标准.docx"
+          }
+        }
+      ]
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "eadf592d-8d0c-47ce-a690-8d3d90db8550",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761794016.7710867,
+    "started_at": 1761794016.8080053,
+    "completed_at": 1761794025.5388465,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "附件5：商业计划书（路演）ppt.pptx",
+      "file_path": "uploads/global/0d7088e5-dce8-4d9c-afff-d435c131418c.pptx",
+      "file_size": 67955,
+      "document_id": "0d7088e5-dce8-4d9c-afff-d435c131418c",
+      "hierarchy_path": ""
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "c0e83c2b-2d25-46ab-9f2d-fdb988b29091",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761794345.2008803,
+    "started_at": 1761794345.2389977,
+    "completed_at": 1761794351.9951572,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "附件5：商业计划书（路演）ppt.pptx",
+      "file_path": "uploads/global/1131a5f1-0a6b-47ad-9174-5e6c55ed72fe.pptx",
+      "file_size": 67955,
+      "document_id": "1131a5f1-0a6b-47ad-9174-5e6c55ed72fe",
+      "hierarchy_path": ""
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "37bfea96-d95b-4987-800d-a81adf6380f4",
+    "task_type": "global_document_processing",
+    "status": "failed",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "任务失败: 文档处理失败",
+      "details": null
+    },
+    "created_at": 1761794433.406204,
+    "started_at": 1761794433.4436538,
+    "completed_at": 1761794443.021542,
+    "error_message": "文档处理失败",
+    "metadata": {
+      "original_filename": "附件5：商业计划书（路演）ppt.pptx",
+      "file_path": "uploads/global/de68ed13-668d-4faf-862c-1be2a7887557.pptx",
+      "file_size": 67955,
+      "document_id": "de68ed13-668d-4faf-862c-1be2a7887557",
+      "hierarchy_path": ""
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "5619c2ff-c05c-473a-a573-098cb961263f",
+    "task_type": "global_document_processing",
+    "status": "processing",
+    "progress": {
+      "stage": "vectorizing",
+      "progress": 60,
+      "message": "正在生成向量...",
+      "details": {}
+    },
+    "created_at": 1761794753.668415,
+    "started_at": 1761794753.7062223,
+    "completed_at": null,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "附件5：商业计划书（路演）ppt.pptx",
+      "file_path": "uploads/global/243ebf0b-9b91-4aa2-acf4-40eceb103dab.pptx",
+      "file_size": 67955,
+      "document_id": "243ebf0b-9b91-4aa2-acf4-40eceb103dab",
+      "hierarchy_path": ""
+    },
+    "workspace_id": "global"
   }
 ]

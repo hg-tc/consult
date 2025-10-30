@@ -64,6 +64,9 @@ install_system_dependencies() {
     apt-get install -y build-essential libffi-dev libssl-dev \
         libmagic1 tesseract-ocr poppler-utils libgl1
     
+    # 安装 LibreOffice（用于 PPT/PPTX 转 PDF 离线回退）与中文字体
+    apt-get install -y libreoffice libreoffice-java-common fonts-wqy-zenhei
+    
     print_message $GREEN "✅ 系统依赖安装完成"
 }
 

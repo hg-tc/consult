@@ -13,6 +13,7 @@ import aiohttp
 from bs4 import BeautifulSoup
 import json
 from pathlib import Path
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -34,14 +35,23 @@ class WebSearchService:
         self.cache_dir.mkdir(exist_ok=True)
         self.session = None
         self.timeout = 30  # 搜索超时时间
+        self.searxng_endpoint = os.getenv("SEARXNG_ENDPOINT")
+        self.http_proxy = os.getenv("HTTP_PROXY")
+        self.https_proxy = os.getenv("HTTPS_PROXY")
         
     async def __aenter__(self):
         """异步上下文管理器入口"""
-        self.session = aiohttp.ClientSession(
-            timeout=aiohttp.ClientTimeout(total=self.timeout),
-            headers={
+        timeout = aiohttp.ClientTimeout(total=self.timeout)
+        kwargs = {
+            "timeout": timeout,
+            "headers": {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
             }
+        }
+        if self.http_proxy or self.https_proxy:
+            kwargs["trust_env"] = True  # 让 aiohttp 读取环境代理
+        self.session = aiohttp.ClientSession(
+            **kwargs
         )
         return self
     
@@ -99,8 +109,14 @@ class WebSearchService:
             
             logger.info(f"开始网络搜索: {query}")
             
-            # 使用DuckDuckGo搜索
-            results = await self._duckduckgo_search(query, num_results)
+            results: List[SearchResult] = []
+            # 优先 SearXNG
+            if self.searxng_endpoint:
+                sx = await self._searxng_search(query, num_results)
+                results.extend(sx)
+            # 若 SearXNG 无结果，退回 DuckDuckGo
+            if not results:
+                results = await self._duckduckgo_search(query, num_results)
             
             # 如果没有结果，尝试Google搜索
             if not results:
@@ -119,6 +135,39 @@ class WebSearchService:
             
         except Exception as e:
             logger.error(f"网络搜索失败: {e}")
+            return []
+
+    async def _searxng_search(self, query: str, num_results: int) -> List[SearchResult]:
+        """调用 SearXNG 实例进行搜索，返回标准化结果"""
+        if not self.searxng_endpoint or not self.session:
+            return []
+        try:
+            # SearXNG 支持 format=json
+            params = {
+                "q": query,
+                "format": "json",
+                "language": "zh-CN",
+                "safesearch": 1,
+                "categories": "general",
+            }
+            url = urljoin(self.searxng_endpoint.rstrip('/') + '/', 'search')
+            async with self.session.get(url, params=params) as resp:
+                if resp.status != 200:
+                    logger.warning(f"SearXNG 请求失败: {resp.status}")
+                    return []
+                data = await resp.json()
+                results: List[SearchResult] = []
+                for i, r in enumerate(data.get('results', [])[:num_results]):
+                    results.append(SearchResult(
+                        title=r.get('title') or r.get('url') or '搜索结果',
+                        url=r.get('url', ''),
+                        snippet=r.get('content') or r.get('pretty_url') or '',
+                        relevance_score=1.0 - (i * 0.05),
+                        source_type='web'
+                    ))
+                return results
+        except Exception as e:
+            logger.error(f"SearXNG 搜索失败: {e}")
             return []
     
     async def _duckduckgo_search(self, query: str, num_results: int) -> List[SearchResult]:

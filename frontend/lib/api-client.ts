@@ -37,9 +37,10 @@ async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise
     }
 
     return response.json()
-  } catch (error) {
+  } catch (error: unknown) {
     clearTimeout(timeoutId)
-    if (error.name === 'AbortError') {
+    const errObj = error as any
+    if (errObj && errObj.name === 'AbortError') {
       throw new ApiError(408, "Request timeout")
     }
     throw error
@@ -49,7 +50,7 @@ async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise
 // 全局文档相关API（用于数据库管理页面）
 export const globalDocumentApi = {
   // 上传文档到全局数据库
-  async uploadDocument(file: File) {
+  async uploadDocument(file: File, hierarchyPath?: string) {
     console.log("[v0] uploadGlobalDocument API called with:", {
       fileName: file.name,
       fileSize: file.size,
@@ -58,6 +59,9 @@ export const globalDocumentApi = {
     
     const formData = new FormData()
     formData.append("file", file)
+    if (hierarchyPath) {
+      formData.append("hierarchy_path", hierarchyPath)
+    }
 
     console.log("[v0] FormData contents:")
     for (let [key, value] of formData.entries()) {
@@ -89,7 +93,7 @@ export const globalDocumentApi = {
 
   // 获取全局文档列表
   async getDocuments() {
-    return fetchApi(`/global/documents`)
+    return fetchApi<{ documents: any[] }>(`/global/documents`)
   },
 
   // 删除全局文档
