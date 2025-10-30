@@ -87,6 +87,9 @@ start_backend() {
     export HF_HUB_OFFLINE=1
     export HF_DATASETS_OFFLINE=1
     
+    # 确保本地 SearXNG 服务已就绪（源码方式，无 Docker）
+    "$PROJECT_ROOT/scripts/searxng_start_local.sh"
+
     # 启动后端服务
     nohup python app_simple.py > "$LOG_FILE" 2>&1 &
     BACKEND_PID=$!

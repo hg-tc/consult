@@ -58,6 +58,11 @@ fi
 # 激活虚拟环境
 source venv/bin/activate
 
+# 启动/等待本地 SearXNG（源码方式，无 Docker）
+if [ -x "$PROJECT_ROOT/scripts/searxng_start_local.sh" ]; then
+    "$PROJECT_ROOT/scripts/searxng_start_local.sh"
+fi
+
 # 加载环境变量
 if [ -f ".env" ]; then
     source .env

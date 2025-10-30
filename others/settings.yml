@@ -1,0 +1,33 @@
+use_default_settings: false
+
+server:
+  base_url: "http://localhost:8088/"
+  bind_address: "0.0.0.0"
+  port: 8088
+  public_instance: false
+  secret_key: "3f1c4b2a6d98e0f5c7a9b1d2e3f405169a7c8b9d0e1f2a3b4c5d6e7f8091a2b3"
+
+botdetection:
+  enabled: false
+
+brand: {}
+
+engines:
+  - name: bing
+    engine: bing
+    categories: general
+
+default_doi_resolver: doi.org
+doi_resolvers:
+  doi.org: https://doi.org/
+
+search:
+  formats:
+    - html
+    - json
+  max_results: 10
+
+outgoing:
+  request_timeout: 8
+  connect_timeout: 2
+  max_redirects: 2

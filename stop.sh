@@ -164,6 +164,10 @@ main() {
     print_message $BLUE "================================"
     
     # 停止服务
+    # 先停止本地 SearXNG（若有）
+    if [ -x "/root/consult/scripts/searxng_stop_local.sh" ]; then
+        /root/consult/scripts/searxng_stop_local.sh || true
+    fi
     stop_service "后端" "$PROJECT_ROOT/backend.pid"
     stop_service "前端" "$PROJECT_ROOT/frontend.pid"
     stop_nginx
