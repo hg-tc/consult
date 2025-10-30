@@ -39,17 +39,12 @@ if 'LOCAL_BGE_MODEL_DIR' in os.environ:
     os.environ.setdefault('HUGGINGFACE_HUB_CACHE', local_model_dir)
     os.environ.setdefault('TRANSFORMERS_CACHE', local_model_dir)
 
-# 设置日志
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler('/root/consult/backend/debug.log')
-    ]
-)
+# 设置日志：使用全局配置，尊重 APP_LOG_LEVEL/LOG_LEVEL
+from app.core.config import settings  # 触发全局 setup_logging
+from app.core.logging_config import setup_logging
+setup_logging(level_name=settings.APP_LOG_LEVEL)
 logger = logging.getLogger(__name__)
-logger.info("日志系统已配置为DEBUG级别")
+logger.info(f"日志系统已配置为{settings.APP_LOG_LEVEL}级别")
 
 # WebSocket连接管理器
 class ConnectionManager:

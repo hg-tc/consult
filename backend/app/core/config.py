@@ -57,6 +57,12 @@ class Settings(BaseSettings):
     HTTP_PROXY: Optional[str] = os.getenv("HTTP_PROXY")
     HTTPS_PROXY: Optional[str] = os.getenv("HTTPS_PROXY")
     
+    # 日志控制
+    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")  # 兼容字段
+    APP_LOG_LEVEL: str = os.getenv("APP_LOG_LEVEL", os.getenv("LOG_LEVEL", "INFO"))  # DEBUG/INFO/WARNING/ERROR
+    WEB_SEARCH_LOG_LEVEL: Optional[str] = os.getenv("WEB_SEARCH_LOG_LEVEL")  # 覆盖 WebSearchService
+    WEB_SEARCH_VERBOSE: bool = os.getenv("WEB_SEARCH_VERBOSE", "false").lower() in {"1", "true", "yes", "on"}
+    
     # 存储路径配置（支持环境变量，默认使用 /home 目录）
     # 先获取基础路径
     _storage_base = os.getenv(
@@ -120,3 +126,11 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+# 初始化全局日志设置（标准等级：DEBUG/INFO/WARNING/ERROR）
+try:
+    from app.core.logging_config import setup_logging
+    setup_logging(level_name=settings.APP_LOG_LEVEL)
+except Exception:
+    # 避免导入时失败影响应用启动
+    pass

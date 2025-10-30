@@ -19,6 +19,7 @@ from bs4 import BeautifulSoup
 import json
 from pathlib import Path
 import os
+from yarl import URL
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ class SearchResult:
 class WebSearchService:
     """互联网搜索服务"""
     
-    def __init__(self, cache_dir: str = "web_search_cache"):
+    def __init__(self, cache_dir: str = "web_search_cache", log_level: Optional[str] = None, verbose: Optional[bool] = None):
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(exist_ok=True)
         self.session = None
@@ -45,6 +46,15 @@ class WebSearchService:
         self.searxng_endpoint = self._normalize_searxng_endpoint(self.searxng_endpoint)
         self.http_proxy = os.getenv("HTTP_PROXY")
         self.https_proxy = os.getenv("HTTPS_PROXY")
+        # 日志级别与详细模式
+        try:
+            from app.core.config import settings
+            effective_level = (log_level or settings.WEB_SEARCH_LOG_LEVEL or settings.LOG_LEVEL or "INFO").upper()
+            self.verbose = bool(settings.WEB_SEARCH_VERBOSE if verbose is None else verbose)
+        except Exception:
+            effective_level = (log_level or os.getenv("WEB_SEARCH_LOG_LEVEL") or os.getenv("LOG_LEVEL", "INFO")).upper()
+            self.verbose = bool(verbose) if verbose is not None else os.getenv("WEB_SEARCH_VERBOSE", "false").lower() in {"1", "true", "yes", "on"}
+        logger.setLevel(getattr(logging, effective_level, logging.INFO))
 
     def _normalize_searxng_endpoint(self, endpoint: str) -> str:
         """规范化 SearXNG 端点到 http://<host>:8088 形式，并去除多余路径/斜杠"""
@@ -184,7 +194,8 @@ class WebSearchService:
                 "engines": "bing",
             }
             url = urljoin(self.searxng_endpoint.rstrip('/') + '/', 'search')
-            print("DEBUG URL:", url, "params:", params)
+            if self.verbose:
+                logger.debug(f"SearXNG 请求 URL: {url} params: {params}")
             # 为避免部分实例的反爬/校验导致 403，这里附带常见请求头
             req_headers = {
                 'Accept': 'application/json',
@@ -285,7 +296,21 @@ class WebSearchService:
         if not self.session or not result.url:
             return
 
-        parsed = urlparse(result.url)
+        # 规范化 URL，处理未编码的中文、空白、缺失 scheme 等情况
+        def sanitize_url(raw_url: str) -> str:
+            try:
+                cleaned = raw_url.strip()
+                # yarl 可对未编码部分自动编码
+                y = URL(cleaned, encoded=False)
+                # 若无 scheme，默认补 http
+                if not y.scheme:
+                    y = URL.build(scheme="http", host=str(y))
+                return str(y)
+            except Exception:
+                return raw_url
+
+        safe_url = sanitize_url(result.url)
+        parsed = urlparse(safe_url)
         referer = f"{parsed.scheme}://{parsed.netloc}/"
         common_headers = {
             'User-Agent': (
@@ -320,7 +345,7 @@ class WebSearchService:
 
         tries = 0
         max_tries = 2
-        url_to_fetch = result.url
+        url_to_fetch = safe_url
 
         while tries < max_tries:
             html = None
@@ -329,7 +354,7 @@ class WebSearchService:
                 html = await fetch_once(url_to_fetch, self.ssl_ctx)
             except aiohttp.ClientResponseError as cre:
                 if cre.status == 403 and 'zhihu.com' in parsed.netloc and 'm.zhihu.com' not in parsed.netloc:
-                    url_to_fetch = result.url.replace('://www.zhihu.com', '://m.zhihu.com')
+                    url_to_fetch = safe_url.replace('://www.zhihu.com', '://m.zhihu.com')
                     tries += 1
                     await asyncio.sleep(0.6 * tries)
                     continue

@@ -29,6 +29,7 @@ class QuestionnaireBuilderApp(BaseApp):
                 company_name: Optional[str] = data.get("company_name")
                 target_projects: List[str] = data.get("target_projects") or []
                 known_info: Dict[str, Any] = data.get("known_info") or {}
+                phase: Optional[str] = (data.get("phase") or None)
 
                 if not target_projects or not isinstance(target_projects, list):
                     raise HTTPException(status_code=400, detail="target_projects 为必填，且必须为字符串数组")
@@ -66,7 +67,7 @@ class QuestionnaireBuilderApp(BaseApp):
                     llm=rag_service.llm
                 )
 
-                result = await workflow.run(request_context)
+                result = await workflow.run(request_context, phase=phase)
 
                 return result
             except HTTPException:
@@ -74,6 +75,41 @@ class QuestionnaireBuilderApp(BaseApp):
             except Exception as e:
                 logger.error(f"问卷生成失败: {e}", exc_info=True)
                 raise HTTPException(status_code=500, detail=f"问卷生成失败: {str(e)}")
+
+        @self.router.post("/revise-report")
+        async def revise_report(data: Dict[str, Any]):
+            """对阶段二报告进行修订（占位：直接返回合并文本）。"""
+            try:
+                original: str = data.get("original") or ""
+                instruction: str = data.get("instruction") or ""
+                if not original:
+                    raise HTTPException(status_code=400, detail="original 为必填")
+                # 占位策略：简单拼接（后续可调用 LLM 做编辑）
+                revised = original.strip()
+                if instruction:
+                    revised = revised + "\n\n---\n用户修订说明：\n" + instruction.strip()
+                return {"revised_report_md": revised}
+            except HTTPException:
+                raise
+            except Exception as e:
+                logger.error(f"报告修订失败: {e}", exc_info=True)
+                raise HTTPException(status_code=500, detail=f"报告修订失败: {str(e)}")
+
+        @self.router.post("/upload-answers")
+        async def upload_answers(data: Dict[str, Any]):
+            """上传问卷答案元数据（占位：直接回显）。"""
+            try:
+                workspace_id: Optional[str] = data.get("workspace_id")
+                answers: Any = data.get("answers")
+                if answers is None:
+                    raise HTTPException(status_code=400, detail="answers 为必填")
+                # 占位：直接回显并打时间戳（省略存储）
+                return {"workspace_id": workspace_id, "accepted": True, "answers": answers}
+            except HTTPException:
+                raise
+            except Exception as e:
+                logger.error(f"上传答案失败: {e}", exc_info=True)
+                raise HTTPException(status_code=500, detail=f"上传答案失败: {str(e)}")
 
 
 # 实例与工厂方法
