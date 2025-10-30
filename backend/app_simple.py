@@ -442,6 +442,18 @@ async def chat_with_langgraph_legacy(data: dict):
         
         question = data.get("question") or data.get("message", "")
         workspace_id = data.get("workspace_id") or data.get("workspaceId", "global")
+        # Debug 入参
+        try:
+            q_preview = str(question)
+            if q_preview is None:
+                q_preview = "<None>"
+            if len(q_preview) > 300:
+                q_preview = q_preview[:300] + "...<truncated>"
+            logger.debug(
+                f"[chat_with_langgraph_legacy.debug] workspace_id={workspace_id}, type(question)={type(question)}, question_preview={q_preview}"
+            )
+        except Exception as _dbg_err:
+            logger.warning(f"/api/chat/langgraph 入参调试信息记录失败: {_dbg_err}")
         
         workspace_retriever = LlamaIndexRetriever.get_instance(workspace_id)
         global_retriever = LlamaIndexRetriever.get_instance("global")

@@ -8179,5 +8179,3647 @@
       "chunk_count": 863
     },
     "workspace_id": "global"
+  },
+  {
+    "id": "9f3376df-eb5a-49c2-8afe-d2f0019b1312",
+    "task_type": "global_archive_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761799792.0923958,
+    "started_at": null,
+    "completed_at": 1761803312.1636686,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "前海12条申报资料.rar",
+      "file_path": "uploads/global/cd8c21a5-4c01-41c1-8c42-4a52ee27351f.rar",
+      "file_size": 111319265,
+      "document_id": "cd8c21a5-4c01-41c1-8c42-4a52ee27351f",
+      "file_type": ".rar",
+      "hierarchy_path": "",
+      "success": true,
+      "total_files": 108,
+      "successful": 108,
+      "failed": 0,
+      "results": [
+        {
+          "filename": "邓卓越-申请表及承诺书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "6b303ae5-0b10-4981-8973-a0a72d686b35",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/个人申请表(水印版)/元觉/邓卓越-申请表及承诺书.pdf",
+            "relative_path": "前海12条申报资料/个人申请表(水印版)/元觉/邓卓越-申请表及承诺书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/个人申请表(水印版)/元觉/邓卓越-申请表及承诺书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/个人申请表(水印版)/元觉",
+            "file_size": 5602364,
+            "file_type": ".pdf",
+            "original_filename": "邓卓越-申请表及承诺书.pdf",
+            "original_zip_filename": "前海12条申报资料/个人申请表（水印版）/元觉/邓卓越-申请表及承诺书.pdf"
+          }
+        },
+        {
+          "filename": "于蓉申请表及承诺书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "576c27f1-4f99-4f30-8ef2-81b48afc361a",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/个人申请表(水印版)/智造未来/于蓉申请表及承诺书.pdf",
+            "relative_path": "前海12条申报资料/个人申请表(水印版)/智造未来/于蓉申请表及承诺书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/个人申请表(水印版)/智造未来/于蓉申请表及承诺书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/个人申请表(水印版)/智造未来",
+            "file_size": 3610649,
+            "file_type": ".pdf",
+            "original_filename": "于蓉申请表及承诺书.pdf",
+            "original_zip_filename": "前海12条申报资料/个人申请表（水印版）/智造未来/于蓉申请表及承诺书.pdf"
+          }
+        },
+        {
+          "filename": "云怀萱申请表及承诺书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "8b52ab78-1fdf-41b5-9276-4d9af9b78f9b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/个人申请表(水印版)/智造未来/云怀萱申请表及承诺书.pdf",
+            "relative_path": "前海12条申报资料/个人申请表(水印版)/智造未来/云怀萱申请表及承诺书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/个人申请表(水印版)/智造未来/云怀萱申请表及承诺书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/个人申请表(水印版)/智造未来",
+            "file_size": 3910067,
+            "file_type": ".pdf",
+            "original_filename": "云怀萱申请表及承诺书.pdf",
+            "original_zip_filename": "前海12条申报资料/个人申请表（水印版）/智造未来/云怀萱申请表及承诺书.pdf"
+          }
+        },
+        {
+          "filename": "陈小慧申请表及承诺书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "dfdaf533-a7cd-4a90-bc11-98cb0e984a09",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/个人申请表(水印版)/智造未来/陈小慧申请表及承诺书.pdf",
+            "relative_path": "前海12条申报资料/个人申请表(水印版)/智造未来/陈小慧申请表及承诺书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/个人申请表(水印版)/智造未来/陈小慧申请表及承诺书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/个人申请表(水印版)/智造未来",
+            "file_size": 3672488,
+            "file_type": ".pdf",
+            "original_filename": "陈小慧申请表及承诺书.pdf",
+            "original_zip_filename": "前海12条申报资料/个人申请表（水印版）/智造未来/陈小慧申请表及承诺书.pdf"
+          }
+        },
+        {
+          "filename": "陈鏸琳申请表及承诺书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "b40b9c3b-0563-4e01-ba8e-5aba3e2289c2",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/个人申请表(水印版)/智造未来/陈鏸琳申请表及承诺书.pdf",
+            "relative_path": "前海12条申报资料/个人申请表(水印版)/智造未来/陈鏸琳申请表及承诺书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/个人申请表(水印版)/智造未来/陈鏸琳申请表及承诺书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/个人申请表(水印版)/智造未来",
+            "file_size": 3822990,
+            "file_type": ".pdf",
+            "original_filename": "陈鏸琳申请表及承诺书.pdf",
+            "original_zip_filename": "前海12条申报资料/个人申请表（水印版）/智造未来/陈鏸琳申请表及承诺书.pdf"
+          }
+        },
+        {
+          "filename": "程翔-申请表及承诺书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "7e810d09-ac18-48dd-918d-366cfe968d37",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/个人申请表(水印版)/蓝地球/程翔-申请表及承诺书.pdf",
+            "relative_path": "前海12条申报资料/个人申请表(水印版)/蓝地球/程翔-申请表及承诺书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/个人申请表(水印版)/蓝地球/程翔-申请表及承诺书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/个人申请表(水印版)/蓝地球",
+            "file_size": 5799515,
+            "file_type": ".pdf",
+            "original_filename": "程翔-申请表及承诺书.pdf",
+            "original_zip_filename": "前海12条申报资料/个人申请表（水印版）/蓝地球/程翔-申请表及承诺书.pdf"
+          }
+        },
+        {
+          "filename": "石耀庭申请表及承诺书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "c6b3293f-5e21-4fee-846c-989a2a310a84",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/个人申请表(水印版)/领晋/石耀庭申请表及承诺书.pdf",
+            "relative_path": "前海12条申报资料/个人申请表(水印版)/领晋/石耀庭申请表及承诺书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/个人申请表(水印版)/领晋/石耀庭申请表及承诺书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/个人申请表(水印版)/领晋",
+            "file_size": 3673962,
+            "file_type": ".pdf",
+            "original_filename": "石耀庭申请表及承诺书.pdf",
+            "original_zip_filename": "前海12条申报资料/个人申请表（水印版）/领晋/石耀庭申请表及承诺书.pdf"
+          }
+        },
+        {
+          "filename": "1.港澳青年身份证明-DT.png",
+          "success": true,
+          "file_type": ".png",
+          "file_id": "af28a42e-8b28-403f-8a2f-caa3fe4fd0d0",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/1.港澳青年身份证明-DT.png",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/1.港澳青年身份证明-DT.png",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/1.港澳青年身份证明-DT.png",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料",
+            "file_size": 2437473,
+            "file_type": ".png",
+            "original_filename": "1.港澳青年身份证明-DT.png",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/1.港澳青年身份证明-DT.png"
+          }
+        },
+        {
+          "filename": "1.香港永久性居民身份证-DT.png",
+          "success": true,
+          "file_type": ".png",
+          "file_id": "b23ef165-152e-4d4c-b85b-788de457f06a",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/1.香港永久性居民身份证-DT.png",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/1.香港永久性居民身份证-DT.png",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/1.香港永久性居民身份证-DT.png",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料",
+            "file_size": 1429686,
+            "file_type": ".png",
+            "original_filename": "1.香港永久性居民身份证-DT.png",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/1.香港永久性居民身份证-DT.png"
+          }
+        },
+        {
+          "filename": "2.深圳市劳动合同-DT签字盖章版.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "0e307155-6e02-4733-8812-72183903728b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/2.深圳市劳动合同-DT签字盖章版.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/2.深圳市劳动合同-DT签字盖章版.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/2.深圳市劳动合同-DT签字盖章版.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料",
+            "file_size": 2056391,
+            "file_type": ".pdf",
+            "original_filename": "2.深圳市劳动合同-DT签字盖章版.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/2.深圳市劳动合同-DT签字盖章版.pdf"
+          }
+        },
+        {
+          "filename": "3.个人参保证明缴费清单2207-2507.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "8d8c46ab-6b79-4712-8403-a33506f3b4d0",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/3.个人参保证明缴费清单2207-2507.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/3.个人参保证明缴费清单2207-2507.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/3.个人参保证明缴费清单2207-2507.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料",
+            "file_size": 102859,
+            "file_type": ".pdf",
+            "original_filename": "3.个人参保证明缴费清单2207-2507.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/3.个人参保证明缴费清单2207-2507.pdf"
+          }
+        },
+        {
+          "filename": "附件4.个人所得税纳税记录2022.7-2025.07.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "de366193-397f-4cdf-a8bf-88cebfb426e0",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/附件4.个人所得税纳税记录2022.7-2025.07.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/附件4.个人所得税纳税记录2022.7-2025.07.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/附件4.个人所得税纳税记录2022.7-2025.07.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料",
+            "file_size": 1986659,
+            "file_type": ".pdf",
+            "original_filename": "附件4.个人所得税纳税记录2022.7-2025.07.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/元觉/港澳青创企业资料/附件4.个人所得税纳税记录2022.7-2025.07.pdf"
+          }
+        },
+        {
+          "filename": "元觉-租金发票.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "0151c34a-e1c9-438c-83d5-c84fa3a07a29",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/元觉/租金补贴/元觉-租金发票.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/元觉/租金补贴/元觉-租金发票.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/元觉/租金补贴/元觉-租金发票.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/元觉/租金补贴",
+            "file_size": 2183185,
+            "file_type": ".pdf",
+            "original_filename": "元觉-租金发票.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/元觉/租金补贴/元觉-租金发票.pdf"
+          }
+        },
+        {
+          "filename": "创业载体认定或备案证明文件.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "985556ee-5b85-4eb3-9cdf-6f3b4a1148ce",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/元觉/租金补贴/创业载体认定或备案证明文件.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/元觉/租金补贴/创业载体认定或备案证明文件.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/元觉/租金补贴/创业载体认定或备案证明文件.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/元觉/租金补贴",
+            "file_size": 491134,
+            "file_type": ".pdf",
+            "original_filename": "创业载体认定或备案证明文件.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/元觉/租金补贴/创业载体认定或备案证明文件.pdf"
+          }
+        },
+        {
+          "filename": "租金支付统计表-元觉.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "105b5a9b-4577-4771-8651-e039fe242b36",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/元觉/租金补贴/租金支付统计表-元觉.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/元觉/租金补贴/租金支付统计表-元觉.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/元觉/租金补贴/租金支付统计表-元觉.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/元觉/租金补贴",
+            "file_size": 69246,
+            "file_type": ".pdf",
+            "original_filename": "租金支付统计表-元觉.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/元觉/租金补贴/租金支付统计表-元觉.pdf"
+          }
+        },
+        {
+          "filename": "附件1.申请表及承诺书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "61c68562-83c6-4d75-b31a-0b4830a8c6be",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/元觉/附件1.申请表及承诺书.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/元觉/附件1.申请表及承诺书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/元觉/附件1.申请表及承诺书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/元觉",
+            "file_size": 2157174,
+            "file_type": ".pdf",
+            "original_filename": "附件1.申请表及承诺书.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/元觉/附件1.申请表及承诺书.pdf"
+          }
+        },
+        {
+          "filename": "附件2.场地合同-元觉入驻协议.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "9ad0c02d-5a52-45a3-86f3-d92dfbb3c30c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/元觉/附件2.场地合同-元觉入驻协议.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/元觉/附件2.场地合同-元觉入驻协议.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/元觉/附件2.场地合同-元觉入驻协议.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/元觉",
+            "file_size": 1602569,
+            "file_type": ".pdf",
+            "original_filename": "附件2.场地合同-元觉入驻协议.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/元觉/附件2.场地合同-元觉入驻协议.pdf"
+          }
+        },
+        {
+          "filename": "附件3.企业营业执照-元觉.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "015fd53e-0c82-420c-b1a6-0e80da2a90fa",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/元觉/附件3.企业营业执照-元觉.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/元觉/附件3.企业营业执照-元觉.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/元觉/附件3.企业营业执照-元觉.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/元觉",
+            "file_size": 717326,
+            "file_type": ".pdf",
+            "original_filename": "附件3.企业营业执照-元觉.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/元觉/附件3.企业营业执照-元觉.pdf"
+          }
+        },
+        {
+          "filename": "附件4.2024年度纳税证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "2dcc33e6-c482-4bc7-a4c7-529d998a6fbc",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/元觉/附件4.2024年度纳税证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/元觉/附件4.2024年度纳税证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/元觉/附件4.2024年度纳税证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/元觉",
+            "file_size": 12127,
+            "file_type": ".pdf",
+            "original_filename": "附件4.2024年度纳税证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/元觉/附件4.2024年度纳税证明.pdf"
+          }
+        },
+        {
+          "filename": "附件5.打印单位参保证明-参保人数.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "37375059-0d9b-412b-b30d-50b2418c9662",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/元觉/附件5.打印单位参保证明-参保人数.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/元觉/附件5.打印单位参保证明-参保人数.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/元觉/附件5.打印单位参保证明-参保人数.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/元觉",
+            "file_size": 329471,
+            "file_type": ".pdf",
+            "original_filename": "附件5.打印单位参保证明-参保人数.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/元觉/附件5.打印单位参保证明-参保人数.pdf"
+          }
+        },
+        {
+          "filename": "附件6.实际经营承诺书-签章版.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "998ae160-4a71-40ed-a5e6-13db12e1e77a",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/元觉/附件6.实际经营承诺书-签章版.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/元觉/附件6.实际经营承诺书-签章版.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/元觉/附件6.实际经营承诺书-签章版.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/元觉",
+            "file_size": 917446,
+            "file_type": ".pdf",
+            "original_filename": "附件6.实际经营承诺书-签章版.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/元觉/附件6.实际经营承诺书-签章版.pdf"
+          }
+        },
+        {
+          "filename": "智造未来-港澳人员清单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "3d7b3e49-7a0b-4a2b-b45b-b47e3f9227e7",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/智造未来/创造就业岗位补贴/智造未来-港澳人员清单.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/智造未来/创造就业岗位补贴/智造未来-港澳人员清单.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/智造未来/创造就业岗位补贴/智造未来-港澳人员清单.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/智造未来/创造就业岗位补贴",
+            "file_size": 591081,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-港澳人员清单.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/智造未来/创造就业岗位补贴/智造未来-港澳人员清单.pdf"
+          }
+        },
+        {
+          "filename": "智造未来-2024年度纳税证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "73489ee0-79e1-4ccb-8baa-ee0d867d1bea",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-2024年度纳税证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-2024年度纳税证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-2024年度纳税证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/智造未来",
+            "file_size": 12184,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-2024年度纳税证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-2024年度纳税证明.pdf"
+          }
+        },
+        {
+          "filename": "智造未来-个税日常申报明细表.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "d8a18591-7e44-4af0-9a6c-fdb1254945f9",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-个税日常申报明细表.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-个税日常申报明细表.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-个税日常申报明细表.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/智造未来",
+            "file_size": 86932,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-个税日常申报明细表.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-个税日常申报明细表.pdf"
+          }
+        },
+        {
+          "filename": "智造未来-办公租赁合同(两份).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "c15befdd-d9bd-4c60-968b-6a9808c9ea35",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-办公租赁合同(两份).pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-办公租赁合同(两份).pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-办公租赁合同(两份).pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/智造未来",
+            "file_size": 8648837,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-办公租赁合同(两份).pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-办公租赁合同（两份）.pdf"
+          }
+        },
+        {
+          "filename": "智造未来-单位个税申报记录.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "38e6687b-e7d9-4e96-810f-b77f693c0ad0",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-单位个税申报记录.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-单位个税申报记录.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-单位个税申报记录.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/智造未来",
+            "file_size": 45122,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-单位个税申报记录.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-单位个税申报记录.pdf"
+          }
+        },
+        {
+          "filename": "智造未来-单位参保证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "727ce8cc-95ce-469e-8de6-5fc9e5f0ea44",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-单位参保证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-单位参保证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-单位参保证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/智造未来",
+            "file_size": 329338,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-单位参保证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-单位参保证明.pdf"
+          }
+        },
+        {
+          "filename": "智造未来-实际经营承诺书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "3c6d7948-2cbf-4bc8-afa2-cda0196ac1b3",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-实际经营承诺书.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-实际经营承诺书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-实际经营承诺书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/智造未来",
+            "file_size": 869908,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-实际经营承诺书.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-实际经营承诺书.pdf"
+          }
+        },
+        {
+          "filename": "智造未来-申请表及承诺书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "c1b36006-dd23-4300-93e0-5340f955f6d3",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-申请表及承诺书.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-申请表及承诺书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-申请表及承诺书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/智造未来",
+            "file_size": 3335636,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-申请表及承诺书.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-申请表及承诺书.pdf"
+          }
+        },
+        {
+          "filename": "智造未来-营业执照.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "32208679-e9e0-4b33-87cc-e9202869f708",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-营业执照.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-营业执照.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-营业执照.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/智造未来",
+            "file_size": 1858926,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-营业执照.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-营业执照.pdf"
+          }
+        },
+        {
+          "filename": "智造未来-银行6月对账单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "5d505575-9f52-430e-ac88-ffe66b901260",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-银行6月对账单.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-银行6月对账单.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-银行6月对账单.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/智造未来",
+            "file_size": 248133,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-银行6月对账单.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-银行6月对账单.pdf"
+          }
+        },
+        {
+          "filename": "智造未来-银行7月银行对账单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "81566fc3-2d92-4c42-92cb-17a97e88094d",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-银行7月银行对账单.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-银行7月银行对账单.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-银行7月银行对账单.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/智造未来",
+            "file_size": 193822,
+            "file_type": ".pdf",
+            "original_filename": "智造未来-银行7月银行对账单.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/智造未来/智造未来-银行7月银行对账单.pdf"
+          }
+        },
+        {
+          "filename": "企业资质证件.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "afe0dc46-90ab-47c7-b67b-5a441ec8dade",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/企业资质证件.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/企业资质证件.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/企业资质证件.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球",
+            "file_size": 1229362,
+            "file_type": ".pdf",
+            "original_filename": "企业资质证件.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/企业资质证件.pdf"
+          }
+        },
+        {
+          "filename": "港澳青年清单-蓝地球.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "338c5018-0e83-49b3-91de-a01493bc756a",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/创造就业岗位补贴/港澳青年清单-蓝地球.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/创造就业岗位补贴/港澳青年清单-蓝地球.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/创造就业岗位补贴/港澳青年清单-蓝地球.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/创造就业岗位补贴",
+            "file_size": 177955,
+            "file_type": ".pdf",
+            "original_filename": "港澳青年清单-蓝地球.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/创造就业岗位补贴/港澳青年清单-蓝地球.pdf"
+          }
+        },
+        {
+          "filename": "办公场地相关证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "db5135b8-a132-40eb-8d1f-8b1725d97c01",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/办公场地相关证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/办公场地相关证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/办公场地相关证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球",
+            "file_size": 2875583,
+            "file_type": ".pdf",
+            "original_filename": "办公场地相关证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/办公场地相关证明.pdf"
+          }
+        },
+        {
+          "filename": "单位参保证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "30b1fdcd-b20e-4f30-81c7-74db0a3e55a0",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/单位参保证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/单位参保证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/单位参保证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球",
+            "file_size": 329021,
+            "file_type": ".pdf",
+            "original_filename": "单位参保证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/单位参保证明.pdf"
+          }
+        },
+        {
+          "filename": "实际经营承诺书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "fdb02501-1c47-407f-a3de-f86c15264680",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/实际经营承诺书.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/实际经营承诺书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/实际经营承诺书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球",
+            "file_size": 396643,
+            "file_type": ".pdf",
+            "original_filename": "实际经营承诺书.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/实际经营承诺书.pdf"
+          }
+        },
+        {
+          "filename": "个人所得税证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "e9342dcb-2483-4d15-9ac7-4f11b2bc1b47",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/个人所得税证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/个人所得税证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/个人所得税证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料",
+            "file_size": 185267,
+            "file_type": ".pdf",
+            "original_filename": "个人所得税证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/个人所得税证明.pdf"
+          }
+        },
+        {
+          "filename": "副學士畢業證.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "0da66b9f-3c25-43d1-8cff-307533967337",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/副學士畢業證.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/副學士畢業證.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/副學士畢業證.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料",
+            "file_size": 306035,
+            "file_type": ".pdf",
+            "original_filename": "副學士畢業證.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/副學士畢業證.pdf"
+          }
+        },
+        {
+          "filename": "勞動合同.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "390acff5-871b-460b-8f9f-15d0bdc66cff",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/勞動合同.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/勞動合同.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/勞動合同.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料",
+            "file_size": 413914,
+            "file_type": ".pdf",
+            "original_filename": "勞動合同.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/勞動合同.pdf"
+          }
+        },
+        {
+          "filename": "社保參保證明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "cf135350-aab6-492c-94c8-4fc67668d346",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/社保參保證明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/社保參保證明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/社保參保證明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料",
+            "file_size": 185935,
+            "file_type": ".pdf",
+            "original_filename": "社保參保證明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/社保參保證明.pdf"
+          }
+        },
+        {
+          "filename": "通行证.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "67a94f4e-0ebf-486a-babb-71c3c9f7f4c2",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/通行证.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/通行证.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/通行证.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料",
+            "file_size": 647318,
+            "file_type": ".pdf",
+            "original_filename": "通行证.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/港澳青创企业证明材料/通行证.pdf"
+          }
+        },
+        {
+          "filename": "创业载体认定或备案证明文件.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "de040096-0971-4848-9405-687aba8f0e0d",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴/创业载体认定或备案证明文件.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴/创业载体认定或备案证明文件.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴/创业载体认定或备案证明文件.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴",
+            "file_size": 491134,
+            "file_type": ".pdf",
+            "original_filename": "创业载体认定或备案证明文件.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴/创业载体认定或备案证明文件.pdf"
+          }
+        },
+        {
+          "filename": "租金发票.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "d3609a0b-5aac-4a62-a3d4-cd3a9b63baa7",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴/租金发票.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴/租金发票.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴/租金发票.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴",
+            "file_size": 1708177,
+            "file_type": ".pdf",
+            "original_filename": "租金发票.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴/租金发票.pdf"
+          }
+        },
+        {
+          "filename": "租金支付统计表.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "8e3d28bf-1042-4791-a6ec-3a7759b93096",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴/租金支付统计表.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴/租金支付统计表.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴/租金支付统计表.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴",
+            "file_size": 68666,
+            "file_type": ".pdf",
+            "original_filename": "租金支付统计表.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/租金补贴/租金支付统计表.pdf"
+          }
+        },
+        {
+          "filename": "纳税证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "1468dfa1-e476-4dcb-a99d-fbb9ed5333f0",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/纳税证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/纳税证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/纳税证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球",
+            "file_size": 11861,
+            "file_type": ".pdf",
+            "original_filename": "纳税证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/纳税证明.pdf"
+          }
+        },
+        {
+          "filename": "蓝地球-单位申请表和承诺书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "55d11063-6ab8-4b25-af9b-c025e0062040",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/蓝地球/蓝地球-单位申请表和承诺书.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/蓝地球/蓝地球-单位申请表和承诺书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/蓝地球/蓝地球-单位申请表和承诺书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/蓝地球",
+            "file_size": 2750832,
+            "file_type": ".pdf",
+            "original_filename": "蓝地球-单位申请表和承诺书.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/蓝地球/蓝地球-单位申请表和承诺书.pdf"
+          }
+        },
+        {
+          "filename": "【香港】吴沚宴.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "51ec9107-6522-443f-a6c5-21cf69d25a6f",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/【香港】吴沚宴.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/【香港】吴沚宴.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/【香港】吴沚宴.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴",
+            "file_size": 403511,
+            "file_type": ".pdf",
+            "original_filename": "【香港】吴沚宴.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/【香港】吴沚宴.pdf"
+          }
+        },
+        {
+          "filename": "吴沚宴 劳 动 合 同.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "49b6aca2-2ef2-43be-94be-a37fddaabdc5",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/吴沚宴 劳 动 合 同.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/吴沚宴 劳 动 合 同.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/吴沚宴 劳 动 合 同.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴",
+            "file_size": 962158,
+            "file_type": ".pdf",
+            "original_filename": "吴沚宴 劳 动 合 同.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/吴沚宴 劳 动 合 同.pdf"
+          }
+        },
+        {
+          "filename": "吴沚宴社保参保证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "1b72c9a3-3919-47fc-bcb2-7b6eea48779d",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/吴沚宴社保参保证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/吴沚宴社保参保证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/吴沚宴社保参保证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴",
+            "file_size": 319115,
+            "file_type": ".pdf",
+            "original_filename": "吴沚宴社保参保证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/吴沚宴社保参保证明.pdf"
+          }
+        },
+        {
+          "filename": "吴沚宴身份证证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "03fe5d68-c827-4c2a-999c-818a31ff762c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/吴沚宴身份证证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/吴沚宴身份证证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/吴沚宴身份证证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴",
+            "file_size": 391042,
+            "file_type": ".pdf",
+            "original_filename": "吴沚宴身份证证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/吴沚宴身份证证明.pdf"
+          }
+        },
+        {
+          "filename": "学历证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "c822b550-238b-47e2-87ed-802033ae4f36",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/学历证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/学历证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/学历证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴",
+            "file_size": 249238,
+            "file_type": ".pdf",
+            "original_filename": "学历证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/学历证明.pdf"
+          }
+        },
+        {
+          "filename": "留学政务服务平台 吴沚宴.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "f957867e-f5f9-4846-8aac-73f7cf4699b4",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/留学政务服务平台 吴沚宴.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/留学政务服务平台 吴沚宴.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/留学政务服务平台 吴沚宴.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴",
+            "file_size": 2004160,
+            "file_type": ".pdf",
+            "original_filename": "留学政务服务平台 吴沚宴.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/留学政务服务平台 吴沚宴.pdf"
+          }
+        },
+        {
+          "filename": "纳税记录.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "df160180-5cfb-4619-b736-6e0585def4b5",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/纳税记录.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/纳税记录.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/纳税记录.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴",
+            "file_size": 259505,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/吴沚宴/纳税记录.pdf"
+          }
+        },
+        {
+          "filename": "【香港】熊君诺.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "1b6e481a-2e61-41d5-8952-790c5da38d14",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/【香港】熊君诺.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/【香港】熊君诺.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/【香港】熊君诺.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺",
+            "file_size": 501827,
+            "file_type": ".pdf",
+            "original_filename": "【香港】熊君诺.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/【香港】熊君诺.pdf"
+          }
+        },
+        {
+          "filename": "学历原件.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "4dd01148-9bc4-44cd-b4cd-63325fe9a750",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/学历原件.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/学历原件.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/学历原件.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺",
+            "file_size": 152527,
+            "file_type": ".pdf",
+            "original_filename": "学历原件.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/学历原件.pdf"
+          }
+        },
+        {
+          "filename": "广东省社会保险个人参保证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "bc5ae49d-4d1d-4651-9a1e-e912375be8c1",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/广东省社会保险个人参保证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/广东省社会保险个人参保证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/广东省社会保险个人参保证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺",
+            "file_size": 273785,
+            "file_type": ".pdf",
+            "original_filename": "广东省社会保险个人参保证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/广东省社会保险个人参保证明.pdf"
+          }
+        },
+        {
+          "filename": "熊君诺 劳 动 合 同 书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "95546a00-8b4e-4f31-ad1e-561c1e95bacc",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/熊君诺 劳 动 合 同 书.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/熊君诺 劳 动 合 同 书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/熊君诺 劳 动 合 同 书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺",
+            "file_size": 971035,
+            "file_type": ".pdf",
+            "original_filename": "熊君诺 劳 动 合 同 书.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/熊君诺 劳 动 合 同 书.pdf"
+          }
+        },
+        {
+          "filename": "熊君诺身份证证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "3fa6801a-dec5-41ed-a822-ae3698679f0e",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/熊君诺身份证证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/熊君诺身份证证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/熊君诺身份证证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺",
+            "file_size": 406558,
+            "file_type": ".pdf",
+            "original_filename": "熊君诺身份证证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/熊君诺身份证证明.pdf"
+          }
+        },
+        {
+          "filename": "留学政务服务平台 熊君诺.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "20721d79-d648-4363-9e83-9685c959e8b6",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/留学政务服务平台 熊君诺.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/留学政务服务平台 熊君诺.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/留学政务服务平台 熊君诺.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺",
+            "file_size": 1083642,
+            "file_type": ".pdf",
+            "original_filename": "留学政务服务平台 熊君诺.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/留学政务服务平台 熊君诺.pdf"
+          }
+        },
+        {
+          "filename": "纳税记录.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "85acd447-903c-4e3d-a386-ca26b0ff0f30",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/纳税记录.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/纳税记录.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/纳税记录.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺",
+            "file_size": 259580,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/熊君诺/纳税记录.pdf"
+          }
+        },
+        {
+          "filename": "学历原件.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "2703e1a7-6765-4241-8c40-130ac33135a4",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/学历原件.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/学历原件.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/学历原件.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊",
+            "file_size": 3050683,
+            "file_type": ".pdf",
+            "original_filename": "学历原件.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/学历原件.pdf"
+          }
+        },
+        {
+          "filename": "广东省社会保险个人参保证明- JUSTINASHIH.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "b4bd2bc7-01ca-4213-98bd-9134795c9474",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/广东省社会保险个人参保证明- JUSTINASHIH.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/广东省社会保险个人参保证明- JUSTINASHIH.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/广东省社会保险个人参保证明- JUSTINASHIH.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊",
+            "file_size": 187468,
+            "file_type": ".pdf",
+            "original_filename": "广东省社会保险个人参保证明- JUSTINASHIH.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/广东省社会保险个人参保证明- JUSTINASHIH.pdf"
+          }
+        },
+        {
+          "filename": "留学政务服务平台石祐珊.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "80150c44-ca1e-4835-8831-aabbd8d70753",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/留学政务服务平台石祐珊.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/留学政务服务平台石祐珊.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/留学政务服务平台石祐珊.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊",
+            "file_size": 222783,
+            "file_type": ".pdf",
+            "original_filename": "留学政务服务平台石祐珊.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/留学政务服务平台石祐珊.pdf"
+          }
+        },
+        {
+          "filename": "石祐珊 劳 动 合 同 书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "6da5da00-8a6b-40ec-8853-addc064201fb",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/石祐珊 劳 动 合 同 书.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/石祐珊 劳 动 合 同 书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/石祐珊 劳 动 合 同 书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊",
+            "file_size": 963614,
+            "file_type": ".pdf",
+            "original_filename": "石祐珊 劳 动 合 同 书.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/石祐珊 劳 动 合 同 书.pdf"
+          }
+        },
+        {
+          "filename": "石祐珊内地通行证.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "c30ad64c-2dff-4245-a3c6-b37de7d2fe27",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/石祐珊内地通行证.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/石祐珊内地通行证.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/石祐珊内地通行证.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊",
+            "file_size": 478999,
+            "file_type": ".pdf",
+            "original_filename": "石祐珊内地通行证.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/石祐珊内地通行证.pdf"
+          }
+        },
+        {
+          "filename": "石祐珊身份证证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "82b1ff31-506b-44f9-acb1-13ab68c1d0f7",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/石祐珊身份证证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/石祐珊身份证证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/石祐珊身份证证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊",
+            "file_size": 352696,
+            "file_type": ".pdf",
+            "original_filename": "石祐珊身份证证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/石祐珊身份证证明.pdf"
+          }
+        },
+        {
+          "filename": "纳税记录 - Justina Shih1.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "b219a585-d2fa-4ae2-a3a7-0a9ff98c6513",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/纳税记录 - Justina Shih1.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/纳税记录 - Justina Shih1.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/纳税记录 - Justina Shih1.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊",
+            "file_size": 121596,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录 - Justina Shih1.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石祐珊/纳税记录 - Justina Shih1.pdf"
+          }
+        },
+        {
+          "filename": "【香港】石耀庭.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "ecd6ceae-5dae-45f2-84cb-6d884fe07452",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/【香港】石耀庭.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/【香港】石耀庭.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/【香港】石耀庭.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭",
+            "file_size": 1420916,
+            "file_type": ".pdf",
+            "original_filename": "【香港】石耀庭.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/【香港】石耀庭.pdf"
+          }
+        },
+        {
+          "filename": "石耀庭 劳动合同.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "6627a616-696d-4b98-bae2-eebaa4e8b6a7",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭 劳动合同.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭 劳动合同.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭 劳动合同.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭",
+            "file_size": 966691,
+            "file_type": ".pdf",
+            "original_filename": "石耀庭 劳动合同.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭 劳动合同.pdf"
+          }
+        },
+        {
+          "filename": "石耀庭——学历留服认证.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "c86a5af3-33d0-44c2-8d0f-b169a09644c3",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭——学历留服认证.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭——学历留服认证.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭——学历留服认证.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭",
+            "file_size": 351033,
+            "file_type": ".pdf",
+            "original_filename": "石耀庭——学历留服认证.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭——学历留服认证.pdf"
+          }
+        },
+        {
+          "filename": "石耀庭——广东省社会保险个人参保证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "d553e33e-f8a0-479e-96ed-3931b56b189d",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭——广东省社会保险个人参保证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭——广东省社会保险个人参保证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭——广东省社会保险个人参保证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭",
+            "file_size": 273434,
+            "file_type": ".pdf",
+            "original_filename": "石耀庭——广东省社会保险个人参保证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭——广东省社会保险个人参保证明.pdf"
+          }
+        },
+        {
+          "filename": "石耀庭香港身份证.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "275c3c3a-7f32-4ff0-a34c-40d9c78f2734",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭香港身份证.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭香港身份证.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭香港身份证.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭",
+            "file_size": 2152695,
+            "file_type": ".pdf",
+            "original_filename": "石耀庭香港身份证.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/石耀庭香港身份证.pdf"
+          }
+        },
+        {
+          "filename": "纳税记录 till Aug 2025.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "f1c00d0c-e8b6-4476-83c4-de6df75376af",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/纳税记录 till Aug 2025.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/纳税记录 till Aug 2025.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/纳税记录 till Aug 2025.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭",
+            "file_size": 283194,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录 till Aug 2025.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/石耀庭/纳税记录 till Aug 2025.pdf"
+          }
+        },
+        {
+          "filename": "【香港】萧淼森.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "a1ca5d8e-c597-491a-9a21-1a977282bca3",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/【香港】萧淼森.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/【香港】萧淼森.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/【香港】萧淼森.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森",
+            "file_size": 498648,
+            "file_type": ".pdf",
+            "original_filename": "【香港】萧淼森.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/【香港】萧淼森.pdf"
+          }
+        },
+        {
+          "filename": "广东省社会保险个人参保证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "b7775ed1-b0fa-447d-9179-291f7522b333",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/广东省社会保险个人参保证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/广东省社会保险个人参保证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/广东省社会保险个人参保证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森",
+            "file_size": 273864,
+            "file_type": ".pdf",
+            "original_filename": "广东省社会保险个人参保证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/广东省社会保险个人参保证明.pdf"
+          }
+        },
+        {
+          "filename": "纳税记录.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "6cca7f32-bd46-4b4d-9229-8d07f44bea6f",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/纳税记录.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/纳税记录.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/纳税记录.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森",
+            "file_size": 257455,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/纳税记录.pdf"
+          }
+        },
+        {
+          "filename": "肖淼森身份证证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "3a52061f-ba3c-48ea-96bf-bc1f0d73f5f4",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/肖淼森身份证证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/肖淼森身份证证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/肖淼森身份证证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森",
+            "file_size": 330387,
+            "file_type": ".pdf",
+            "original_filename": "肖淼森身份证证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/肖淼森身份证证明.pdf"
+          }
+        },
+        {
+          "filename": "萧淼森 劳 动 合 同 书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "dd2514c4-4b22-44b9-9464-625e079f1c06",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/萧淼森 劳 动 合 同 书.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/萧淼森 劳 动 合 同 书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/萧淼森 劳 动 合 同 书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森",
+            "file_size": 964786,
+            "file_type": ".pdf",
+            "original_filename": "萧淼森 劳 动 合 同 书.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/萧淼森/萧淼森 劳 动 合 同 书.pdf"
+          }
+        },
+        {
+          "filename": "【香港】陈素怡.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "797b7dd8-69ed-4ae2-8270-8ba83594142c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/【香港】陈素怡.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/【香港】陈素怡.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/【香港】陈素怡.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡",
+            "file_size": 378094,
+            "file_type": ".pdf",
+            "original_filename": "【香港】陈素怡.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/【香港】陈素怡.pdf"
+          }
+        },
+        {
+          "filename": "留学政务服务平台陈素怡.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "0534fee7-4c07-4066-9a2a-bc126dae0a31",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/留学政务服务平台陈素怡.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/留学政务服务平台陈素怡.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/留学政务服务平台陈素怡.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡",
+            "file_size": 267175,
+            "file_type": ".pdf",
+            "original_filename": "留学政务服务平台陈素怡.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/留学政务服务平台陈素怡.pdf"
+          }
+        },
+        {
+          "filename": "陈素怡-劳 动 合 同.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "e2df4de6-99a4-47ed-ae2a-bbfea1956138",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-劳 动 合 同.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-劳 动 合 同.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-劳 动 合 同.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡",
+            "file_size": 962936,
+            "file_type": ".pdf",
+            "original_filename": "陈素怡-劳 动 合 同.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-劳 动 合 同.pdf"
+          }
+        },
+        {
+          "filename": "陈素怡-学历原件.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "2b3c539c-637e-40ac-8281-4ca16a0e3e23",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-学历原件.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-学历原件.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-学历原件.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡",
+            "file_size": 5336698,
+            "file_type": ".pdf",
+            "original_filename": "陈素怡-学历原件.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-学历原件.pdf"
+          }
+        },
+        {
+          "filename": "陈素怡-社保参保证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "5a633939-2b23-4e43-8726-a25982255f1a",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-社保参保证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-社保参保证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-社保参保证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡",
+            "file_size": 180634,
+            "file_type": ".pdf",
+            "original_filename": "陈素怡-社保参保证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-社保参保证明.pdf"
+          }
+        },
+        {
+          "filename": "陈素怡-纳税记录.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "81bbd37c-f274-46b3-9d52-05fe45e54f8c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-纳税记录.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-纳税记录.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-纳税记录.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡",
+            "file_size": 259663,
+            "file_type": ".pdf",
+            "original_filename": "陈素怡-纳税记录.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-纳税记录.pdf"
+          }
+        },
+        {
+          "filename": "陈素怡-香港永久性居民身份證.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "f7ca58ef-c8c7-4efc-8f5c-561159208d85",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-香港永久性居民身份證.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-香港永久性居民身份證.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-香港永久性居民身份證.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡",
+            "file_size": 336567,
+            "file_type": ".pdf",
+            "original_filename": "陈素怡-香港永久性居民身份證.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/陈素怡/陈素怡-香港永久性居民身份證.pdf"
+          }
+        },
+        {
+          "filename": "领晋-港澳青年人员清单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "3f82bb90-d97d-426a-849f-92d322960330",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/领晋-港澳青年人员清单.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/领晋-港澳青年人员清单.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/领晋-港澳青年人员清单.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴",
+            "file_size": 618191,
+            "file_type": ".pdf",
+            "original_filename": "领晋-港澳青年人员清单.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/创造就业岗位补贴/领晋-港澳青年人员清单.pdf"
+          }
+        },
+        {
+          "filename": "境外企业注册证明书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "57997403-b607-4e59-9895-c695bb66992f",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/境外企业注册证明书.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/境外企业注册证明书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/境外企业注册证明书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋",
+            "file_size": 507943,
+            "file_type": ".pdf",
+            "original_filename": "境外企业注册证明书.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/境外企业注册证明书.pdf"
+          }
+        },
+        {
+          "filename": "工匠创新孵化器 备案证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "b34007df-a5c5-4744-8af8-095744f58cc9",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/工匠创新孵化器 备案证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/工匠创新孵化器 备案证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/工匠创新孵化器 备案证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋",
+            "file_size": 251381,
+            "file_type": ".pdf",
+            "original_filename": "工匠创新孵化器 备案证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/工匠创新孵化器 备案证明.pdf"
+          }
+        },
+        {
+          "filename": "深圳领晋广告制作有限公司营业执照副本.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "4c532901-466f-43c9-a51e-c7b2e2c90bfa",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/深圳领晋广告制作有限公司营业执照副本.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/深圳领晋广告制作有限公司营业执照副本.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/深圳领晋广告制作有限公司营业执照副本.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋",
+            "file_size": 734624,
+            "file_type": ".pdf",
+            "original_filename": "深圳领晋广告制作有限公司营业执照副本.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/深圳领晋广告制作有限公司营业执照副本.pdf"
+          }
+        },
+        {
+          "filename": "深圳领晋广告制作有限公司营业执照正本.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "015722da-94be-4729-ad78-21b976cd19ff",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/深圳领晋广告制作有限公司营业执照正本.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/深圳领晋广告制作有限公司营业执照正本.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/深圳领晋广告制作有限公司营业执照正本.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋",
+            "file_size": 951514,
+            "file_type": ".pdf",
+            "original_filename": "深圳领晋广告制作有限公司营业执照正本.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/深圳领晋广告制作有限公司营业执照正本.pdf"
+          }
+        },
+        {
+          "filename": "【香港】石耀庭.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "089d3760-ac15-41d3-9434-f61098d069ec",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/【香港】石耀庭.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/【香港】石耀庭.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/【香港】石耀庭.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料",
+            "file_size": 1420916,
+            "file_type": ".pdf",
+            "original_filename": "【香港】石耀庭.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/【香港】石耀庭.pdf"
+          }
+        },
+        {
+          "filename": "参保信息查询(石耀庭)..pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "978af697-c1ec-4ff1-8ce0-4df3a74c795c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/参保信息查询(石耀庭)..pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/参保信息查询(石耀庭)..pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/参保信息查询(石耀庭)..pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料",
+            "file_size": 127625,
+            "file_type": ".pdf",
+            "original_filename": "参保信息查询(石耀庭)..pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/参保信息查询（石耀庭）..pdf"
+          }
+        },
+        {
+          "filename": "参保证明(石耀庭).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "444efef8-95f8-428c-98aa-a81c169fae94",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/参保证明(石耀庭).pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/参保证明(石耀庭).pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/参保证明(石耀庭).pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料",
+            "file_size": 290703,
+            "file_type": ".pdf",
+            "original_filename": "参保证明(石耀庭).pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/参保证明（石耀庭）.pdf"
+          }
+        },
+        {
+          "filename": "周年申报表.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "2f1a51bf-1bb1-4f56-881a-97ac9a9f301b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/周年申报表.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/周年申报表.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/周年申报表.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料",
+            "file_size": 1491542,
+            "file_type": ".pdf",
+            "original_filename": "周年申报表.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/周年申报表.pdf"
+          }
+        },
+        {
+          "filename": "境外企业注册证明书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "f48e8c57-9e39-411c-8c23-5e5dca30817b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/境外企业注册证明书.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/境外企业注册证明书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/境外企业注册证明书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料",
+            "file_size": 507943,
+            "file_type": ".pdf",
+            "original_filename": "境外企业注册证明书.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/境外企业注册证明书.pdf"
+          }
+        },
+        {
+          "filename": "石耀庭 劳动合同.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "ac055e57-d0b4-4a1a-9dd4-1153cf8a8ad1",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/石耀庭 劳动合同.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/石耀庭 劳动合同.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/石耀庭 劳动合同.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料",
+            "file_size": 966691,
+            "file_type": ".pdf",
+            "original_filename": "石耀庭 劳动合同.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/石耀庭 劳动合同.pdf"
+          }
+        },
+        {
+          "filename": "石耀庭香港身份证.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "e1c3887f-000c-4582-9fb3-2892878ca6eb",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/石耀庭香港身份证.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/石耀庭香港身份证.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/石耀庭香港身份证.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料",
+            "file_size": 2152695,
+            "file_type": ".pdf",
+            "original_filename": "石耀庭香港身份证.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/石耀庭香港身份证.pdf"
+          }
+        },
+        {
+          "filename": "纳税记录 石耀庭(2019年至今).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "2759bc12-6860-4dff-97d5-cc59b72d9d3d",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/纳税记录 石耀庭(2019年至今).pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/纳税记录 石耀庭(2019年至今).pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/纳税记录 石耀庭(2019年至今).pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料",
+            "file_size": 283194,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录 石耀庭(2019年至今).pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/港澳青创股东资料/纳税记录 石耀庭（2019年至今）.pdf"
+          }
+        },
+        {
+          "filename": "社保参保人数查询页.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "83e6b56c-f46d-4324-9575-d69450c8e2fe",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/社保参保人数查询页.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/社保参保人数查询页.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/社保参保人数查询页.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋",
+            "file_size": 266001,
+            "file_type": ".pdf",
+            "original_filename": "社保参保人数查询页.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/社保参保人数查询页.pdf"
+          }
+        },
+        {
+          "filename": "创业载体认定或备案证明文件.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "2f7b897d-a3f3-4a8b-a978-fe35037abd3d",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/租金补贴/创业载体认定或备案证明文件.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/租金补贴/创业载体认定或备案证明文件.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/租金补贴/创业载体认定或备案证明文件.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/租金补贴",
+            "file_size": 491134,
+            "file_type": ".pdf",
+            "original_filename": "创业载体认定或备案证明文件.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/租金补贴/创业载体认定或备案证明文件.pdf"
+          }
+        },
+        {
+          "filename": "租金发票.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "99450ab1-1f10-4c9f-be8e-c859bd15352f",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/租金补贴/租金发票.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/租金补贴/租金发票.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/租金补贴/租金发票.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/租金补贴",
+            "file_size": 163494,
+            "file_type": ".pdf",
+            "original_filename": "租金发票.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/租金补贴/租金发票.pdf"
+          }
+        },
+        {
+          "filename": "领晋_租金支付统计表.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "6546e087-992a-424a-8304-4598127b897a",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/租金补贴/领晋_租金支付统计表.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/租金补贴/领晋_租金支付统计表.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/租金补贴/领晋_租金支付统计表.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋/租金补贴",
+            "file_size": 89614,
+            "file_type": ".pdf",
+            "original_filename": "领晋_租金支付统计表.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/租金补贴/领晋_租金支付统计表.pdf"
+          }
+        },
+        {
+          "filename": "领晋 实际经营承诺书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "c7453645-1ad6-44da-ae42-f6588955e68f",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/领晋 实际经营承诺书.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/领晋 实际经营承诺书.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/领晋 实际经营承诺书.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋",
+            "file_size": 1090563,
+            "file_type": ".pdf",
+            "original_filename": "领晋 实际经营承诺书.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/领晋 实际经营承诺书.pdf"
+          }
+        },
+        {
+          "filename": "领晋-创业资金申请表(单位类).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "d6dac940-8f48-4c7e-8c53-6fe7fb341fd8",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/领晋-创业资金申请表(单位类).pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/领晋-创业资金申请表(单位类).pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/领晋-创业资金申请表(单位类).pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋",
+            "file_size": 3041109,
+            "file_type": ".pdf",
+            "original_filename": "领晋-创业资金申请表(单位类).pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/领晋-创业资金申请表（单位类）.pdf"
+          }
+        },
+        {
+          "filename": "领晋-港澳青年人员清单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "2231e001-8993-42a8-86d0-0b52fbcb1009",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/领晋-港澳青年人员清单.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/领晋-港澳青年人员清单.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/领晋-港澳青年人员清单.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋",
+            "file_size": 618191,
+            "file_type": ".pdf",
+            "original_filename": "领晋-港澳青年人员清单.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/领晋-港澳青年人员清单.pdf"
+          }
+        },
+        {
+          "filename": "领晋-租赁合同.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "4934f375-4bde-4f8d-82c2-91185a1aba29",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/领晋-租赁合同.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/领晋-租赁合同.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/领晋-租赁合同.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋",
+            "file_size": 12206427,
+            "file_type": ".pdf",
+            "original_filename": "领晋-租赁合同.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/领晋-租赁合同.pdf"
+          }
+        },
+        {
+          "filename": "领晋广告 2024年度纳税证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "3258f579-e520-431f-b101-d6bbcf526664",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_9f3376df-eb5a-49c2-8afe-d2f0019b1312_kvh7ljgc/前海12条申报资料/前海12条企业申报资料/领晋/领晋广告 2024年度纳税证明.pdf",
+            "relative_path": "前海12条申报资料/前海12条企业申报资料/领晋/领晋广告 2024年度纳税证明.pdf",
+            "hierarchy_path": "前海12条申报资料/前海12条申报资料/前海12条企业申报资料/领晋/领晋广告 2024年度纳税证明.pdf",
+            "archive_name": "前海12条申报资料",
+            "archive_hierarchy": "",
+            "folder_path": "前海12条申报资料/前海12条企业申报资料/领晋",
+            "file_size": 12191,
+            "file_type": ".pdf",
+            "original_filename": "领晋广告 2024年度纳税证明.pdf",
+            "original_zip_filename": "前海12条申报资料/前海12条企业申报资料/领晋/领晋广告 2024年度纳税证明.pdf"
+          }
+        }
+      ]
+    },
+    "workspace_id": "global"
+  },
+  {
+    "id": "50b00324-2917-487c-aaac-efe45e4e1bc1",
+    "task_type": "global_archive_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761803685.1128976,
+    "started_at": null,
+    "completed_at": 1761806914.9220316,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "个人类申报.rar",
+      "file_path": "uploads/global/6ec7e412-0ad2-45cb-bc29-f32a3b2bd750.rar",
+      "file_size": 103033971,
+      "document_id": "6ec7e412-0ad2-45cb-bc29-f32a3b2bd750",
+      "file_type": ".rar",
+      "hierarchy_path": "",
+      "success": true,
+      "total_files": 91,
+      "successful": 91,
+      "failed": 0,
+      "results": [
+        {
+          "filename": "纳税记录2019.1-2025.7.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "ad84b54f-f634-4538-8692-135b9289715c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/元觉/邓卓越/纳税记录2019.1-2025.7.pdf",
+            "relative_path": "个人类申报/元觉/邓卓越/纳税记录2019.1-2025.7.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/元觉/邓卓越/纳税记录2019.1-2025.7.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/元觉/邓卓越",
+            "file_size": 2329600,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录2019.1-2025.7.pdf",
+            "original_zip_filename": "个人类申报/元觉/邓卓越/纳税记录2019.1-2025.7.pdf"
+          }
+        },
+        {
+          "filename": "附件1.申请表及承诺书(个人类)-签章版.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "e434758b-f9f6-4e5b-a462-b9bb26d44232",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/元觉/邓卓越/附件1.申请表及承诺书(个人类)-签章版.pdf",
+            "relative_path": "个人类申报/元觉/邓卓越/附件1.申请表及承诺书(个人类)-签章版.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/元觉/邓卓越/附件1.申请表及承诺书(个人类)-签章版.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/元觉/邓卓越",
+            "file_size": 1905470,
+            "file_type": ".pdf",
+            "original_filename": "附件1.申请表及承诺书(个人类)-签章版.pdf",
+            "original_zip_filename": "个人类申报/元觉/邓卓越/附件1.申请表及承诺书（个人类）-签章版.pdf"
+          }
+        },
+        {
+          "filename": "附件2.港澳青年身份证明-DT.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "693c904f-2030-4fcb-a627-2c8ee0195c66",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/元觉/邓卓越/附件2.港澳青年身份证明-DT.pdf",
+            "relative_path": "个人类申报/元觉/邓卓越/附件2.港澳青年身份证明-DT.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/元觉/邓卓越/附件2.港澳青年身份证明-DT.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/元觉/邓卓越",
+            "file_size": 2504902,
+            "file_type": ".pdf",
+            "original_filename": "附件2.港澳青年身份证明-DT.pdf",
+            "original_zip_filename": "个人类申报/元觉/邓卓越/附件2.港澳青年身份证明-DT.pdf"
+          }
+        },
+        {
+          "filename": "附件3.深圳市劳动合同-DT签字盖章版.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "0f40af0f-c637-4ae8-89f1-a9de1a22f751",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/元觉/邓卓越/附件3.深圳市劳动合同-DT签字盖章版.pdf",
+            "relative_path": "个人类申报/元觉/邓卓越/附件3.深圳市劳动合同-DT签字盖章版.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/元觉/邓卓越/附件3.深圳市劳动合同-DT签字盖章版.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/元觉/邓卓越",
+            "file_size": 2056391,
+            "file_type": ".pdf",
+            "original_filename": "附件3.深圳市劳动合同-DT签字盖章版.pdf",
+            "original_zip_filename": "个人类申报/元觉/邓卓越/附件3.深圳市劳动合同-DT签字盖章版.pdf"
+          }
+        },
+        {
+          "filename": "附件5.学历认证-DT(1).PDF",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "19a38084-f0ac-4836-8460-862e1f9c01bc",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/元觉/邓卓越/附件5.学历认证-DT(1).PDF",
+            "relative_path": "个人类申报/元觉/邓卓越/附件5.学历认证-DT(1).PDF",
+            "hierarchy_path": "个人类申报/个人类申报/元觉/邓卓越/附件5.学历认证-DT(1).PDF",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/元觉/邓卓越",
+            "file_size": 1390076,
+            "file_type": ".pdf",
+            "original_filename": "附件5.学历认证-DT(1).PDF",
+            "original_zip_filename": "个人类申报/元觉/邓卓越/附件5.学历认证-DT(1).PDF"
+          }
+        },
+        {
+          "filename": "《劳动合同》-于蓉(已签署).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "c6f792bc-29a3-4a45-9e59-0f9c285c37e9",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/于蓉/《劳动合同》-于蓉(已签署).pdf",
+            "relative_path": "个人类申报/智造未来/于蓉/《劳动合同》-于蓉(已签署).pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/于蓉/《劳动合同》-于蓉(已签署).pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/于蓉",
+            "file_size": 4115601,
+            "file_type": ".pdf",
+            "original_filename": "《劳动合同》-于蓉(已签署).pdf",
+            "original_zip_filename": "个人类申报/智造未来/于蓉/《劳动合同》-于蓉（已签署）.pdf"
+          }
+        },
+        {
+          "filename": "于蓉-2025年度港澳青年在前海就业创业资金申请表(个人类资助)-signed.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "caf49306-d772-4fbc-a9f4-f44b82ed0eb6",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/于蓉/于蓉-2025年度港澳青年在前海就业创业资金申请表(个人类资助)-signed.pdf",
+            "relative_path": "个人类申报/智造未来/于蓉/于蓉-2025年度港澳青年在前海就业创业资金申请表(个人类资助)-signed.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/于蓉/于蓉-2025年度港澳青年在前海就业创业资金申请表(个人类资助)-signed.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/于蓉",
+            "file_size": 1265872,
+            "file_type": ".pdf",
+            "original_filename": "于蓉-2025年度港澳青年在前海就业创业资金申请表(个人类资助)-signed.pdf",
+            "original_zip_filename": "个人类申报/智造未来/于蓉/于蓉-2025年度港澳青年在前海就业创业资金申请表（个人类资助）-signed.pdf"
+          }
+        },
+        {
+          "filename": "于蓉个人权益记录(参保证明).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "66521b22-014c-4424-9fe5-5c26b68e531b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/于蓉/于蓉个人权益记录(参保证明).pdf",
+            "relative_path": "个人类申报/智造未来/于蓉/于蓉个人权益记录(参保证明).pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/于蓉/于蓉个人权益记录(参保证明).pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/于蓉",
+            "file_size": 318591,
+            "file_type": ".pdf",
+            "original_filename": "于蓉个人权益记录(参保证明).pdf",
+            "original_zip_filename": "个人类申报/智造未来/于蓉/于蓉个人权益记录（参保证明）.pdf"
+          }
+        },
+        {
+          "filename": "于蓉学历学位认证.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "884b0faa-76ac-4b40-95f2-e19ba1656912",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/于蓉/于蓉学历学位认证.pdf",
+            "relative_path": "个人类申报/智造未来/于蓉/于蓉学历学位认证.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/于蓉/于蓉学历学位认证.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/于蓉",
+            "file_size": 767140,
+            "file_type": ".pdf",
+            "original_filename": "于蓉学历学位认证.pdf",
+            "original_zip_filename": "个人类申报/智造未来/于蓉/于蓉学历学位认证.pdf"
+          }
+        },
+        {
+          "filename": "回乡证正反.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "6ad53c44-17ec-4351-95bb-796ea52d716e",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/于蓉/回乡证正反.pdf",
+            "relative_path": "个人类申报/智造未来/于蓉/回乡证正反.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/于蓉/回乡证正反.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/于蓉",
+            "file_size": 623372,
+            "file_type": ".pdf",
+            "original_filename": "回乡证正反.pdf",
+            "original_zip_filename": "个人类申报/智造未来/于蓉/回乡证正反.pdf"
+          }
+        },
+        {
+          "filename": "纳税记录 (提交版).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "836f07a1-5310-44a4-85b8-39359b8eec4f",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/于蓉/纳税记录 (提交版).pdf",
+            "relative_path": "个人类申报/智造未来/于蓉/纳税记录 (提交版).pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/于蓉/纳税记录 (提交版).pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/于蓉",
+            "file_size": 2120221,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录 (提交版).pdf",
+            "original_zip_filename": "个人类申报/智造未来/于蓉/纳税记录 (提交版).pdf"
+          }
+        },
+        {
+          "filename": "《劳动合同》-云怀萱(已签署).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "239725b4-77cb-43cc-bb4c-d032fb10ee52",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/云怀萱/《劳动合同》-云怀萱(已签署).pdf",
+            "relative_path": "个人类申报/智造未来/云怀萱/《劳动合同》-云怀萱(已签署).pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/云怀萱/《劳动合同》-云怀萱(已签署).pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/云怀萱",
+            "file_size": 4085958,
+            "file_type": ".pdf",
+            "original_filename": "《劳动合同》-云怀萱(已签署).pdf",
+            "original_zip_filename": "个人类申报/智造未来/云怀萱/《劳动合同》-云怀萱（已签署）.pdf"
+          }
+        },
+        {
+          "filename": "云怀萱 2025年度港澳青年在前海就业创业资金申请表.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "20f630d8-bb58-4c68-b3cd-b8c8a56832f6",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/云怀萱/云怀萱 2025年度港澳青年在前海就业创业资金申请表.pdf",
+            "relative_path": "个人类申报/智造未来/云怀萱/云怀萱 2025年度港澳青年在前海就业创业资金申请表.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/云怀萱/云怀萱 2025年度港澳青年在前海就业创业资金申请表.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/云怀萱",
+            "file_size": 981150,
+            "file_type": ".pdf",
+            "original_filename": "云怀萱 2025年度港澳青年在前海就业创业资金申请表.pdf",
+            "original_zip_filename": "个人类申报/智造未来/云怀萱/云怀萱 2025年度港澳青年在前海就业创业资金申请表.pdf"
+          }
+        },
+        {
+          "filename": "云怀萱社保.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "dfb51be5-7045-4d56-9561-054d76670793",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/云怀萱/云怀萱社保.pdf",
+            "relative_path": "个人类申报/智造未来/云怀萱/云怀萱社保.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/云怀萱/云怀萱社保.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/云怀萱",
+            "file_size": 321736,
+            "file_type": ".pdf",
+            "original_filename": "云怀萱社保.pdf",
+            "original_zip_filename": "个人类申报/智造未来/云怀萱/云怀萱社保.pdf"
+          }
+        },
+        {
+          "filename": "回乡证.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "9187059e-2e30-465c-9b12-ff60c7ff6dbf",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/云怀萱/回乡证.pdf",
+            "relative_path": "个人类申报/智造未来/云怀萱/回乡证.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/云怀萱/回乡证.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/云怀萱",
+            "file_size": 660244,
+            "file_type": ".pdf",
+            "original_filename": "回乡证.pdf",
+            "original_zip_filename": "个人类申报/智造未来/云怀萱/回乡证.pdf"
+          }
+        },
+        {
+          "filename": "学历认证(1).PDF",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "308eb364-ee72-4b29-83bf-187a2004c87d",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/云怀萱/学历认证(1).PDF",
+            "relative_path": "个人类申报/智造未来/云怀萱/学历认证(1).PDF",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/云怀萱/学历认证(1).PDF",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/云怀萱",
+            "file_size": 16667561,
+            "file_type": ".pdf",
+            "original_filename": "学历认证(1).PDF",
+            "original_zip_filename": "个人类申报/智造未来/云怀萱/学历认证(1).PDF"
+          }
+        },
+        {
+          "filename": "纳税记录 (解密).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "24aca554-9b00-47cd-9203-35ae43c21d67",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/云怀萱/纳税记录 (解密).pdf",
+            "relative_path": "个人类申报/智造未来/云怀萱/纳税记录 (解密).pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/云怀萱/纳税记录 (解密).pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/云怀萱",
+            "file_size": 516967,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录 (解密).pdf",
+            "original_zip_filename": "个人类申报/智造未来/云怀萱/纳税记录 (解密).pdf"
+          }
+        },
+        {
+          "filename": "zora纳税记录新.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "5d1b1796-5219-4097-9a38-01138e8ec2d9",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/陈小慧/zora纳税记录新.pdf",
+            "relative_path": "个人类申报/智造未来/陈小慧/zora纳税记录新.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/陈小慧/zora纳税记录新.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/陈小慧",
+            "file_size": 425594,
+            "file_type": ".pdf",
+            "original_filename": "zora纳税记录新.pdf",
+            "original_zip_filename": "个人类申报/智造未来/陈小慧/zora纳税记录新.pdf"
+          }
+        },
+        {
+          "filename": "《劳动合同》-陈小慧(已签署).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "7e4b8a18-5cf5-44cb-aa50-cdcbc5633e11",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/陈小慧/《劳动合同》-陈小慧(已签署).pdf",
+            "relative_path": "个人类申报/智造未来/陈小慧/《劳动合同》-陈小慧(已签署).pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/陈小慧/《劳动合同》-陈小慧(已签署).pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/陈小慧",
+            "file_size": 6774024,
+            "file_type": ".pdf",
+            "original_filename": "《劳动合同》-陈小慧(已签署).pdf",
+            "original_zip_filename": "个人类申报/智造未来/陈小慧/《劳动合同》-陈小慧（已签署）.pdf"
+          }
+        },
+        {
+          "filename": "不动产证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "df06b1b5-7cad-4abc-b373-9202522f6069",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/陈小慧/不动产证明.pdf",
+            "relative_path": "个人类申报/智造未来/陈小慧/不动产证明.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/陈小慧/不动产证明.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/陈小慧",
+            "file_size": 166983,
+            "file_type": ".pdf",
+            "original_filename": "不动产证明.pdf",
+            "original_zip_filename": "个人类申报/智造未来/陈小慧/不动产证明.pdf"
+          }
+        },
+        {
+          "filename": "教育部学历证书电子注册备案表_陳小慧.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "ba2faf74-0454-42a9-a6fd-07b1a1e1c7e9",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/陈小慧/教育部学历证书电子注册备案表_陳小慧.pdf",
+            "relative_path": "个人类申报/智造未来/陈小慧/教育部学历证书电子注册备案表_陳小慧.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/陈小慧/教育部学历证书电子注册备案表_陳小慧.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/陈小慧",
+            "file_size": 462500,
+            "file_type": ".pdf",
+            "original_filename": "教育部学历证书电子注册备案表_陳小慧.pdf",
+            "original_zip_filename": "个人类申报/智造未来/陈小慧/教育部学历证书电子注册备案表_陳小慧.pdf"
+          }
+        },
+        {
+          "filename": "港澳通行证(回乡证)-陈小慧.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "00f0ef68-c7d7-4468-81f4-0ff540bcd5dc",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/陈小慧/港澳通行证(回乡证)-陈小慧.pdf",
+            "relative_path": "个人类申报/智造未来/陈小慧/港澳通行证(回乡证)-陈小慧.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/陈小慧/港澳通行证(回乡证)-陈小慧.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/陈小慧",
+            "file_size": 1370595,
+            "file_type": ".pdf",
+            "original_filename": "港澳通行证(回乡证)-陈小慧.pdf",
+            "original_zip_filename": "个人类申报/智造未来/陈小慧/港澳通行证（回乡证）-陈小慧.pdf"
+          }
+        },
+        {
+          "filename": "陳小慧-2025年度港澳青年在前海就业创业资金申请表(个人类资助)(2).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "8e4d97d4-0f65-4be3-b1a2-d44f571ecbfc",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/陈小慧/陳小慧-2025年度港澳青年在前海就业创业资金申请表(个人类资助)(2).pdf",
+            "relative_path": "个人类申报/智造未来/陈小慧/陳小慧-2025年度港澳青年在前海就业创业资金申请表(个人类资助)(2).pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/陈小慧/陳小慧-2025年度港澳青年在前海就业创业资金申请表(个人类资助)(2).pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/陈小慧",
+            "file_size": 377954,
+            "file_type": ".pdf",
+            "original_filename": "陳小慧-2025年度港澳青年在前海就业创业资金申请表(个人类资助)(2).pdf",
+            "original_zip_filename": "个人类申报/智造未来/陈小慧/陳小慧-2025年度港澳青年在前海就业创业资金申请表（个人类资助）(2).pdf"
+          }
+        },
+        {
+          "filename": "《劳动合同》-陈鏸淋(已签署).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "705bb7bd-23e8-44d2-8d4a-a9a8fed0653e",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/陈鏸淋/《劳动合同》-陈鏸淋(已签署).pdf",
+            "relative_path": "个人类申报/智造未来/陈鏸淋/《劳动合同》-陈鏸淋(已签署).pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/陈鏸淋/《劳动合同》-陈鏸淋(已签署).pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/陈鏸淋",
+            "file_size": 4017148,
+            "file_type": ".pdf",
+            "original_filename": "《劳动合同》-陈鏸淋(已签署).pdf",
+            "original_zip_filename": "个人类申报/智造未来/陈鏸淋/《劳动合同》-陈鏸淋（已签署）.pdf"
+          }
+        },
+        {
+          "filename": "參保.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "3dd1e224-bcab-455e-9eec-01a653a5077a",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/陈鏸淋/參保.pdf",
+            "relative_path": "个人类申报/智造未来/陈鏸淋/參保.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/陈鏸淋/參保.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/陈鏸淋",
+            "file_size": 321234,
+            "file_type": ".pdf",
+            "original_filename": "參保.pdf",
+            "original_zip_filename": "个人类申报/智造未来/陈鏸淋/參保.pdf"
+          }
+        },
+        {
+          "filename": "回乡证.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "22ae7ccf-cbd3-49c4-814e-93005f8bc4b8",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/陈鏸淋/回乡证.pdf",
+            "relative_path": "个人类申报/智造未来/陈鏸淋/回乡证.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/陈鏸淋/回乡证.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/陈鏸淋",
+            "file_size": 176604,
+            "file_type": ".pdf",
+            "original_filename": "回乡证.pdf",
+            "original_zip_filename": "个人类申报/智造未来/陈鏸淋/回乡证.pdf"
+          }
+        },
+        {
+          "filename": "無房產證明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "a148951d-7726-45c4-a851-34250851082c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/陈鏸淋/無房產證明.pdf",
+            "relative_path": "个人类申报/智造未来/陈鏸淋/無房產證明.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/陈鏸淋/無房產證明.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/陈鏸淋",
+            "file_size": 167231,
+            "file_type": ".pdf",
+            "original_filename": "無房產證明.pdf",
+            "original_zip_filename": "个人类申报/智造未来/陈鏸淋/無房產證明.pdf"
+          }
+        },
+        {
+          "filename": "纳税记录-2019-2025.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "78c6322a-edda-4d83-9856-1bab5d5387be",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/陈鏸淋/纳税记录-2019-2025.pdf",
+            "relative_path": "个人类申报/智造未来/陈鏸淋/纳税记录-2019-2025.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/陈鏸淋/纳税记录-2019-2025.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/陈鏸淋",
+            "file_size": 249211,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录-2019-2025.pdf",
+            "original_zip_filename": "个人类申报/智造未来/陈鏸淋/纳税记录-2019-2025.pdf"
+          }
+        },
+        {
+          "filename": "陈鏸淋个人类资助申请表.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "1380e78a-f240-4315-98a9-28a76e884610",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/陈鏸淋/陈鏸淋个人类资助申请表.pdf",
+            "relative_path": "个人类申报/智造未来/陈鏸淋/陈鏸淋个人类资助申请表.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/陈鏸淋/陈鏸淋个人类资助申请表.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/陈鏸淋",
+            "file_size": 542419,
+            "file_type": ".pdf",
+            "original_filename": "陈鏸淋个人类资助申请表.pdf",
+            "original_zip_filename": "个人类申报/智造未来/陈鏸淋/陈鏸淋个人类资助申请表.pdf"
+          }
+        },
+        {
+          "filename": "香港大学学位认证.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "2374871d-dfb9-48ae-ae73-1a768f84ef3c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/智造未来/陈鏸淋/香港大学学位认证.pdf",
+            "relative_path": "个人类申报/智造未来/陈鏸淋/香港大学学位认证.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/智造未来/陈鏸淋/香港大学学位认证.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/智造未来/陈鏸淋",
+            "file_size": 768516,
+            "file_type": ".pdf",
+            "original_filename": "香港大学学位认证.pdf",
+            "original_zip_filename": "个人类申报/智造未来/陈鏸淋/香港大学学位认证.pdf"
+          }
+        },
+        {
+          "filename": "不动产信息查询结果单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "888b95e7-e3af-48fe-9d9f-957a35b17f4b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/蓝地球/程翔/不动产信息查询结果单.pdf",
+            "relative_path": "个人类申报/蓝地球/程翔/不动产信息查询结果单.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/蓝地球/程翔/不动产信息查询结果单.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/蓝地球/程翔",
+            "file_size": 166655,
+            "file_type": ".pdf",
+            "original_filename": "不动产信息查询结果单.pdf",
+            "original_zip_filename": "个人类申报/蓝地球/程翔/不动产信息查询结果单.pdf"
+          }
+        },
+        {
+          "filename": "副學士畢業證.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "0686cdc4-22e1-49d3-97cc-68a5df6a3dbb",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/蓝地球/程翔/副學士畢業證.pdf",
+            "relative_path": "个人类申报/蓝地球/程翔/副學士畢業證.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/蓝地球/程翔/副學士畢業證.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/蓝地球/程翔",
+            "file_size": 306035,
+            "file_type": ".pdf",
+            "original_filename": "副學士畢業證.pdf",
+            "original_zip_filename": "个人类申报/蓝地球/程翔/副學士畢業證.pdf"
+          }
+        },
+        {
+          "filename": "勞動合同(新).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "9e647cb2-5aad-42c9-bf3b-81e0cc4e03dd",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/蓝地球/程翔/勞動合同(新).pdf",
+            "relative_path": "个人类申报/蓝地球/程翔/勞動合同(新).pdf",
+            "hierarchy_path": "个人类申报/个人类申报/蓝地球/程翔/勞動合同(新).pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/蓝地球/程翔",
+            "file_size": 413914,
+            "file_type": ".pdf",
+            "original_filename": "勞動合同(新).pdf",
+            "original_zip_filename": "个人类申报/蓝地球/程翔/勞動合同（新）.pdf"
+          }
+        },
+        {
+          "filename": "程翔银行卡.docx",
+          "success": true,
+          "file_type": ".docx",
+          "file_id": "ca8647bd-7bb1-4c27-afde-e82a0d7e0800",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/蓝地球/程翔/程翔银行卡.docx",
+            "relative_path": "个人类申报/蓝地球/程翔/程翔银行卡.docx",
+            "hierarchy_path": "个人类申报/个人类申报/蓝地球/程翔/程翔银行卡.docx",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/蓝地球/程翔",
+            "file_size": 10272,
+            "file_type": ".docx",
+            "original_filename": "程翔银行卡.docx",
+            "original_zip_filename": "个人类申报/蓝地球/程翔/程翔银行卡.docx"
+          }
+        },
+        {
+          "filename": "纳税证明(新).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "4e55ec06-4891-4313-b548-45c89cd7951a",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/蓝地球/程翔/纳税证明(新).pdf",
+            "relative_path": "个人类申报/蓝地球/程翔/纳税证明(新).pdf",
+            "hierarchy_path": "个人类申报/个人类申报/蓝地球/程翔/纳税证明(新).pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/蓝地球/程翔",
+            "file_size": 354539,
+            "file_type": ".pdf",
+            "original_filename": "纳税证明(新).pdf",
+            "original_zip_filename": "个人类申报/蓝地球/程翔/纳税证明(新）.pdf"
+          }
+        },
+        {
+          "filename": "通行证.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "bae2df54-6265-4ce2-bc3c-3fa8463bf5b8",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/蓝地球/程翔/通行证.pdf",
+            "relative_path": "个人类申报/蓝地球/程翔/通行证.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/蓝地球/程翔/通行证.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/蓝地球/程翔",
+            "file_size": 647318,
+            "file_type": ".pdf",
+            "original_filename": "通行证.pdf",
+            "original_zip_filename": "个人类申报/蓝地球/程翔/通行证.pdf"
+          }
+        },
+        {
+          "filename": "%E4%B8%AA%E4%BA%BA%E6%9D%83%E7%9B%8A%E8%AE%B0%E5%BD%95%EF%BC%88%E5%8F%82%E4%BF%9D%E8%AF%81%E6%98%8E%EF%BC%89.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "dae7910b-cee5-4152-8512-6adfc98e4394",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/吴沚宴/%E4%B8%AA%E4%BA%BA%E6%9D%83%E7%9B%8A%E8%AE%B0%E5%BD%95%EF%BC%88%E5%8F%82%E4%BF%9D%E8%AF%81%E6%98%8E%EF%BC%89.pdf",
+            "relative_path": "个人类申报/领晋/吴沚宴/%E4%B8%AA%E4%BA%BA%E6%9D%83%E7%9B%8A%E8%AE%B0%E5%BD%95%EF%BC%88%E5%8F%82%E4%BF%9D%E8%AF%81%E6%98%8E%EF%BC%89.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/吴沚宴/%E4%B8%AA%E4%BA%BA%E6%9D%83%E7%9B%8A%E8%AE%B0%E5%BD%95%EF%BC%88%E5%8F%82%E4%BF%9D%E8%AF%81%E6%98%8E%EF%BC%89.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/吴沚宴",
+            "file_size": 319115,
+            "file_type": ".pdf",
+            "original_filename": "%E4%B8%AA%E4%BA%BA%E6%9D%83%E7%9B%8A%E8%AE%B0%E5%BD%95%EF%BC%88%E5%8F%82%E4%BF%9D%E8%AF%81%E6%98%8E%EF%BC%89.pdf",
+            "original_zip_filename": "个人类申报/领晋/吴沚宴/%E4%B8%AA%E4%BA%BA%E6%9D%83%E7%9B%8A%E8%AE%B0%E5%BD%95%EF%BC%88%E5%8F%82%E4%BF%9D%E8%AF%81%E6%98%8E%EF%BC%89.pdf"
+          }
+        },
+        {
+          "filename": "%E6%89%93%E5%8D%B0%E4%B8%AA%E4%BA%BA%E7%BC%B4%E8%B4%B9%E6%B8%85%E5%8D%95.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "76daadcc-a0fa-4a9f-b19c-fdd0b603fc6a",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/吴沚宴/%E6%89%93%E5%8D%B0%E4%B8%AA%E4%BA%BA%E7%BC%B4%E8%B4%B9%E6%B8%85%E5%8D%95.pdf",
+            "relative_path": "个人类申报/领晋/吴沚宴/%E6%89%93%E5%8D%B0%E4%B8%AA%E4%BA%BA%E7%BC%B4%E8%B4%B9%E6%B8%85%E5%8D%95.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/吴沚宴/%E6%89%93%E5%8D%B0%E4%B8%AA%E4%BA%BA%E7%BC%B4%E8%B4%B9%E6%B8%85%E5%8D%95.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/吴沚宴",
+            "file_size": 124227,
+            "file_type": ".pdf",
+            "original_filename": "%E6%89%93%E5%8D%B0%E4%B8%AA%E4%BA%BA%E7%BC%B4%E8%B4%B9%E6%B8%85%E5%8D%95.pdf",
+            "original_zip_filename": "个人类申报/领晋/吴沚宴/%E6%89%93%E5%8D%B0%E4%B8%AA%E4%BA%BA%E7%BC%B4%E8%B4%B9%E6%B8%85%E5%8D%95.pdf"
+          }
+        },
+        {
+          "filename": "Degree CSM.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "1e4b1d80-a2da-49f8-ba39-3d68adb73c31",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/吴沚宴/Degree CSM.pdf",
+            "relative_path": "个人类申报/领晋/吴沚宴/Degree CSM.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/吴沚宴/Degree CSM.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/吴沚宴",
+            "file_size": 249238,
+            "file_type": ".pdf",
+            "original_filename": "Degree CSM.pdf",
+            "original_zip_filename": "个人类申报/领晋/吴沚宴/Degree CSM.pdf"
+          }
+        },
+        {
+          "filename": "HKID.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "6b60e358-5fcb-41bd-a3fb-bac992a59f85",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/吴沚宴/HKID.pdf",
+            "relative_path": "个人类申报/领晋/吴沚宴/HKID.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/吴沚宴/HKID.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/吴沚宴",
+            "file_size": 391042,
+            "file_type": ".pdf",
+            "original_filename": "HKID.pdf",
+            "original_zip_filename": "个人类申报/领晋/吴沚宴/HKID.pdf"
+          }
+        },
+        {
+          "filename": "PHOTO-2025-08-11-14-39-31.jpg",
+          "success": true,
+          "file_type": ".jpg",
+          "file_id": "d68c6acd-ac63-4837-974c-51f602307ac8",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/吴沚宴/PHOTO-2025-08-11-14-39-31.jpg",
+            "relative_path": "个人类申报/领晋/吴沚宴/PHOTO-2025-08-11-14-39-31.jpg",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/吴沚宴/PHOTO-2025-08-11-14-39-31.jpg",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/吴沚宴",
+            "file_size": 133635,
+            "file_type": ".jpg",
+            "original_filename": "PHOTO-2025-08-11-14-39-31.jpg",
+            "original_zip_filename": "个人类申报/领晋/吴沚宴/PHOTO-2025-08-11-14-39-31.jpg"
+          }
+        },
+        {
+          "filename": "【香港】吴沚宴.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "a207be2b-b107-4953-9f34-76d539f91681",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/吴沚宴/【香港】吴沚宴.pdf",
+            "relative_path": "个人类申报/领晋/吴沚宴/【香港】吴沚宴.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/吴沚宴/【香港】吴沚宴.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/吴沚宴",
+            "file_size": 403511,
+            "file_type": ".pdf",
+            "original_filename": "【香港】吴沚宴.pdf",
+            "original_zip_filename": "个人类申报/领晋/吴沚宴/【香港】吴沚宴.pdf"
+          }
+        },
+        {
+          "filename": "不动产信息查询结果单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "07ba1813-f6f7-463c-9e33-0b08ef78c7da",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/吴沚宴/不动产信息查询结果单.pdf",
+            "relative_path": "个人类申报/领晋/吴沚宴/不动产信息查询结果单.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/吴沚宴/不动产信息查询结果单.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/吴沚宴",
+            "file_size": 166791,
+            "file_type": ".pdf",
+            "original_filename": "不动产信息查询结果单.pdf",
+            "original_zip_filename": "个人类申报/领晋/吴沚宴/不动产信息查询结果单.pdf"
+          }
+        },
+        {
+          "filename": "副本银行信息(3).xlsx",
+          "success": true,
+          "file_type": ".xlsx",
+          "file_id": "a33a864c-21bf-4686-a7af-90ede1b19ea2",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/吴沚宴/副本银行信息(3).xlsx",
+            "relative_path": "个人类申报/领晋/吴沚宴/副本银行信息(3).xlsx",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/吴沚宴/副本银行信息(3).xlsx",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/吴沚宴",
+            "file_size": 11709,
+            "file_type": ".xlsx",
+            "original_filename": "副本银行信息(3).xlsx",
+            "original_zip_filename": "个人类申报/领晋/吴沚宴/副本银行信息(3).xlsx"
+          }
+        },
+        {
+          "filename": "吴沚宴 劳 动 合 同.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "80e6a2fe-c12f-441b-8e89-db563d2285b4",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/吴沚宴/吴沚宴 劳 动 合 同.pdf",
+            "relative_path": "个人类申报/领晋/吴沚宴/吴沚宴 劳 动 合 同.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/吴沚宴/吴沚宴 劳 动 合 同.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/吴沚宴",
+            "file_size": 962158,
+            "file_type": ".pdf",
+            "original_filename": "吴沚宴 劳 动 合 同.pdf",
+            "original_zip_filename": "个人类申报/领晋/吴沚宴/吴沚宴 劳 动 合 同.pdf"
+          }
+        },
+        {
+          "filename": "留学政务服务平台 吴沚宴.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "7721d93a-ae5d-4662-83f8-0ef2c3a9c271",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/吴沚宴/留学政务服务平台 吴沚宴.pdf",
+            "relative_path": "个人类申报/领晋/吴沚宴/留学政务服务平台 吴沚宴.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/吴沚宴/留学政务服务平台 吴沚宴.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/吴沚宴",
+            "file_size": 2004160,
+            "file_type": ".pdf",
+            "original_filename": "留学政务服务平台 吴沚宴.pdf",
+            "original_zip_filename": "个人类申报/领晋/吴沚宴/留学政务服务平台 吴沚宴.pdf"
+          }
+        },
+        {
+          "filename": "纳税记录.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "c8c92c1f-88c5-4771-8d79-6a459aa17253",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/吴沚宴/纳税记录.pdf",
+            "relative_path": "个人类申报/领晋/吴沚宴/纳税记录.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/吴沚宴/纳税记录.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/吴沚宴",
+            "file_size": 259505,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录.pdf",
+            "original_zip_filename": "个人类申报/领晋/吴沚宴/纳税记录.pdf"
+          }
+        },
+        {
+          "filename": "be3941efcea504088c4e630a2c8a872a_.png",
+          "success": true,
+          "file_type": ".png",
+          "file_id": "2f8fe5e5-d517-4b45-9673-3ac6f29e138b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/熊君诺/be3941efcea504088c4e630a2c8a872a_.png",
+            "relative_path": "个人类申报/领晋/熊君诺/be3941efcea504088c4e630a2c8a872a_.png",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/熊君诺/be3941efcea504088c4e630a2c8a872a_.png",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/熊君诺",
+            "file_size": 174431,
+            "file_type": ".png",
+            "original_filename": "be3941efcea504088c4e630a2c8a872a_.png",
+            "original_zip_filename": "个人类申报/领晋/熊君诺/be3941efcea504088c4e630a2c8a872a_.png"
+          }
+        },
+        {
+          "filename": "HKID.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "913513f1-254d-4547-927a-251f0b67056c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/熊君诺/HKID.pdf",
+            "relative_path": "个人类申报/领晋/熊君诺/HKID.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/熊君诺/HKID.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/熊君诺",
+            "file_size": 406558,
+            "file_type": ".pdf",
+            "original_filename": "HKID.pdf",
+            "original_zip_filename": "个人类申报/领晋/熊君诺/HKID.pdf"
+          }
+        },
+        {
+          "filename": "WhatsApp Image 2025-08-13 at 11.10.52.jpeg",
+          "success": true,
+          "file_type": ".jpeg",
+          "file_id": "ca99aed6-1cb3-4220-9b29-7aeb84173749",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/熊君诺/WhatsApp Image 2025-08-13 at 11.10.52.jpeg",
+            "relative_path": "个人类申报/领晋/熊君诺/WhatsApp Image 2025-08-13 at 11.10.52.jpeg",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/熊君诺/WhatsApp Image 2025-08-13 at 11.10.52.jpeg",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/熊君诺",
+            "file_size": 60824,
+            "file_type": ".jpeg",
+            "original_filename": "WhatsApp Image 2025-08-13 at 11.10.52.jpeg",
+            "original_zip_filename": "个人类申报/领晋/熊君诺/WhatsApp Image 2025-08-13 at 11.10.52.jpeg"
+          }
+        },
+        {
+          "filename": "【香港】熊君诺.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "14f349ad-e4a9-4a2d-957e-7443675eac1e",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/熊君诺/【香港】熊君诺.pdf",
+            "relative_path": "个人类申报/领晋/熊君诺/【香港】熊君诺.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/熊君诺/【香港】熊君诺.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/熊君诺",
+            "file_size": 501827,
+            "file_type": ".pdf",
+            "original_filename": "【香港】熊君诺.pdf",
+            "original_zip_filename": "个人类申报/领晋/熊君诺/【香港】熊君诺.pdf"
+          }
+        },
+        {
+          "filename": "不动产信息查询结果单 .pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "f1e7472b-7e84-4488-8381-7bc7037d936f",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/熊君诺/不动产信息查询结果单 .pdf",
+            "relative_path": "个人类申报/领晋/熊君诺/不动产信息查询结果单 .pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/熊君诺/不动产信息查询结果单 .pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/熊君诺",
+            "file_size": 166654,
+            "file_type": ".pdf",
+            "original_filename": "不动产信息查询结果单 .pdf",
+            "original_zip_filename": "个人类申报/领晋/熊君诺/不动产信息查询结果单 .pdf"
+          }
+        },
+        {
+          "filename": "学历原件.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "d2efb6d7-2a73-4937-87f8-7410ff60abc2",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/熊君诺/学历原件.pdf",
+            "relative_path": "个人类申报/领晋/熊君诺/学历原件.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/熊君诺/学历原件.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/熊君诺",
+            "file_size": 152527,
+            "file_type": ".pdf",
+            "original_filename": "学历原件.pdf",
+            "original_zip_filename": "个人类申报/领晋/熊君诺/学历原件.pdf"
+          }
+        },
+        {
+          "filename": "广东省社会保险个人参保证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "90371702-4d57-4f1f-99c5-eb01065b51e6",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/熊君诺/广东省社会保险个人参保证明.pdf",
+            "relative_path": "个人类申报/领晋/熊君诺/广东省社会保险个人参保证明.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/熊君诺/广东省社会保险个人参保证明.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/熊君诺",
+            "file_size": 273785,
+            "file_type": ".pdf",
+            "original_filename": "广东省社会保险个人参保证明.pdf",
+            "original_zip_filename": "个人类申报/领晋/熊君诺/广东省社会保险个人参保证明.pdf"
+          }
+        },
+        {
+          "filename": "掃描.jpeg",
+          "success": true,
+          "file_type": ".jpeg",
+          "file_id": "333a6939-94c8-4aa5-b13a-32a3c2fad82a",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/熊君诺/掃描.jpeg",
+            "relative_path": "个人类申报/领晋/熊君诺/掃描.jpeg",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/熊君诺/掃描.jpeg",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/熊君诺",
+            "file_size": 491952,
+            "file_type": ".jpeg",
+            "original_filename": "掃描.jpeg",
+            "original_zip_filename": "个人类申报/领晋/熊君诺/掃描.jpeg"
+          }
+        },
+        {
+          "filename": "熊君诺 劳 动 合 同 书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "86e1c713-5bfd-43b2-9723-3ef234ee3894",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/熊君诺/熊君诺 劳 动 合 同 书.pdf",
+            "relative_path": "个人类申报/领晋/熊君诺/熊君诺 劳 动 合 同 书.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/熊君诺/熊君诺 劳 动 合 同 书.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/熊君诺",
+            "file_size": 971035,
+            "file_type": ".pdf",
+            "original_filename": "熊君诺 劳 动 合 同 书.pdf",
+            "original_zip_filename": "个人类申报/领晋/熊君诺/熊君诺 劳 动 合 同 书.pdf"
+          }
+        },
+        {
+          "filename": "留学政务服务平台 熊君诺.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "28cbce12-c722-4d65-b349-fc069dd870fa",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/熊君诺/留学政务服务平台 熊君诺.pdf",
+            "relative_path": "个人类申报/领晋/熊君诺/留学政务服务平台 熊君诺.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/熊君诺/留学政务服务平台 熊君诺.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/熊君诺",
+            "file_size": 1083642,
+            "file_type": ".pdf",
+            "original_filename": "留学政务服务平台 熊君诺.pdf",
+            "original_zip_filename": "个人类申报/领晋/熊君诺/留学政务服务平台 熊君诺.pdf"
+          }
+        },
+        {
+          "filename": "纳税记录.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "a5ea3786-e34e-4083-8a30-6f7e91932a5a",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/熊君诺/纳税记录.pdf",
+            "relative_path": "个人类申报/领晋/熊君诺/纳税记录.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/熊君诺/纳税记录.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/熊君诺",
+            "file_size": 259580,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录.pdf",
+            "original_zip_filename": "个人类申报/领晋/熊君诺/纳税记录.pdf"
+          }
+        },
+        {
+          "filename": "HKID.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "b0c2830e-a2c4-4aef-a84f-5800b5d25eb6",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石祐珊/HKID.pdf",
+            "relative_path": "个人类申报/领晋/石祐珊/HKID.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石祐珊/HKID.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石祐珊",
+            "file_size": 352696,
+            "file_type": ".pdf",
+            "original_filename": "HKID.pdf",
+            "original_zip_filename": "个人类申报/领晋/石祐珊/HKID.pdf"
+          }
+        },
+        {
+          "filename": "Justina Mainland Return Card.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "8b5ef3ba-2091-4806-b3d3-4240d10cc1dc",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石祐珊/Justina Mainland Return Card.pdf",
+            "relative_path": "个人类申报/领晋/石祐珊/Justina Mainland Return Card.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石祐珊/Justina Mainland Return Card.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石祐珊",
+            "file_size": 478999,
+            "file_type": ".pdf",
+            "original_filename": "Justina Mainland Return Card.pdf",
+            "original_zip_filename": "个人类申报/领晋/石祐珊/Justina Mainland Return Card.pdf"
+          }
+        },
+        {
+          "filename": "学历原件.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "5cfe6ea5-84bd-4f74-8839-03b6c983a9e4",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石祐珊/学历原件.pdf",
+            "relative_path": "个人类申报/领晋/石祐珊/学历原件.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石祐珊/学历原件.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石祐珊",
+            "file_size": 3050683,
+            "file_type": ".pdf",
+            "original_filename": "学历原件.pdf",
+            "original_zip_filename": "个人类申报/领晋/石祐珊/学历原件.pdf"
+          }
+        },
+        {
+          "filename": "广东省社会保险个人参保证明- JUSTINASHIH.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "8f5bad63-959f-4801-be3b-d79dd195a167",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石祐珊/广东省社会保险个人参保证明- JUSTINASHIH.pdf",
+            "relative_path": "个人类申报/领晋/石祐珊/广东省社会保险个人参保证明- JUSTINASHIH.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石祐珊/广东省社会保险个人参保证明- JUSTINASHIH.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石祐珊",
+            "file_size": 187468,
+            "file_type": ".pdf",
+            "original_filename": "广东省社会保险个人参保证明- JUSTINASHIH.pdf",
+            "original_zip_filename": "个人类申报/领晋/石祐珊/广东省社会保险个人参保证明- JUSTINASHIH.pdf"
+          }
+        },
+        {
+          "filename": "无房产证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "82e4f20f-cbd5-4430-83d1-b66cfb17a9c1",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石祐珊/无房产证明.pdf",
+            "relative_path": "个人类申报/领晋/石祐珊/无房产证明.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石祐珊/无房产证明.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石祐珊",
+            "file_size": 167076,
+            "file_type": ".pdf",
+            "original_filename": "无房产证明.pdf",
+            "original_zip_filename": "个人类申报/领晋/石祐珊/无房产证明.pdf"
+          }
+        },
+        {
+          "filename": "留学政务服务平台石祐珊.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "6d70d5f2-9bd1-4c7c-aea4-e4d5ca37fa33",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石祐珊/留学政务服务平台石祐珊.pdf",
+            "relative_path": "个人类申报/领晋/石祐珊/留学政务服务平台石祐珊.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石祐珊/留学政务服务平台石祐珊.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石祐珊",
+            "file_size": 222783,
+            "file_type": ".pdf",
+            "original_filename": "留学政务服务平台石祐珊.pdf",
+            "original_zip_filename": "个人类申报/领晋/石祐珊/留学政务服务平台石祐珊.pdf"
+          }
+        },
+        {
+          "filename": "石祐珊 劳 动 合 同 书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "9e931bb8-e6ae-4ecf-9815-0bbcfbaad04f",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石祐珊/石祐珊 劳 动 合 同 书.pdf",
+            "relative_path": "个人类申报/领晋/石祐珊/石祐珊 劳 动 合 同 书.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石祐珊/石祐珊 劳 动 合 同 书.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石祐珊",
+            "file_size": 963614,
+            "file_type": ".pdf",
+            "original_filename": "石祐珊 劳 动 合 同 书.pdf",
+            "original_zip_filename": "个人类申报/领晋/石祐珊/石祐珊 劳 动 合 同 书.pdf"
+          }
+        },
+        {
+          "filename": "纳税记录 - Justina Shih1.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "5750256f-de59-4f8b-8bc5-cc04f0b6cbe2",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石祐珊/纳税记录 - Justina Shih1.pdf",
+            "relative_path": "个人类申报/领晋/石祐珊/纳税记录 - Justina Shih1.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石祐珊/纳税记录 - Justina Shih1.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石祐珊",
+            "file_size": 121596,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录 - Justina Shih1.pdf",
+            "original_zip_filename": "个人类申报/领晋/石祐珊/纳税记录 - Justina Shih1.pdf"
+          }
+        },
+        {
+          "filename": "Jackson_HKID_clean-01.png",
+          "success": true,
+          "file_type": ".png",
+          "file_id": "85348a52-ddb0-4f1f-93ab-5e8ee28854fa",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石耀庭/Jackson_HKID_clean-01.png",
+            "relative_path": "个人类申报/领晋/石耀庭/Jackson_HKID_clean-01.png",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石耀庭/Jackson_HKID_clean-01.png",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石耀庭",
+            "file_size": 1418947,
+            "file_type": ".png",
+            "original_filename": "Jackson_HKID_clean-01.png",
+            "original_zip_filename": "个人类申报/领晋/石耀庭/Jackson_HKID_clean-01.png"
+          }
+        },
+        {
+          "filename": "【香港】石耀庭.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "75dba78d-23cc-46fa-8645-6c27a9d55ab3",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石耀庭/【香港】石耀庭.pdf",
+            "relative_path": "个人类申报/领晋/石耀庭/【香港】石耀庭.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石耀庭/【香港】石耀庭.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石耀庭",
+            "file_size": 1420916,
+            "file_type": ".pdf",
+            "original_filename": "【香港】石耀庭.pdf",
+            "original_zip_filename": "个人类申报/领晋/石耀庭/【香港】石耀庭.pdf"
+          }
+        },
+        {
+          "filename": "不动产信息查询结果单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "845a72e0-3a97-48f2-9151-8551cbccf32c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石耀庭/不动产信息查询结果单.pdf",
+            "relative_path": "个人类申报/领晋/石耀庭/不动产信息查询结果单.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石耀庭/不动产信息查询结果单.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石耀庭",
+            "file_size": 166891,
+            "file_type": ".pdf",
+            "original_filename": "不动产信息查询结果单.pdf",
+            "original_zip_filename": "个人类申报/领晋/石耀庭/不动产信息查询结果单.pdf"
+          }
+        },
+        {
+          "filename": "个人所得税纳税清单2(深圳).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "ebd87805-87a7-47ee-845d-ddbc0d495190",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石耀庭/个人所得税纳税清单2(深圳).pdf",
+            "relative_path": "个人类申报/领晋/石耀庭/个人所得税纳税清单2(深圳).pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石耀庭/个人所得税纳税清单2(深圳).pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石耀庭",
+            "file_size": 270747,
+            "file_type": ".pdf",
+            "original_filename": "个人所得税纳税清单2(深圳).pdf",
+            "original_zip_filename": "个人类申报/领晋/石耀庭/个人所得税纳税清单2（深圳）.pdf"
+          }
+        },
+        {
+          "filename": "个人所得税纳税清单(深圳).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "3c6a390e-fa19-4727-a2ef-f4b5bcd6a383",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石耀庭/个人所得税纳税清单(深圳).pdf",
+            "relative_path": "个人类申报/领晋/石耀庭/个人所得税纳税清单(深圳).pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石耀庭/个人所得税纳税清单(深圳).pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石耀庭",
+            "file_size": 272120,
+            "file_type": ".pdf",
+            "original_filename": "个人所得税纳税清单(深圳).pdf",
+            "original_zip_filename": "个人类申报/领晋/石耀庭/个人所得税纳税清单（深圳）.pdf"
+          }
+        },
+        {
+          "filename": "石耀庭 劳动合同.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "275113ff-f207-4688-b4ac-d3a04dc9d2ae",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石耀庭/石耀庭 劳动合同.pdf",
+            "relative_path": "个人类申报/领晋/石耀庭/石耀庭 劳动合同.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石耀庭/石耀庭 劳动合同.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石耀庭",
+            "file_size": 966691,
+            "file_type": ".pdf",
+            "original_filename": "石耀庭 劳动合同.pdf",
+            "original_zip_filename": "个人类申报/领晋/石耀庭/石耀庭 劳动合同.pdf"
+          }
+        },
+        {
+          "filename": "石耀庭——广东省社会保险个人参保证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "eea888a6-ba55-4c28-87b9-29753be6882b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石耀庭/石耀庭——广东省社会保险个人参保证明.pdf",
+            "relative_path": "个人类申报/领晋/石耀庭/石耀庭——广东省社会保险个人参保证明.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石耀庭/石耀庭——广东省社会保险个人参保证明.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石耀庭",
+            "file_size": 273434,
+            "file_type": ".pdf",
+            "original_filename": "石耀庭——广东省社会保险个人参保证明.pdf",
+            "original_zip_filename": "个人类申报/领晋/石耀庭/石耀庭——广东省社会保险个人参保证明.pdf"
+          }
+        },
+        {
+          "filename": "石耀庭——留服认证.jpg",
+          "success": true,
+          "file_type": ".jpg",
+          "file_id": "7c6ff18a-3855-4431-9041-fae6c6f3f8c4",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石耀庭/石耀庭——留服认证.jpg",
+            "relative_path": "个人类申报/领晋/石耀庭/石耀庭——留服认证.jpg",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石耀庭/石耀庭——留服认证.jpg",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石耀庭",
+            "file_size": 368423,
+            "file_type": ".jpg",
+            "original_filename": "石耀庭——留服认证.jpg",
+            "original_zip_filename": "个人类申报/领晋/石耀庭/石耀庭——留服认证.jpg"
+          }
+        },
+        {
+          "filename": "石耀庭——留服认证.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "37722d6f-7b1f-40d7-a69f-3225a5292f38",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石耀庭/石耀庭——留服认证.pdf",
+            "relative_path": "个人类申报/领晋/石耀庭/石耀庭——留服认证.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石耀庭/石耀庭——留服认证.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石耀庭",
+            "file_size": 351039,
+            "file_type": ".pdf",
+            "original_filename": "石耀庭——留服认证.pdf",
+            "original_zip_filename": "个人类申报/领晋/石耀庭/石耀庭——留服认证.pdf"
+          }
+        },
+        {
+          "filename": "纳税记录 till Aug 2025.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "1c5dd091-fe26-4d13-af3b-7c4b0618fac5",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/石耀庭/纳税记录 till Aug 2025.pdf",
+            "relative_path": "个人类申报/领晋/石耀庭/纳税记录 till Aug 2025.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/石耀庭/纳税记录 till Aug 2025.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/石耀庭",
+            "file_size": 283194,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录 till Aug 2025.pdf",
+            "original_zip_filename": "个人类申报/领晋/石耀庭/纳税记录 till Aug 2025.pdf"
+          }
+        },
+        {
+          "filename": "HKID.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "60e6d473-a59e-40db-b024-3a7303e7882d",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/萧淼森/HKID.pdf",
+            "relative_path": "个人类申报/领晋/萧淼森/HKID.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/萧淼森/HKID.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/萧淼森",
+            "file_size": 330387,
+            "file_type": ".pdf",
+            "original_filename": "HKID.pdf",
+            "original_zip_filename": "个人类申报/领晋/萧淼森/HKID.pdf"
+          }
+        },
+        {
+          "filename": "【香港】萧淼森.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "3e8c1594-2a82-4d7a-8c13-af64e4beeb2b",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/萧淼森/【香港】萧淼森.pdf",
+            "relative_path": "个人类申报/领晋/萧淼森/【香港】萧淼森.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/萧淼森/【香港】萧淼森.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/萧淼森",
+            "file_size": 498648,
+            "file_type": ".pdf",
+            "original_filename": "【香港】萧淼森.pdf",
+            "original_zip_filename": "个人类申报/领晋/萧淼森/【香港】萧淼森.pdf"
+          }
+        },
+        {
+          "filename": "不动产信息查询结果单.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "8a085222-b1a5-49fd-b3b3-109f7cafa934",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/萧淼森/不动产信息查询结果单.pdf",
+            "relative_path": "个人类申报/领晋/萧淼森/不动产信息查询结果单.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/萧淼森/不动产信息查询结果单.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/萧淼森",
+            "file_size": 166706,
+            "file_type": ".pdf",
+            "original_filename": "不动产信息查询结果单.pdf",
+            "original_zip_filename": "个人类申报/领晋/萧淼森/不动产信息查询结果单.pdf"
+          }
+        },
+        {
+          "filename": "广东省社会保险个人参保证明.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "0fd5fcf8-f2f9-4b32-9ad3-40726ad1b37c",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/萧淼森/广东省社会保险个人参保证明.pdf",
+            "relative_path": "个人类申报/领晋/萧淼森/广东省社会保险个人参保证明.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/萧淼森/广东省社会保险个人参保证明.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/萧淼森",
+            "file_size": 273864,
+            "file_type": ".pdf",
+            "original_filename": "广东省社会保险个人参保证明.pdf",
+            "original_zip_filename": "个人类申报/领晋/萧淼森/广东省社会保险个人参保证明.pdf"
+          }
+        },
+        {
+          "filename": "纳税记录.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "ceff9f9d-3834-47ef-8554-30615f5964e1",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/萧淼森/纳税记录.pdf",
+            "relative_path": "个人类申报/领晋/萧淼森/纳税记录.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/萧淼森/纳税记录.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/萧淼森",
+            "file_size": 257455,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录.pdf",
+            "original_zip_filename": "个人类申报/领晋/萧淼森/纳税记录.pdf"
+          }
+        },
+        {
+          "filename": "萧淼森 劳 动 合 同 书.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "c89faffc-9774-4cb6-ba40-c17101e14404",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/萧淼森/萧淼森 劳 动 合 同 书.pdf",
+            "relative_path": "个人类申报/领晋/萧淼森/萧淼森 劳 动 合 同 书.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/萧淼森/萧淼森 劳 动 合 同 书.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/萧淼森",
+            "file_size": 964786,
+            "file_type": ".pdf",
+            "original_filename": "萧淼森 劳 动 合 同 书.pdf",
+            "original_zip_filename": "个人类申报/领晋/萧淼森/萧淼森 劳 动 合 同 书.pdf"
+          }
+        },
+        {
+          "filename": "Testimonial.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "da0486fd-ec2d-464f-bcd8-cf82f3fb4afb",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/陈素怡/Testimonial.pdf",
+            "relative_path": "个人类申报/领晋/陈素怡/Testimonial.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/陈素怡/Testimonial.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/陈素怡",
+            "file_size": 6265240,
+            "file_type": ".pdf",
+            "original_filename": "Testimonial.pdf",
+            "original_zip_filename": "个人类申报/领晋/陈素怡/Testimonial.pdf"
+          }
+        },
+        {
+          "filename": "【香港】陈素怡.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "b223f722-c864-44b2-b120-3000627ea4c6",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/陈素怡/【香港】陈素怡.pdf",
+            "relative_path": "个人类申报/领晋/陈素怡/【香港】陈素怡.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/陈素怡/【香港】陈素怡.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/陈素怡",
+            "file_size": 378094,
+            "file_type": ".pdf",
+            "original_filename": "【香港】陈素怡.pdf",
+            "original_zip_filename": "个人类申报/领晋/陈素怡/【香港】陈素怡.pdf"
+          }
+        },
+        {
+          "filename": "不动产信息查询结果告知单_Zoe.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "2af454cc-4afc-4c0a-8f90-6fd975b0a5bf",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/陈素怡/不动产信息查询结果告知单_Zoe.pdf",
+            "relative_path": "个人类申报/领晋/陈素怡/不动产信息查询结果告知单_Zoe.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/陈素怡/不动产信息查询结果告知单_Zoe.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/陈素怡",
+            "file_size": 109656,
+            "file_type": ".pdf",
+            "original_filename": "不动产信息查询结果告知单_Zoe.pdf",
+            "original_zip_filename": "个人类申报/领晋/陈素怡/不动产信息查询结果告知单_Zoe.pdf"
+          }
+        },
+        {
+          "filename": "学历原件.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "97df5e8d-6608-47ee-b988-409853bcfecd",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/陈素怡/学历原件.pdf",
+            "relative_path": "个人类申报/领晋/陈素怡/学历原件.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/陈素怡/学历原件.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/陈素怡",
+            "file_size": 5336698,
+            "file_type": ".pdf",
+            "original_filename": "学历原件.pdf",
+            "original_zip_filename": "个人类申报/领晋/陈素怡/学历原件.pdf"
+          }
+        },
+        {
+          "filename": "留学政务服务平台陈素怡.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "6d6ae840-8843-4a8e-9d05-9bfb5e6e34aa",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/陈素怡/留学政务服务平台陈素怡.pdf",
+            "relative_path": "个人类申报/领晋/陈素怡/留学政务服务平台陈素怡.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/陈素怡/留学政务服务平台陈素怡.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/陈素怡",
+            "file_size": 267175,
+            "file_type": ".pdf",
+            "original_filename": "留学政务服务平台陈素怡.pdf",
+            "original_zip_filename": "个人类申报/领晋/陈素怡/留学政务服务平台陈素怡.pdf"
+          }
+        },
+        {
+          "filename": "社保参保证明_zoe(1).pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "2b77572e-7d7c-4594-85df-bea0e55447b8",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/陈素怡/社保参保证明_zoe(1).pdf",
+            "relative_path": "个人类申报/领晋/陈素怡/社保参保证明_zoe(1).pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/陈素怡/社保参保证明_zoe(1).pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/陈素怡",
+            "file_size": 180634,
+            "file_type": ".pdf",
+            "original_filename": "社保参保证明_zoe(1).pdf",
+            "original_zip_filename": "个人类申报/领晋/陈素怡/社保参保证明_zoe(1).pdf"
+          }
+        },
+        {
+          "filename": "纳税记录_Zoe.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "23c31edf-53f1-4c82-840c-65163fe19916",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/陈素怡/纳税记录_Zoe.pdf",
+            "relative_path": "个人类申报/领晋/陈素怡/纳税记录_Zoe.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/陈素怡/纳税记录_Zoe.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/陈素怡",
+            "file_size": 259663,
+            "file_type": ".pdf",
+            "original_filename": "纳税记录_Zoe.pdf",
+            "original_zip_filename": "个人类申报/领晋/陈素怡/纳税记录_Zoe.pdf"
+          }
+        },
+        {
+          "filename": "陈素怡-劳 动 合 同.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "0f5ad28a-cb21-4fcb-aee1-e39560bd4eba",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/陈素怡/陈素怡-劳 动 合 同.pdf",
+            "relative_path": "个人类申报/领晋/陈素怡/陈素怡-劳 动 合 同.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/陈素怡/陈素怡-劳 动 合 同.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/陈素怡",
+            "file_size": 962936,
+            "file_type": ".pdf",
+            "original_filename": "陈素怡-劳 动 合 同.pdf",
+            "original_zip_filename": "个人类申报/领晋/陈素怡/陈素怡-劳 动 合 同.pdf"
+          }
+        },
+        {
+          "filename": "香港永久性居民身份證_20250811.pdf",
+          "success": true,
+          "file_type": ".pdf",
+          "file_id": "6cf30ef2-8a26-45a8-97f3-7859d1ba3da2",
+          "file_info": {
+            "file_path": "/tmp/zip_extract_50b00324-2917-487c-aaac-efe45e4e1bc1_3pn6kdvz/个人类申报/领晋/陈素怡/香港永久性居民身份證_20250811.pdf",
+            "relative_path": "个人类申报/领晋/陈素怡/香港永久性居民身份證_20250811.pdf",
+            "hierarchy_path": "个人类申报/个人类申报/领晋/陈素怡/香港永久性居民身份證_20250811.pdf",
+            "archive_name": "个人类申报",
+            "archive_hierarchy": "",
+            "folder_path": "个人类申报/领晋/陈素怡",
+            "file_size": 15364053,
+            "file_type": ".pdf",
+            "original_filename": "香港永久性居民身份證_20250811.pdf",
+            "original_zip_filename": "个人类申报/领晋/陈素怡/香港永久性居民身份證_20250811.pdf"
+          }
+        }
+      ]
+    },
+    "workspace_id": "global"
   }
 ]

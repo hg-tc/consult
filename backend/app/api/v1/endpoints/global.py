@@ -169,6 +169,18 @@ async def global_chat(
 ):
     """全局问答"""
     try:
+        # Debug 入参：记录 question 类型与预览
+        try:
+            q_preview = str(question)
+            if q_preview is None:
+                q_preview = "<None>"
+            if len(q_preview) > 300:
+                q_preview = q_preview[:300] + "...<truncated>"
+            logger.debug(
+                f"[global_chat.debug] workspace_id={workspace_id or 'global'}, type(question)={type(question)}, question_preview={q_preview}, top_k={top_k}"
+            )
+        except Exception as _dbg_err:
+            logger.warning(f"global_chat 入参调试信息记录失败: {_dbg_err}")
         # 改为 LlamaIndex 检索
         from app.utils.import_with_timeout import import_symbol_with_timeout
         LlamaIndexRetriever = import_symbol_with_timeout(

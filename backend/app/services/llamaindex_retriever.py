@@ -347,14 +347,50 @@ class LlamaIndexRetriever:
             List[Dict]: 包含 content, metadata, score, node_id
         """
         try:
+            # Debug 入参信息（类型与安全截断后的内容）
+            try:
+                preview = str(query)
+                if preview is None:
+                    preview = "<None>"
+                if len(preview) > 500:
+                    preview = preview[:500] + "...<truncated>"
+                logger.debug(
+                    f"[retrieve.debug] workspace_id={self.workspace_id}, type(query)={type(query)}, query_preview={preview}"
+                )
+            except Exception as _dbg_err:
+                logger.warning(f"retrieve 入参调试信息记录失败: {_dbg_err}")
             # 如果索引为空，返回空结果
             if self.index is None or len(self.index.storage_context.docstore.docs) == 0:
                 logger.info(f"索引为空，返回空结果: {self.workspace_id}")
                 return []
             
+            # 0. 规范化查询入参（容错：允许 dict 等上游误传）
+            normalized_query = query
+            if not isinstance(query, str):
+                try:
+                    if isinstance(query, dict):
+                        candidate_keys = ["query", "question", "message", "text", "query_str"]
+                        extracted = None
+                        for k in candidate_keys:
+                            v = query.get(k)
+                            if isinstance(v, str) and v.strip():
+                                extracted = v.strip()
+                                break
+                        if extracted is None:
+                            raise TypeError(f"无法从 dict 中提取有效查询字段，期望键: {candidate_keys}")
+                        normalized_query = extracted
+                    else:
+                        # 最保守的处理：转为字符串
+                        normalized_query = str(query)
+                except Exception as norm_err:
+                    logger.error(
+                        f"查询入参类型非法且规范化失败: type={type(query)}, value_repr={query!r}, error={norm_err}"
+                    )
+                    return []
+
             # 1. 检索（使用内置简化检索器，避免触发 LLM 相关模块）
             retriever = self.index.as_retriever(similarity_top_k=top_k * (4 if use_hybrid else 2))
-            nodes = await retriever.aretrieve(query)
+            nodes = await retriever.aretrieve(normalized_query)
             
             # 4. 转换格式（确保所有数据类型都是 Python 原生类型，避免 msgpack 序列化错误）
             results = []
@@ -388,7 +424,14 @@ class LlamaIndexRetriever:
             return results
             
         except Exception as e:
-            logger.error(f"检索失败: {e}")
+            try:
+                import traceback
+                logger.error(
+                    "检索失败: %s | workspace_id=%s | type(query)=%s | query_repr=%r\n%s",
+                    str(e), self.workspace_id, type(query), query, traceback.format_exc()
+                )
+            except Exception:
+                logger.error(f"检索失败: {e}")
             return []
     
     async def add_document(self, file_path: str, metadata: Dict = None):

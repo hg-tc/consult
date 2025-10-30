@@ -64,6 +64,18 @@ class QAService:
             QAResult对象
         """
         try:
+            # Debug 入参：记录 question 类型与预览
+            try:
+                q_preview = str(question)
+                if q_preview is None:
+                    q_preview = "<None>"
+                if len(q_preview) > 300:
+                    q_preview = q_preview[:300] + "...<truncated>"
+                logger.debug(
+                    f"[qa_service.ask_question.debug] workspace_id={workspace_id}, type(question)={type(question)}, question_preview={q_preview}"
+                )
+            except Exception as _dbg_err:
+                logger.warning(f"ask_question 入参调试信息记录失败: {_dbg_err}")
             # 1. 获取工作区上下文
             if db:
                 workspace_context = await self.context_service.get_workspace_context(
