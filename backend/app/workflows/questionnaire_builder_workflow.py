@@ -102,10 +102,21 @@ class QuestionnaireBuilderWorkflow:
             + ":"
             + ("|".join(initial.get("target_projects", [])[:3]))
         ) or str(uuid.uuid4())
-        result: QBState = await self.compiled_graph.ainvoke(
-            initial,
-            {"configurable": {"thread_id": thread_id}}
-        )
+        # LangSmith / LangGraph 追踪：设置 run_name、tags 与 metadata 便于按工作流过滤
+        config = {
+            "run_name": "questionnaire_builder",
+            "tags": [
+                "workflow:questionnaire_builder",
+                f"workspace:{initial.get('workspace_id')}",
+                *[f"project:{p}" for p in (initial.get("target_projects") or [])[:5]],
+            ],
+            "metadata": {
+                "company_name": initial.get("company_name") or "",
+                "phase": (phase or "all"),
+            },
+            "configurable": {"thread_id": thread_id},
+        }
+        result: QBState = await self.compiled_graph.ainvoke(initial, config)
         # 生成带引用尾注的 Markdown（简单脚注样式）
         outline_md = result["outline"].get("markdown", "")
         if result.get("sources"):

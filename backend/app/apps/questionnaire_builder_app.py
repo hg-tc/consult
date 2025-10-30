@@ -48,7 +48,7 @@ class QuestionnaireBuilderApp(BaseApp):
                 LlamaIndexRetriever = import_symbol_with_timeout(
                     "app.services.llamaindex_retriever", "LlamaIndexRetriever", timeout_seconds=5.0
                 )
-                from app.services.langchain_rag_service import LangChainRAGService
+                
                 from app.core.config import settings
                 from app.services.web_search_service import get_web_search_service
                 from app.workflows.questionnaire_builder_workflow import QuestionnaireBuilderWorkflow
@@ -57,14 +57,14 @@ class QuestionnaireBuilderApp(BaseApp):
                 retriever_workspace = LlamaIndexRetriever.get_instance(workspace)
                 retriever_global = LlamaIndexRetriever.get_instance("global")
 
-                rag_service = LangChainRAGService(vector_db_path=settings.LANGCHAIN_VECTOR_DB_PATH)
+                
                 web_search = get_web_search_service()
 
                 workflow = QuestionnaireBuilderWorkflow(
                     workspace_retriever=retriever_workspace,
                     global_retriever=retriever_global,
                     web_search_service=web_search,
-                    llm=rag_service.llm
+                    llm=None
                 )
 
                 result = await workflow.run(request_context, phase=phase)

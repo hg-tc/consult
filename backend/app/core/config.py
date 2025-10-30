@@ -108,6 +108,16 @@ class Settings(BaseSettings):
         "http://127.0.0.1:13000",
     ]
 
+    # LangSmith / LangChain Tracing V2（用于 LangGraph 可视化）
+    LANGSMITH_API_KEY: Optional[str] = os.getenv(
+        "LANGSMITH_API_KEY",
+        # 用户提供的密钥（如未在环境中配置，则使用该默认值）
+        "REPLACED_KEY"
+    )
+    LANGCHAIN_TRACING_V2: bool = os.getenv("LANGCHAIN_TRACING_V2", "true").lower() in {"1", "true", "yes", "on"}
+    LANGCHAIN_ENDPOINT: str = os.getenv("LANGCHAIN_ENDPOINT", "https://api.smith.langchain.com")
+    LANGCHAIN_PROJECT: str = os.getenv("LANGCHAIN_PROJECT", "consult-backend")
+
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(
         cls, v: Union[str, List[str]]

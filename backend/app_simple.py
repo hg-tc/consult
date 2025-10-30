@@ -46,6 +46,15 @@ setup_logging(level_name=settings.APP_LOG_LEVEL)
 logger = logging.getLogger(__name__)
 logger.info(f"日志系统已配置为{settings.APP_LOG_LEVEL}级别")
 
+# 启用 LangSmith / LangChain Tracing v2（LangGraph 可视化）
+os.environ["LANGCHAIN_TRACING_V2"] = "true" if settings.LANGCHAIN_TRACING_V2 else "false"
+if settings.LANGSMITH_API_KEY:
+    os.environ["LANGCHAIN_API_KEY"] = settings.LANGSMITH_API_KEY
+if settings.LANGCHAIN_ENDPOINT:
+    os.environ["LANGCHAIN_ENDPOINT"] = settings.LANGCHAIN_ENDPOINT
+if settings.LANGCHAIN_PROJECT:
+    os.environ["LANGCHAIN_PROJECT"] = settings.LANGCHAIN_PROJECT
+
 # WebSocket连接管理器
 class ConnectionManager:
     def __init__(self):
