@@ -6,6 +6,7 @@ from langgraph.graph import StateGraph
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_openai import ChatOpenAI
 
+import logging
 logger = logging.getLogger(__name__)
 
 class QBState(TypedDict):
