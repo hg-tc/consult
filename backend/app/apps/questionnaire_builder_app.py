@@ -29,7 +29,6 @@ class QuestionnaireBuilderApp(BaseApp):
                 company_name: Optional[str] = data.get("company_name")
                 target_projects: List[str] = data.get("target_projects") or []
                 known_info: Dict[str, Any] = data.get("known_info") or {}
-                phase: Optional[str] = (data.get("phase") or None)
 
                 if not target_projects or not isinstance(target_projects, list):
                     raise HTTPException(status_code=400, detail="target_projects 为必填，且必须为字符串数组")
@@ -67,7 +66,7 @@ class QuestionnaireBuilderApp(BaseApp):
                     llm=None
                 )
 
-                result = await workflow.run(request_context, phase=phase)
+                result = await workflow.run(request_context)
 
                 return result
             except HTTPException:

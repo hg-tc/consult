@@ -15,6 +15,10 @@ from app.utils.progress_broker import get_progress_broker
 import time
 import asyncio
 
+
+from operator import add
+from dataclasses import asdict
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -29,6 +33,8 @@ class QBState(TypedDict):
     type: str
     retry_count: int
     max_retries: int
+    md: str
+    analysis: str
 
 
 class QuestionnaireBuilderWorkflow:
@@ -50,7 +56,7 @@ class QuestionnaireBuilderWorkflow:
         self.checkpointer = MemorySaver()
         self.compiled_graph = self.graph.compile(checkpointer=self.checkpointer)
 
-    async def run(self, request: Dict[str, Any], phase: Optional[str] = None) -> Dict[str, Any]:
+    async def run(self, request: Dict[str, Any]) -> Dict[str, Any]:
         initial: QBState = {
             "request": request,
             "workspace_id": (request.get("workspace_id") or "global"),
@@ -62,7 +68,10 @@ class QuestionnaireBuilderWorkflow:
             "messages": [],
             "retry_count": int(request.get("retry_count", 0)),
             "max_retries": int(request.get("max_retries", 2)),
+            "md": "",
+            "analysis": "",
         }
+        
         # LangGraph MemorySaver 需要提供 configurable.thread_id
         thread_id = (
             str(initial.get("workspace_id") or "global")
@@ -81,485 +90,479 @@ class QuestionnaireBuilderWorkflow:
             ],
             "metadata": {
                 "company_name": initial.get("company_name") or "",
-                "phase": (phase or "all"),
             },
             "configurable": {"thread_id": thread_id},
         }
         result: QBState = await self.compiled_graph.ainvoke(initial, {**config, "recursion_limit": 100, "stream": False})
         
-        # 从最终消息中提取分析结果（一体化报告和问卷）
-        final_content = ""
-        msgs = result.get("messages", [])
-        if msgs:
-            # 获取最后一个消息的内容（应该是 analysis_node 的输出）
-            last_msg = msgs[-1]
-            if isinstance(last_msg, list) and len(last_msg) > 0:
-                last_msg = last_msg[0]
-            if hasattr(last_msg, "content"):
-                final_content = last_msg.content
-            elif isinstance(last_msg, dict):
-                final_content = last_msg.get("content", "")
-            else:
-                final_content = str(last_msg)
+        # 从最终消息中提取分析结果
+        final_analysis = result.get("analysis")
+        final_md = result.get("md")
         
-        # 返回一体化报告和问卷（包含在 final_content 中）
-        response: Dict[str, Any] = {
-            "assessment_report_md": final_content,
-            "questionnaire_md": final_content,  # 一体化输出，包含报告和问卷
-            "combined_report_md": final_content,  # 新增：一体化报告字段
+        # 只返回两个字段：报告和问卷
+        return {
+            "final_md": final_md,
+            "final_analysis": final_analysis
         }
 
-        return response
-
     def _build_graph(self) -> StateGraph:
-        graph = StateGraph(QBState)
-
-        async def validate_input(state: QBState) -> QBState:
-            projects = [p.strip() for p in state["target_projects"] if str(p).strip()]
-            if not projects:
-                raise ValueError("target_projects 不能为空")
-            state["target_projects"] = list(dict.fromkeys(projects))
-            return state
-
-        async def collect_client_context(state: QBState) -> QBState:
-            # 尝试从工作区文档构建画像（高层摘要，由 LLM 生成）
-            profile = state["known_info"].copy()
-            # 这里可扩展：从 retriever 搜索 workspace 文档做简述
-            state["client_profile"] = profile
-            return state
-
-        async def retrieve_internal_db(state: QBState) -> QBState:
-            sources: List[Dict[str, Any]] = state["sources"]
-            tmp_hits: Dict[str, List[Dict[str, Any]]] = state.get("tmp_hits", {})
-            for proj in state["target_projects"]:
-                q_variants = [f"{proj} 申请条件", f"{proj} 材料清单", f"{proj} 资格要求", f"{proj} 申报指引"]
-                for q in q_variants:
-                    results = await self.global_retriever.retrieve(query=q, top_k=5, use_hybrid=True, use_compression=True)
-                    for r in results:
-                        tmp_hits.setdefault(proj, []).append({"type": "db", **r})
-                        src_id = r.get("document_id") or r.get("node_id") or r.get("id")
-                        sources.append({"id": f"db::{src_id}", "type": "db", **r})
-            state["tmp_hits"] = tmp_hits
-            state["sources"] = self._dedupe_sources(sources)
-            return state
-
-        async def retrieve_workspace_db(state: QBState) -> QBState:
-            sources: List[Dict[str, Any]] = state["sources"]
-            tmp_hits: Dict[str, List[Dict[str, Any]]] = state.get("tmp_hits", {})
-            for proj in state["target_projects"]:
-                q_variants = [f"{proj} 申请条件", f"{proj} 材料清单", f"{proj} 资格要求", f"{proj} 申报指引"]
-                for q in q_variants:
-                    results = await self.workspace_retriever.retrieve(query=q, top_k=5, use_hybrid=True, use_compression=True)
-                    for r in results:
-                        tmp_hits.setdefault(proj, []).append({"type": "db", **r})
-                        src_id = r.get("document_id") or r.get("node_id") or r.get("id")
-                        sources.append({"id": f"db::{src_id}", "type": "db", **r})
-            state["tmp_hits"] = tmp_hits
-            state["sources"] = self._dedupe_sources(sources)
-            return state
-
-        async def web_search_collect(state: QBState) -> QBState:
-            """基于公司与 policy 的多轮 ReAct 检索：动态生成查询→检索→校验，累计到 network_info。"""
-            broker = get_progress_broker()
-            ws = state.get("workspace_id") or "global"
-            company = state.get("company_name") or ""
-            await broker.publish("questionnaire-builder", ws, {"stage": "web_search_collect", "status": "start", "company_name": company, "ts": time.time()})
-            sources: List[Dict[str, Any]] = state["sources"]
-            tmp_hits: Dict[str, List[Dict[str, Any]]] = state.get("tmp_hits", {})
-            company = state.get("company_name") or ""
-            policy_text = (state.get("policy") or {}).get("policy_text", "")
-
-            # 累积容器（闭包可修改）
-            state.setdefault("network_info", {}).setdefault("queries", [])
-            state.setdefault("network_info", {}).setdefault("results", [])
-            queries_acc: List[str] = list(state["network_info"]["queries"])
-            aggregated: List[Dict[str, Any]] = list(state["network_info"]["results"])
-
-            # 工具1：生成下一批查询（<=3）
-            async def _gen_queries(instruction: str) -> str:
-                tpl_text = (
-                    "你是检索词生成器。请为‘下一轮’生成3到5条中文查询（每行一条）。\n"
-                    "企业：{company}\n政策要点（可截断）：{policy}\n"
-                    "规则：\n"
-                    "- 优先触达官方来源关键词（通知/指南/实施/细则/zwgk/xxgk）。\n"
-                    "- 覆盖企业信息源（企查查/爱企查/启信宝/天眼查 + 企业名）。\n"
-                    "- 可使用引号与 site: 约束（示例：\\\"办理流程\\\" site:sz.gov.cn）。\n"
-                    "- 聚焦阈值/时间点/材料格式等关键口径；避免与已用查询重复。"
-                )
-                rendered = tpl_text.format(company=company or "未提供", policy=(policy_text[:1200] or "无"))
-                txt = await self.llm.ainvoke(rendered)
-                return str(getattr(txt, "content", txt))
-
-            @tool_dec(name="gen_queries", description="生成下一批检索查询（<=3），每行一条，中文")
-            async def gen_queries(instruction: str) -> str:
-                return await _gen_queries(instruction)
-
-            # 工具2：执行单条检索并累计结果
-            async def _web_search_once(q: str) -> str:
-                q = (q or "").strip()
-                if not q:
-                    return "空查询"
-                queries_acc.append(q)
-                async with self.web_search_service as ws:
-                    web = await ws.search_web(q, num_results=6)
-                added = 0
-                for w in web:
-                    entry = {"title": w.title, "url": w.url, "snippet": w.snippet, "source_type": getattr(w, 'source_type', 'web'), "query": q}
-                    # 去重（按 URL）
-                    if not any(e.get("url") == entry["url"] for e in aggregated):
-                        aggregated.append(entry)
-                        tmp_hits.setdefault("web", []).append({"type": "web", **entry})
-                        sources.append({"id": f"web::{w.url}", "type": "web", **entry})
-                        added += 1
-                return f"added={added}"
-
-            @tool_dec(name="web_search", description="对给定中文查询执行一次互联网检索并累计结果，返回新增条数")
-            async def web_search(q: str) -> str:
-                return await _web_search_once(q)
-
-            # 工具3：在本地累计结果中检索（验证/补洞）
-            async def _lookup_local(query: str) -> str:
-                q = (query or "").lower()
-                lines: List[str] = []
-                for e in aggregated[:300]:
-                    blob = f"{e.get('title','')}\n{e.get('snippet','')}\n{e.get('url','')}".lower()
-                    if all(k.strip() in blob for k in q.split() if k.strip()):
-                        lines.append(f"- {e.get('title','来源')} | {e.get('url','')}\n  {e.get('snippet','')[:220]}")
-                        if len(lines) >= 10:
-                            break
-                return "\n".join(lines) or "无匹配片段"
-
-            @tool_dec(name="lookup_local", description="在已累计的结果集中按关键词检索匹配片段，帮助验证覆盖情况")
-            async def lookup_local(query: str) -> str:
-                return await _lookup_local(query)
-
-            # ReAct 提示（1.0.2）：使用 messages_modifier（system + {messages} 占位）
-            loop_system = (
-                "多轮检索任务：为企业（{company}）基于政策要点进行覆盖式检索。\n"
-                "目标覆盖：官方来源、企业信息侧关键要点、条件/门槛/材料/流程/时间等关键口径。\n"
-                "流程：每轮先调用 gen_queries 生成≤3条，再对每条用 web_search 检索；必要时用 lookup_local 验证。\n"
-                "终止：覆盖充分且最近一轮无新增时输出 ‘OK’ 作为 Final Answer。仅输出动作/OK，不输出总结。"
-            )
-            loop_messages = ChatPromptTemplate.from_messages([
-                ("system", loop_system.format(company=company or "未提供")),
-                ("placeholder", "{messages}")
-            ])
-
-            loop_agent = create_agent(
-                model=self.llm,
-                tools=[gen_queries, web_search, lookup_local],
-                prompt=loop_messages,
-            )
-            # 直接调用 agent（非流式）
-            await loop_agent.ainvoke({
-                "messages": [{"role": "user", "content": "开始执行覆盖式检索，按流程进行。"}]
-            }, config={"stream": False})
-
-            # 写回去重后的 queries / results
-            # 去重 queries（保序）
-            seen_q = set()
-            dedup_q = []
-            for q in queries_acc:
-                if q not in seen_q:
-                    seen_q.add(q)
-                    dedup_q.append(q)
-            state["network_info"]["queries"] = dedup_q
-            # 去重 results（按 URL 保序）
-            seen_u = set()
-            dedup_res = []
-            for e in aggregated:
-                u = e.get("url")
-                if u and u not in seen_u:
-                    seen_u.add(u)
-                    dedup_res.append(e)
-            state["network_info"]["results"] = dedup_res
-
-            # 递增重试计数
-            rc = state.get("retry_counters", {})
-            rc["web_search"] = rc.get("web_search", 0) + 1
-            state["retry_counters"] = rc
-            state["tmp_hits"] = tmp_hits
-            state["sources"] = self._dedupe_sources(sources)
-            await broker.publish("questionnaire-builder", ws, {"stage": "web_search_collect", "status": "end", "company_name": company, "ts": time.time()})
-            return state
-
-        async def triage_and_filter(state: QBState) -> QBState:
-            # 将 tmp_hits 归并为 policy_hits，同步生成官方/案例集合
-            broker = get_progress_broker()
-            ws = state.get("workspace_id") or "global"
-            company = state.get("company_name") or ""
-            await broker.publish("questionnaire-builder", ws, {"stage": "triage_and_filter", "status": "start", "company_name": company, "ts": time.time()})
-            tmp_hits: Dict[str, List[Dict[str, Any]]] = state.get("tmp_hits", {})
-            hits: Dict[str, List[Dict[str, Any]]] = {}
-            official_docs: List[Dict[str, Any]] = []
-            case_docs: List[Dict[str, Any]] = []
-            needs_more = False
-            for proj, items in tmp_hits.items():
-                proj_hits: List[Dict[str, Any]] = []
-                official = []
-                cases = []
-                for h in items:
-                    title = (h.get("title") or h.get("text") or "").lower()
-                    url = (h.get("url") or "").lower()
-                    is_official = (
-                        any(k in title for k in ["通知", "指引", "实施", "细则", "办事", "指南"]) or
-                        any(k in url for k in ["gov.cn", ".gov.cn", "gov.hk", "qh.gov", "sz.gov.cn"]) or
-                        any(k in title for k in ["管理局", "印发", "办法", "规定"]) or
-                        any(k in url for k in ["/zwgk/", "/xxgk/"])
-                    ) and not any(b in url for b in ["baike.baidu.com", "baike.so.com"]) and not any(b in title for b in ["百科", "新闻", "解读"])
-                    is_noise = any(b in url for b in ["baike.baidu.com", "zhihu.com", "sohu.com/news", "toutiao", "weibo.com"]) and not is_official
-                    if is_noise:
-                        continue
-                    proj_hits.append(h)
-                    if is_official:
-                        official.append(h)
-                    else:
-                        cases.append(h)
-                hits[proj] = proj_hits
-                official_docs += official
-                case_docs += cases
-                # 简单信号：若官方来源过少则需要更多数据
-                if len(official) < 3:
-                    needs_more = True
-            state["policy_hits"] = hits
-            state["policy_corpus"]["official_docs"] += official_docs
-            state["policy_corpus"]["case_docs"] += case_docs
-            # 是否继续循环 Web 搜索（最多 2 次）
-            retries = state.get("retry_counters", {}).get("web_search", 0)
-            state["needs_more_data"] = needs_more and retries < 2
-            await broker.publish("questionnaire-builder", ws, {"stage": "triage_and_filter", "status": "end", "company_name": company, "ts": time.time()})
-            return state
-
-        # 文档生成 Agent：基于 policy + network_info 评估申请概况
-        async def doc_assessment_agent(state: QBState) -> QBState:
-            broker = get_progress_broker()
-            ws = state.get("workspace_id") or "global"
-            company = state.get("company_name") or ""
-            await broker.publish("questionnaire-builder", ws, {"stage": "doc_assessment", "status": "start", "company_name": company, "ts": time.time()})
-            policy_text = (state.get("policy") or {}).get("policy_text", "")
-            results: List[Dict[str, Any]] = (state.get("network_info") or {}).get("results", [])
-
-            # 本地查找工具：在抓取结果中查证条件相关线索
-            async def _lookup_local(q: str) -> str:
-                ql = (q or "").lower()
-                lines: List[str] = []
-                for e in results[:400]:
-                    blob = f"{e.get('title','')}\n{e.get('snippet','')}\n{e.get('url','')}".lower()
-                    if all(k.strip() in blob for k in ql.split() if k.strip()):
-                        lines.append(f"- {e.get('title','来源')} | {e.get('url','')}\n  {e.get('snippet','')[:240]}")
-                        if len(lines) >= 12:
-                            break
-                return "\n".join(lines) or "无匹配片段"
-
-            @tool_dec(name="lookup_local", description="在已抓取结果中按关键词检索相关片段（用于验证条件是否满足）")
-            async def lookup_tool(q: str) -> str:
-                return await _lookup_local(q)
-
-            assess_system = (
-                "你是政策申报评估助手。请基于“政策要点”与已抓取的网络结果，生成一份完整且详尽的中文 Markdown 报告，用于评估申请概况。\n\n"
-                "报告必须包含并按以下结构输出（仅输出报告，不展示思考过程）：\n"
-                "# 申请概况总览\n- 企业：{company}\n- 评估范围：目标项目与相关政策\n- 一句话总体判断（是否具备申报潜力及风险级别）\n\n"
-                "# 需要满足的条件（分类清单）\n- 将条件按 类别/门槛/材料/流程/时间 等分类分条列出，尽量来源于政策要点\n\n"
-                "# 已满足的条件与证据\n- 对每条已满足条件，给出证据要点（可引用 lookup_local 返回的片段摘要），标注来源链接\n\n"
-                "# 未满足的条件\n- 分条列出当前不满足的条件及其差距说明\n\n"
-                "# 未知/待补充信息\n- 分条列出需要补充核实的信息点（将用于后续问卷）\n\n"
-                "# 官方来源与参考\n- 汇总可识别的官方来源条目（标题 + 链接）\n\n"
-                "# 建议与后续行动\n- 给出下一步补证/优化建议、优先级、可行动检查项\n\n"
-                "输入背景：\n企业：{company}\n政策要点（可截断）：{policy}\n\n"
-                "可用工具：\n{tools}\n工具名称：{tool_names}"
-            )
-            assess_messages = ChatPromptTemplate.from_messages([
-                ("system", assess_system.format(company=company or "未提供", policy=(policy_text[:1500] or "无"))),
-                ("placeholder", "{messages}")
-            ])
-
-            agent = create_agent(
-                model=self.llm,
-                tools=[lookup_tool],
-                prompt=assess_messages,
-            )
-            res_msg = await agent.ainvoke({
-                "messages": [{"role": "user", "content": "依据上述要求产出完整评估报告。"}]
-            }, config={"stream": False})
-            output = getattr(res_msg, "content", "") or ""
-            state["assessment_overview"] = {"overview_md": output}
-            # 同步便于外部读取
-            state["assessment_report_md"] = output or state.get("assessment_report_md", "")
-            await broker.publish("questionnaire-builder", ws, {"stage": "doc_assessment", "status": "end", "company_name": company, "ts": time.time()})
-            return state
-
-        async def questionnaire_from_assessment(state: QBState) -> QBState:
-            """基于评估概况与未知要点生成调查问卷（Markdown），使用离线模板。"""
-            broker = get_progress_broker()
-            ws = state.get("workspace_id") or "global"
-            company = state.get("company_name") or ""
-            await broker.publish("questionnaire-builder", ws, {"stage": "questionnaire", "status": "start", "company_name": company, "ts": time.time()})
+        
+        @tool
+        def search_global_db(query: str) -> str:
+            """从全局数据库中检索相关数据，全局数据库包含各类政策信息与过去的申请案例，输入具体检索内容"""
+            snippets: List[str] = []
+            # 全局检索（同步包装）
             try:
-                from pathlib import Path
-                prompt_path = Path(__file__).resolve().parent.parent / "prompts" / "assessment_to_questionnaire.md"
-                with open(prompt_path, "r", encoding="utf-8") as f:
-                    tpl_text = f.read()
-            except Exception:
-                tpl_text = (
-                    "你是一名政策申报问卷设计专家。请根据评估概况生成问卷（Markdown）。\n"
-                    "企业：{company}\n项目：{projects}\n\n评估：\n{assessment_overview_md}"
-                )
-
-            company = state.get("company_name") or ""
-            projects = ", ".join(state.get("target_projects") or [])
-            overview_md = (state.get("assessment_overview") or {}).get("overview_md", "")
-
-            # 默认：优先使用 LangChain Hub 在线 Prompt（质量更高），失败时回退到离线模板
-            use_hub = os.getenv("USE_LC_HUB", "true").lower() in {"1", "true", "yes", "on"}
-            hub_prompt_name = os.getenv("LANGCHAIN_HUB_PROMPT", "rlm/questionnaire-generator")
-            rendered = None
-            if use_hub:
-                try:
-                    from langchain import hub
-                    hp = hub.pull(hub_prompt_name)
-                    # 尝试格式化（不同 Hub 资产可能有不同接口，这里做兜底）
-                    try:
-                        rendered = hp.format(company=company or "未提供", projects=projects or "未指定", assessment_overview_md=overview_md or "")
-                    except Exception:
-                        rendered = await hp.ainvoke({
-                            "company": company or "未提供",
-                            "projects": projects or "未指定",
-                            "assessment_overview_md": overview_md or "",
-                        })
-                except Exception:
-                    rendered = None
-
-            if rendered is None:
-                try:
-                    rendered = tpl_text.format(
-                        company=company or "未提供",
-                        projects=projects or "未指定",
-                        assessment_overview_md=overview_md or "",
-                    )
-                except Exception:
-                    rendered = f"企业：{company or '未提供'}\n项目：{projects or '未指定'}\n\n评估：\n{overview_md or ''}"
-            resp = await self.llm.ainvoke(rendered)
-            questionnaire_md = str(getattr(resp, "content", resp))
-            state.setdefault("questionnaire", {})
-            state["questionnaire"]["generated_md"] = questionnaire_md
-            # 同步便于 API 返回
-            state["questionnaire_outline"] = state.get("questionnaire_outline") or {}
-            state["phase1_outline_md"] = state.get("phase1_outline_md", "")
-            await broker.publish("questionnaire-builder", ws, {"stage": "questionnaire", "status": "end", "company_name": company, "ts": time.time()})
-            return state
-
-        # 已移除未使用节点：resolve_company_open_data 等
+                logging.info(f"[db_search_tool] 开始全局检索: query={query}")
+                g_results = asyncio.run(self.global_retriever.retrieve(query=query, top_k=6, use_hybrid=True, use_compression=True))
+                logging.info(f"[db_search_tool] 全局检索返回 {len(g_results)} 条结果")
+                for r in g_results:
+                    title = r.get("title") or r.get("name") or r.get("document_id") or "片段"
+                    text = r.get("text") or r.get("content") or ""
+                    snippets.append(f"[GLOBAL] {title}: {text[:300]}")
+            except Exception as e:
+                logging.info(f"[db_search_tool] 全局检索失败: {e}")
+            return "\n".join(snippets[:12]) or "未找到有效片段"
+        
+        @tool
+        def search_web(query: str) -> str:
+            """从网络中检索相关数据；输入中文查询，返回若干条标题与链接摘要"""
+            try:
+                # 如果服务是异步实现，这里用 asyncio.run 同步封装
+                results = asyncio.run(self.web_search_service.search_web(query=query, num_results=6))
+            except Exception as e:
+                logging.info(f"[web_search_tool] 网络搜索失败: {e}")
+                return "(网络搜索失败)"
+            if not results:
+                return "(未找到结果)"
+            lines: List[str] = []
+            for idx, r in enumerate(results[:8], 1):
+                d = asdict(r)
+                title = d.get("title") or r.get("name") or r.get("snippet_title") or "未知标题"
+                url = d.get("url") or r.get("link") or r.get("source_url") or ""
+                snippet = d.get("snippet") or r.get("content") or r.get("desc") or ""
+                lines.append(f"[{idx}] {title}\n{url}\n{snippet[:200]}")
+            print("lines","\n\n".join(lines))
+            return "\n\n".join(lines)
 
 
-        # ============== ReAct 节点：面向条件的长文描述（基于全局/工作区检索迭代完善） ==============
-        async def react_requirements_synthesis(state: QBState) -> QBState:
-            broker = get_progress_broker()
-            ws = state.get("workspace_id") or "global"
-            company = state.get("company_name") or ""
-            await broker.publish("questionnaire-builder", ws, {"stage": "react_requirements_synthesis", "status": "start", "company_name": company, "ts": time.time()})
-            # 工具：统一封装全局与工作区检索
-            async def _db_search_tool(query: str) -> str:
-                snippets: List[str] = []
-                # 全局检索
-                try:
-                    g_results = await self.global_retriever.retrieve(query=query, top_k=6, use_hybrid=True, use_compression=True)
-                    for r in g_results:
-                        title = r.get("title") or r.get("name") or r.get("document_id") or "片段"
-                        text = r.get("text") or r.get("content") or ""
-                        snippets.append(f"[GLOBAL] {title}: {text[:300]}")
-                except Exception:
-                    pass
-                # 工作区检索
-                try:
-                    w_results = await self.workspace_retriever.retrieve(query=query, top_k=6, use_hybrid=True, use_compression=True)
-                    for r in w_results:
-                        title = r.get("title") or r.get("name") or r.get("document_id") or "片段"
-                        text = r.get("text") or r.get("content") or ""
-                        snippets.append(f"[WORKSPACE] {title}: {text[:300]}")
-                except Exception:
-                    pass
-                return "\n".join(snippets[:12]) or "未找到有效片段"
+        def db_search_node(state: QBState) -> QBState:
 
-            # LangChain 工具（异步）
-            @tool_dec(name="db_search", description="查询全局与工作区数据库以获取与项目要求/条件相关的片段，输入中文查询，输出若干要点片段")
-            async def db_tool(q: str) -> str:
-                return await _db_search_tool(q)
-
-            # ReAct 提示词
+            logging.info(f"db_search_node")
             tp = ", ".join(state.get("target_projects") or [])
-            known = state.get("known_info") or {}
-            known_blob = "\n".join([f"- {k}: {v}" for k, v in list(known.items())[:12]])
-            react_template = (
+            known = state.get("known_info") 
+
+            react_system_text = (
                 "你是中国政策与补贴申报顾问。用户希望申请以下项目：{target_projects}\n"
                 "已知信息（可能不完整）：\n{known_info}\n\n"
-                "请采用 ReAct（Reason+Act）多轮检索与核对，仅在需要时调用工具。目标：输出面向实操的“申报条件综述”。\n"
-                "执行要点：\n"
-                "- 列出待确认类别：资格/门槛（含数值/阈值）/材料/流程/时间/例外情形。\n"
-                "- 分类别逐轮补齐要点：优先引用明确口径、阈值与出处。\n"
-                "- 对地域/规模/时段等差异情形，明确分支与条件。\n"
-                "- 注意区分官方来源与一般解读。\n\n"
-                "可用工具：\n{tools}\n工具名称：{tool_names}\n\n"
-                "问题：{input}\n\n"
-                "{agent_scratchpad}"
-            )
-            react_system = react_template.format(
+                "目标：输出面向实操的‘申报条件综述’。\n"
+                "执行方式（严格遵守）：\n"
+                "1) 如信息不足，循环调用 search_global_db 检索相关片段并综合要点；\n"
+                "2) 每轮检索后判断是否仍存在关键空缺（资格/门槛/材料/流程/时间/例外情形）；\n"
+                "3) 若仍有空缺，则继续调用 search_global_db；若已覆盖充分则停止循环；\n"
+                "4) 最多调用工具 3 次，达到上限后必须仅输出 OK 并停止；\n"
+                # "5) 完成后仅输出 OK 作为结束信号（禁止提前总结）。\n\n"
+                "注意：优先引用明确口径与阈值，并标注来源类别。"
+                
+            ).format(
                 target_projects=tp or "未指定",
-                known_info=known_blob or "无",
-                tools="{tools}",  # 由 prebuilt 注入
-                tool_names="{tool_names}",
-                input="{input}",
-                agent_scratchpad="{agent_scratchpad}",
+                known_info=known or "无",
             )
-            react_messages = ChatPromptTemplate.from_messages([
-                ("system", react_system),
-                ("placeholder", "{messages}")
-            ])
 
             agent = create_agent(
                 model=self.llm,
-                tools=[db_tool],
-                prompt=react_messages,
+                    tools=[search_global_db],
+                    system_prompt=react_system_text,
+                )
+            message_content = state.get("messages")
+
+            # 安全地提取消息内容
+            def get_content(msg):
+                if msg is None:
+                    return ""
+                if isinstance(msg, dict):
+                    return msg.get("content", "")
+                if hasattr(msg, "content"):
+                    return getattr(msg, "content", "")
+                if isinstance(msg, list) and len(msg) > 0:
+                    return get_content(msg[0])
+                return str(msg) if msg else ""
+            logging.info(f"[db_search_tool] 调用开始检索")
+            if message_content is not None and len(message_content) > 1:
+                res_msg = agent.invoke({"messages": [{"role": "user", "content": "根据这些项目生成条件要求总览,已知总结结果：" + \
+                get_content(message_content[-2]) + "，判断结果" + get_content(message_content[-1])}]})
+            else:
+                res_msg = agent.invoke({"messages": [{"role": "user", "content": "根据这些项目生成条件要求总览"}]})
+            prev_msgs = res_msg.get("messages") or []
+            logging.info(f"[db_search_tool] 模型检索完成")
+            return {"messages": prev_msgs}
+        
+        def web_search_node(state: QBState) -> QBState:
+            """
+            使用网络搜索工具对指定项目进行外部信息检索，返回若干检索要点。
+            仅返回增量键以满足 LangGraph 的合并规则。
+            """
+            logging.info("[web_search_node] start")
+            tp = ", ".join(state.get("target_projects") or [])
+            known = state.get("known_info") or {}
+            known_blob = "\n".join([f"- {k}: {v}" for k, v in list(known.items())[:12]]) if isinstance(known, dict) else str(known)
+
+            system_text = (
+                "你是网络检索与情报整合助手。请围绕‘{target_projects}’项目，为企业用户提供申报所需的具体政策文件和实用要点。\n"
+                "检索与迭代规则（严格遵守）：\n"
+                "1) 首先，请根据数据库中返回的政策文件名称，优先生成高质量中文检索词（3-8条），每条尽可能包含政策文件全名/简称、项目关键词及相关单位/地区/年份/文号。例如：“{target_projects} 申报政策文件名+申报条件”、“文件名+资格门槛+地名”等，务必重点覆盖：申报条件、资格门槛、材料清单、办理流程、关键时间节点、例外情形、资金标准等；如有政策文件全名或文号，优先使用；如无则结合常见公开文件类型与通用项目表述，补足关键词。\n"
+                "2) 强调优先从政府公开网站（如各级政府官网、部门官网、政务公开专栏、政策公告栏、gov.cn 域名等）进行检索，尤其关注官方政策文件、通知与内部编号；可以先检索官网公告或政策通知具体发布位置，再轻细分栏目与主管部门。每轮请使用检索词调用 search_web 工具获取结果；优先来源顺序：官网/官媒（gov.cn/部门官网/平台）、政策文件与指南、地方主管部门、企查查/企信宝等工商信息、招股书/年报/公告、主流媒体；尽量附原始链接。\n"
+                "3) 每轮检索后自检信息空缺（上述各类要点及是否涉及具体政策文件、明确阈值、关键口径、例外情形），若仍有信息缺失，请结合数据库给出的政策文件名/编号等，生成更细化的新检索词（加入文件名、实体、年份、地区、文号等），再进行下一轮，最多迭代 8 次。\n"
+                "4) 达到 3 次迭代上限后，须仅输出：OK，并停止检索和输出；\n"
+                "5) 输出要求：先分轮次列出‘检索词与命中概览’（每轮/关键词命中及链接），再给出‘要点汇总’（分：资格门槛/材料/流程/时间/例外/资金标准），每点务必标注对应来源编号，并指明政策文件名称和出处；信息充分时，最后单独输出一行：OK。\n"
+                "注意事项：严禁泛化与编造，所有要点须有明确政策来源、文本引用或权威出处；可合并同源内容；对工商主体类信息建议引用企查查、企信宝等公开渠道，标注身份字段需谨慎。\n\n"
+                "已知背景（供参考，可能不完整）：\n{known_info}"
+            ).format(target_projects=tp or "未指定", known_info=known_blob or "无")
+
+            agent = create_agent(
+                model=self.llm,
+                tools=[search_web],
+                system_prompt=system_text,
             )
 
-            res_msg = await agent.ainvoke({
-                "messages": [{"role": "user", "content": "根据这些项目生成条件要求总览。"}]
-            }, config={"stream": False})
-            output_text = getattr(res_msg, "content", "") or ""
-            if output_text:
-                # 不生成 markdown，写入 policy，供后续节点使用
-                state["policy"] = {
-                    "policy_text": output_text,
-                    "projects": state.get("target_projects", []),
-                }
-            await broker.publish("questionnaire-builder", ws, {"stage": "react_requirements_synthesis", "status": "end", "company_name": company, "ts": time.time()})
-            return state
+            # 生成一次性检索提示（也可根据需要改为多轮）
+            message_content = state.get("messages")
+            def get_content(msg):
+                if msg is None:
+                    return ""
+                if isinstance(msg, dict):
+                    return msg.get("content", "")
+                if hasattr(msg, "content"):
+                    return getattr(msg, "content", "")
+                if isinstance(msg, list) and len(msg) > 0:
+                    return get_content(msg[0])
+                return str(msg) if msg else ""
+            logging.info(f"[db_search_tool] 调用开始检索")
+            if message_content is not None and len(message_content) > 1:
+                res_msg = agent.invoke({"messages": [{"role": "user", "content": "请检索并汇总要点，给出链接与简要摘录,已知总结结果：" + \
+                get_content(message_content[-2]) + "，判断结果" + get_content(message_content[-1])}]})
+            else:
+                res_msg = agent.invoke({"messages": [{"role": "user", "content": "请检索并汇总要点，给出链接与简要摘录"}]})
+            prev_msgs = res_msg.get("messages") or []
+
+            print(prev_msgs)    
+
+            return {"messages": [prev_msgs]}
 
 
-        graph.set_entry_point("validate_input")
-        # 注册在用节点（确保均已添加）
-        graph.add_node("validate_input", validate_input)
-        graph.add_node("react_requirements_synthesis", react_requirements_synthesis)
-        graph.add_node("web_search_collect", web_search_collect)
-        graph.add_node("triage_and_filter", triage_and_filter)
-        graph.add_node("doc_assessment_agent", doc_assessment_agent)
-        graph.add_node("questionnaire_from_assessment", questionnaire_from_assessment)
+        def summery_node(state: QBState) -> QBState:
+
+            logging.info(f"[summery_node] 开始总结")
+
+            prompt = (
+                "你是政策要求材料总结助手。用户希望申请以下项目：{target_projects}\n"
+                "已知信息（可能不完整）：\n{known_info}\n\n"
+                "你已经从数据库或网络中检索到了相关信息，请你基于这些信息，系统性、详细地总结申报条件要求和必要材料，涵盖但不限于以下方面：资格要求、申报门槛、必需材料、办理流程、关键时间节点、常见例外等。\n"
+                "请充分整合所有获取到的政策条款、申报文件、案例等数据，对每项条件尽量详细具体，必要时举例说明，并按类别或逻辑结构清晰归纳，帮助用户快速把握核心要点和潜在难点。\n"
+                "在总结后，请进一步思考和指出：\n"
+                "1）根据当前信息，还有哪些可能的申报条件、材料或案例尚未被覆盖，建议检索哪些内容以补全信息？\n"
+                "2）请列出你的补全建议点和你的分析思路，帮助后续继续完善。"
+                "尽量细化到每个条件的具体内容要求"
+            )
+
+            # 直接从 QBState 获取 ToolMessage
+
+            msgs = state.get("messages") or []
+            tool_texts = [m.content for m in msgs if isinstance(m, ToolMessage)]
+            tool_blob = "\n\n".join(tool_texts) if tool_texts else "（无工具输出）"
+            # print("tool_blob",tool_blob)
+            prompts = [
+                SystemMessage(content=prompt),
+                HumanMessage(content=tool_blob),
+            ]
+            res_msg = self.llm.invoke(prompts)
+            logging.info(f"[summery_node] 总结完成")
+            # print("res_msg",res_msg.content)
+            print("[summery node] out", res_msg)
+            return {"messages": [res_msg]}
         
-        # ReAct 路径：校验 → 条件综合（policy）→ 基于 policy+公司信息生成检索词并检索
-        graph.add_edge("validate_input", "react_requirements_synthesis")
-        graph.add_edge("react_requirements_synthesis", "web_search_collect")
-        # 检索后可回到 triage_and_filter 进入后续链路，或直接 finalize（此处接入原管线）
-        graph.add_edge("web_search_collect", "triage_and_filter")
+        def Judger_node(state: QBState) -> QBState:
+            """
+            根据总结信息，判断是否需要进行检索，如果要检索具体哪些方案还要检索；受 max_retries 控制。
+            """
+            logging.info(f"[Judger_node] 开始判断")
+            # 已达最大次数则直接放弃检索
+            retry_count = int(state.get("retry_count") or 0)
+            max_retries = int(state.get("max_retries") or 0)
+            logging.info(f"retry_count: {retry_count}, max_retries: {max_retries}")
+            if retry_count >= max_retries and max_retries > 0:
+                logging.info(f"[Judger_node] 已达最大重检索次数: {retry_count}/{max_retries}")
+                return {"type": "放弃检索"}
 
-        # 条件边：需要更多数据则进入 Web 搜索节点，否则进入后续流程
-        graph.add_conditional_edges(
-            "triage_and_filter",
-            lambda s: "web" if s.get("needs_more_data") else "next",
-            {"web": "web_search_collect", "next": "doc_assessment_agent"}
-        )
+            prompt = (
+                "你是申报条件判定助手。用户希望申请以下项目：{target_projects}\n"
+                "已知信息（可能不完整）：\n{known_info}\n\n"
+                "你已经获得了对申报条件与材料的总结（见下文），请根据这些内容判断：\n"
+                "你的回答前四个字必须为“库中检索”或“网络检索”或“放弃检索”，用于直接表示是否还需要进一步检索信息；\n"
+                "之后再给出具体建议方案和理由，但务必保证前四个字为“库中检索”或“网络检索”或“放弃检索”并直接作答；\n"
+                "例如：\n"
+                "库中检索，需要进一步检索学历要求、财务指标明细，因为…\n"
+                "放弃检索，所有关键信息均已覆盖，无需补充。\n"
+                "网络检索，需要进一步检索学历要求、财务指标明细，因为…\n"
+                "请严格遵循：前四个字只能为“库中检索”或“网络检索”或“放弃检索”。"
+                "若需要检索, 请列出需检索的具体方案（如：学历要求、财务指标明细等）及你的判定理由。\n"
+            ).format(
+                target_projects=state.get("target_projects") or "未指定",
+                known_info=state.get("known_info") or "无"
+            )
+
+            logging.info("总结结果" + state.get("messages")[-1].content)
+            # print(state.get("messages"))
+
+            prompts = [
+                SystemMessage(content=prompt),
+                HumanMessage(content=state.get("messages")[-1].content),
+            ]
+            res_msg = self.llm.invoke(prompts)
+            logging.info("[Judger_node] 模型判断完成")
+            # 取前3字作为动作标记
+            type_now = res_msg.content[0:4]
+            print("type_now",type_now)
+            print("res_msg",res_msg.content)
+            logging.info(f"[Judger_node] 判断结果 {type_now}")
+            # 若需要再次检索，则递增 retry_count
+            print("[Judger node] out", res_msg)
+            if type_now in ("库中检索", "网络检索"):
+                return {"messages": [res_msg], "type": type_now, "retry_count": retry_count + 1}
+            else:
+                return {"messages": [res_msg], "type": type_now}
         
-        graph.add_edge("doc_assessment_agent", "questionnaire_from_assessment")
-        graph.add_edge("questionnaire_from_assessment", END)
+        def person_info_web_search_node(state: QBState) -> QBState:
+            """
+            使用网络搜索工具对指定项目进行外部信息检索，返回若干检索要点。
+            仅返回增量键以满足 LangGraph 的合并规则。
+            """
+            logging.info("[web_search_node] start")
+            company_name = ", ".join(state.get("company_name") or [])
+            known = state.get("known_info") or {}
+            known_blob = "\n".join([f"- {k}: {v}" for k, v in list(known.items())[:12]]) if isinstance(known, dict) else str(known)
 
+            system_text = (
+                "你是“主体信息核验”检索助手。任务：围绕以下“公司/个人”实体，检索公开渠道并给出可佐证材料与链接，验证其是否满足相关政策申报所需的主体条件与记录。\n"
+                "检索与迭代规则（严格执行）：\n"
+                "1) 先生成一批中文检索词（3-8条），覆盖：企业基础信息（名称/统一社会信用代码/注册地/高管股东）、资格资质/行政许可、行政处罚/信用记录、司法文书/裁判/执行、知识产权、公告/年报/招股书/招投标、主流媒体报道等；必要时加入实体/地区/年份/文号限定。\n"
+                "2) 每轮按检索词调用 search_web 获取结果；优先来源顺序：政府/主管部门官网与平台（gov.cn、地方政务、信用平台、司法/裁判文书网）> 政策文件/公告/年报/招股书/招投标/公示 > 工商主体公开库（企查查、企信宝等）> 主流媒体/权威行业平台；尽量提供原始链接。\n"
+                "3) 每轮完成后自检覆盖度：上述要点是否覆盖？是否有明确口径/阈值/例外？若仍有空缺，则生成更精准的新检索词（含实体/地区/年份/文号/关键词）并进行下一轮；最多迭代 8 次。\n"
+                "4) 达到 8 次上限后，必须仅输出：OK，并停止检索与输出。\n"
+                "输出格式（严格遵循）：\n"
+                "- 检索词与命中概览（按轮次/关键词列出命中与链接，1-2 行要点）\n"
+                "- 证据要点汇总（分项：基础信息、资格/许可、处罚/信用、司法/裁判、知识产权、公告/年报/招股/招投标、媒体报道等），每点后标注来源编号\n"
+                "- 若信息已充分，请在最后单独一行仅输出：OK\n"
+                "约束：严禁编造；尽量引用来源原文口径；同源重复合并；对个人敏感信息需最小化披露；如无公开记录，明确说明“未检出”；中文输出。\n\n"
+                "已知背景（供参考，可能不完整）：\n{known_info}\n"
+                "主体名称：\n{company_name}（如为公司/个人，请在检索词中加入其名称/别名/代码/地区等）"
+            ).format(company_name=company_name or "未指定", known_info=known_blob or "无")
+
+            agent = create_agent(
+                model=self.llm,
+                tools=[search_web],
+                system_prompt=system_text,
+            )
+
+            # 生成一次性检索提示（也可根据需要改为多轮）
+            message_content = state.get("messages")
+            def get_content(msg):
+                if msg is None:
+                    return ""
+                if isinstance(msg, dict):
+                    return msg.get("content", "")
+                if hasattr(msg, "content"):
+                    return getattr(msg, "content", "")
+                if isinstance(msg, list) and len(msg) > 0:
+                    return get_content(msg[0])
+                return str(msg) if msg else ""
+            logging.info(f"[web_search_tool] 调用开始检索")
+
+            retry_count = int(state.get("retry_count") or 0)
+            max_retries = int(state.get("max_retries") or 0)
+            logging.info(f"retry_count: {retry_count}, max_retries: {max_retries}")
+            message_list = []
+            if retry_count >= max_retries and max_retries > 0:
+                message_list = [message_content[-1],message_content[-3]]
+                res_msg = agent.invoke({"messages": [{"role": "user", "content": "请检索并汇总要点，给出链接与简要摘录,已知总结结果：" + \
+                get_content(message_content[-1]) + "，数据库和网络检索已达最大字数，最后一次检索建议：" + get_content(message_content[-3])}]})
+            elif message_content is not None and len(message_content) > 1:
+                message_list = [message_content[-2],message_content[-1]]
+                res_msg = agent.invoke({"messages": [{"role": "user", "content": "请检索并汇总要点，给出链接与简要摘录,已知总结结果：" + \
+                get_content(message_content[-2]) + "，判断结果" + get_content(message_content[-1])}]})
+            else:
+                res_msg = agent.invoke({"messages": [{"role": "user", "content": "请检索并汇总要点，给出链接与简要摘录"}]})
+            prev_msgs = res_msg.get("messages") or []
+
+            print("==============person===============")
+            print("prev_msgs",prev_msgs)    
+            print("message_content[-1]",message_content[-1])
+            print("message_content[-3]",message_content[-3])
+            
+            return {"messages": message_list + [prev_msgs]}
+        
+        def analysis_node(state: QBState) -> QBState:
+
+            logging.info(f"[analysis_node] 开始分析")
+
+            prompt = (
+                "你是“申报可行性评估”专家，面向具体申请人（公司/个人）与目标政策。\n"
+                "目标：基于已检索/整理的信息，给出申请成功可能性的系统评估与改进建议，并产出一份进一步核实问卷。\n\n"
+
+                "工作流程（严格遵循）：\n"
+                "1) 要求与材料大纲：\n"
+                "   - 资格条件（主体/行业/规模/资质/信用/地域/时间窗口）\n"
+                "   - 硬性门槛（营收/投资/纳税/研发/人员/社保/不良记录等阈值）\n"
+                "   - 佐证材料（营业执照、财务报表、纳税/社保证明、合同、专利/商标、获奖/荣誉等）\n"
+                "   - 流程与关键时间点（申报节点、审核、异议、公示、发放）\n"
+                "   - 例外情形与排除条款\n"
+                "   为每条在括号中标注来源编号（若有）。\n\n"
+
+                "2) 匹配与证据：将申请人信息与要求逐条比对，分组输出：\n"
+                "   - 已满足（列证据点与来源编号）\n"
+                "   - 基本满足但需补充（缺失/证据弱项）\n"
+                "   - 未满足（关键差距）\n"
+                "   - 不确定/模糊（待核实）\n\n"
+
+                "3) 评分与结论：\n"
+                "   - 从适配度(40)、合规与信用(20)、材料完备度(20)、流程与时间把控(10)、风险与不确定性(10) 五维度打分并给总分（0-100）。\n"
+                "   - 给出一句话结论（可行/存在较大不确定/暂不具备），以及三条内的优先行动建议。\n\n"
+
+                "4) 进一步核实问卷：用于向申请人收集关键信息与材料链接（可复制到表单）。\n"
+                "   - 每个问题包含：提问、所需证据/证明、说明（为什么需要/判定依据）、期望格式（文件/截图/链接/编号）。\n"
+                "   - 优先覆盖“不确定/模糊”和“基本满足但需补充”的条目，按优先级排序。\n"
+                "   - 至少给出 8-15 个问题，禁用长篇开放题，尽量结构化。\n\n"
+
+                "输出格式（严格遵循，中文）：\n"
+                "## 一、要求与材料大纲（附来源编号）\n"
+                "- ...\n\n"
+                "## 二、匹配与证据\n"
+                "### 2.1 已满足\n"
+                "- 要求A：证据...（来源#1）\n"
+                "### 2.2 基本满足但需补充\n"
+                "- 要求B：缺失...（建议补充...）\n"
+                "### 2.3 未满足\n"
+                "- 要求C：差距...\n"
+                "### 2.4 不确定/模糊\n"
+                "- 要求D：原因...（需核实...）\n\n"
+                "## 三、评分与结论（总分：X/100）\n"
+                "- 适配度：x/40；合规与信用：x/20；材料完备度：x/20；流程与时间：x/10；风险与不确定性：x/10\n"
+                "- 结论：...\n"
+                "- 优先行动建议：1) ... 2) ... 3) ...\n\n"
+                "## 四、进一步核实问卷\n"
+                "1) [高优先级] 近两年纳税证明与社保缴纳清单\n"
+                "   - 证据：税务/社保官方出具文件或截图\n"
+                "   - 说明：核验硬性门槛与在地贡献\n"
+                "   - 格式：PDF/官方链接\n"
+                "2) ...（按此模板列 8-15 条）\n\n"
+
+                "约束：不得编造；如无来源请标注“无明确来源”；仅提炼必要细节；可引用先前‘检索命中’与‘总结’的来源编号。"
+            )
+
+            # 直接从 QBState 获取 ToolMessage
+
+            msgs = state.get("messages") or []
+            print("msgs[-1]",msgs[-1])
+            print("msgs[-2]",msgs[-2])
+            print("msgs[-3]",msgs[-3])
+            texts = [msg.content for msg in msgs[-1]]+[msgs[-2].content, msgs[-3].content]
+            print("texts",len(texts))
+            blob = "\n\n".join(texts) if texts else "（无工具输出）"
+            print("blob",blob)
+
+
+            agent = create_agent(
+                model=self.llm,
+                tools=[],  # 或不传，视你的封装实现而定
+                system_prompt=prompt,
+            )
+            res_msg = agent.invoke(HumanMessage(content=blob))
+            logging.info(f"[analysis_node] 分析完成")
+            res_list = res_msg.get("messages")
+            # for i, msg in enumerate(res_list):
+            #     print(f"res_list[{i}]:", msg)
+            
+            return {"analysis": res_list[0].content}
+
+        def query_node(state: QBState) -> QBState:
+
+            logging.info(f"[query_node] 开始分析")
+
+            prompt = (
+                "你是一个专业的问卷设计师，负责将问卷大纲细化为具体问题。请根据以下要求执行任务："
+                "## 任务要求:"
+                "1. **判断必需性**：请根据已有信息，智能判断用户已知哪些信息，无需重复提问，仅针对未知或不完整的信息设计问题。"
+                "2. **细化程度**：将每个需要询问的大纲条目扩展为3-5个具体问题，确保覆盖所有关键维度。"
+                "3. **问题类型**：包含开放式和封闭式问题。"
+                "4. **覆盖范围**：问题应涵盖（但不限于）："
+                "- 公司基本信息"
+                "- 业务模式"
+                "- 其它业务相关维度"
+                "5. **问题质量**："
+                "- 问题应清晰明确，避免歧义"
+                "- 包含必要的背景说明"
+                "- 对专业术语提供简要解释"
+                "6. **格式要求**：使用Markdown列表格式输出。已知信息可用备注形式在对应条目后补充“（已知，无需提问）”。"
+                "## 输出示例"
+                "```markdown"
+                "### 公司基本信息"
+                "1. **公司注册名称**：请提供公司的法定注册名称"
+                "2. **成立时间**：公司成立于哪一年？"
+                "3. **主营业务**：请描述公司的主要业务范围"
+                "- 补充说明：包括核心产品/服务"
+                "4. **组织架构**：公司目前有多少个部门？"
+                "- 选项：A. 1-5个 B. 6-10个 C. 10个以上"
+                "（如已知某项信息，直接标注“（已知，无需提问）”而不出现在问题列表）"
+                "```"
+            )
+
+            # 直接从 QBState 获取 ToolMessage
+
+            source = state.get("analysis")
+            agent = create_agent(
+                model=self.llm,
+                tools=[],  # 或不传，视你的封装实现而定
+                system_prompt=prompt,
+            )
+            res_msg = agent.invoke(HumanMessage(content=source))
+            logging.info(f"[analysis_node] 分析完成")
+            res_list = res_msg.get("messages")
+            # for i, msg in enumerate(res_list):
+            #     print(f"res_list[{i}]:", msg)
+            
+            return {"md": res_list[0].content}
+        
+        
+
+
+
+        def router_func(state: QBState):
+            if state["type"] == "库中检索":
+                return "db_search"
+            elif state["type"] == "网络检索":
+                return "web_search"
+            else:
+                return "person_info_web_search"
+            
+        graph = StateGraph(QBState)      
+        graph.add_node("db_search", db_search_node)
+        graph.add_node("web_search", web_search_node)
+        graph.add_node("summery", summery_node)
+        graph.add_node("judger", Judger_node)
+        graph.add_node("person_info_web_search", person_info_web_search_node)
+        graph.add_node("analysis", analysis_node)
+        graph.add_node("query", query_node)
+
+
+        graph.add_edge(START, "db_search")
+        graph.add_edge("db_search", "summery")
+        graph.add_edge("summery", "judger")
+        graph.add_edge("web_search", "summery")
+        graph.add_edge("summery", "judger")
+        graph.add_conditional_edges("judger", router_func, ["db_search","web_search","person_info_web_search"])
+        graph.add_edge("person_info_web_search", "analysis")
+        graph.add_edge("analysis", "query")
+        graph.add_edge("query", END)
 
         return graph
 
