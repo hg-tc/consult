@@ -56,7 +56,7 @@ class QuestionnaireBuilderWorkflow:
         self.checkpointer = MemorySaver()
         self.compiled_graph = self.graph.compile(checkpointer=self.checkpointer)
 
-    async def run(self, request: Dict[str, Any]) -> Dict[str, Any]:
+    async def run(self, request: Dict[str, Any], progress_callback=None) -> Dict[str, Any]:
         initial: QBState = {
             "request": request,
             "workspace_id": (request.get("workspace_id") or "global"),
@@ -70,6 +70,21 @@ class QuestionnaireBuilderWorkflow:
             "max_retries": int(request.get("max_retries", 2)),
             "md": "",
             "analysis": "",
+        }
+        
+        workspace_id = initial.get("workspace_id") or "global"
+        topic = "questionnaire-builder"
+        broker = get_progress_broker()
+        
+        # 定义节点阶段信息
+        node_stages = {
+            "db_search": {"name": "数据库检索", "description": "正在从内部数据库检索政策信息"},
+            "web_search": {"name": "网络检索", "description": "正在从互联网搜索相关政策信息"},
+            "summery": {"name": "信息汇总", "description": "正在汇总检索到的信息"},
+            "judger": {"name": "信息判断", "description": "正在判断信息完整性"},
+            "person_info_web_search": {"name": "人员信息检索", "description": "正在检索相关人员信息"},
+            "analysis": {"name": "分析生成", "description": "正在生成分析报告"},
+            "query": {"name": "问卷细化", "description": "正在细化问卷问题"},
         }
         
         # LangGraph MemorySaver 需要提供 configurable.thread_id
@@ -93,7 +108,68 @@ class QuestionnaireBuilderWorkflow:
             },
             "configurable": {"thread_id": thread_id},
         }
-        result: QBState = await self.compiled_graph.ainvoke(initial, {**config, "recursion_limit": 100, "stream": False})
+        
+        # 使用流式执行，监控节点执行状态，并累积最终结果
+        previous_node = None
+        accumulated_state = dict(initial)  # 从初始状态开始累积
+        
+        # 使用流式执行监控进度，同时累积状态更新
+        async for event in self.compiled_graph.astream(initial, {**config, "recursion_limit": 100}):
+            # LangGraph astream 返回的格式是 {node_name: node_output}
+            for node_name, node_output in event.items():
+                # 如果上一个节点存在，发送它的结束事件
+                if previous_node and previous_node in node_stages:
+                    await broker.publish(topic, workspace_id, {
+                        "stage": previous_node,
+                        "status": "end",
+                        "name": node_stages[previous_node]["name"],
+                        "description": f"{node_stages[previous_node]['description']}完成",
+                    })
+                
+                if node_name in node_stages:
+                    stage_info = node_stages[node_name]
+                    # 发送进度更新（节点开始）
+                    progress_event = {
+                        "stage": node_name,
+                        "status": "start",
+                        "name": stage_info["name"],
+                        "description": stage_info["description"],
+                        "target_projects": initial.get("target_projects", []),
+                    }
+                    await broker.publish(topic, workspace_id, progress_event)
+                    logging.info(f"[progress] {stage_info['name']}: {stage_info['description']}")
+                    previous_node = node_name
+                else:
+                    previous_node = None
+                
+                # 累积状态更新（节点输出会更新部分状态字段）
+                if isinstance(node_output, dict):
+                    accumulated_state.update(node_output)
+        
+        # 处理最后一个节点的结束事件
+        if previous_node and previous_node in node_stages:
+            await broker.publish(topic, workspace_id, {
+                "stage": previous_node,
+                "status": "end",
+                "name": node_stages[previous_node]["name"],
+                "description": f"{node_stages[previous_node]['description']}完成",
+            })
+        
+        # 使用累积的状态作为最终结果
+        # 确保两个关键字段都存在，如果缺少则重新获取完整状态
+        if not accumulated_state.get("analysis") or not accumulated_state.get("md"):
+            logging.warning("累积状态不完整，重新获取完整状态")
+            result = await self.compiled_graph.ainvoke(initial, {**config, "recursion_limit": 100})
+        else:
+            result = accumulated_state
+        
+        # 发送完成事件
+        await broker.publish(topic, workspace_id, {
+            "stage": "complete",
+            "status": "end",
+            "name": "完成",
+            "description": "问卷生成完成",
+        })
         
         # 从最终消息中提取分析结果
         final_analysis = result.get("analysis")

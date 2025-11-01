@@ -1,12 +1,12 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Loader2, FileText, Download, ArrowLeft } from 'lucide-react'
+import { Loader2, FileText, Download, ArrowLeft, CheckCircle2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 export default function QuestionnaireBuilderPage() {
@@ -19,10 +19,99 @@ export default function QuestionnaireBuilderPage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
+  const [currentStage, setCurrentStage] = useState<string | null>(null)
+  const [stageDescription, setStageDescription] = useState<string>("")
+  const [completedStages, setCompletedStages] = useState<Set<string>>(new Set())
+  const esRef = useRef<EventSource | null>(null)
+
+  // 定义所有阶段
+  const STAGES = [
+    { id: 'db_search', name: '数据库检索', description: '正在从内部数据库检索政策信息' },
+    { id: 'web_search', name: '网络检索', description: '正在从互联网搜索相关政策信息' },
+    { id: 'summery', name: '信息汇总', description: '正在汇总检索到的信息' },
+    { id: 'judger', name: '信息判断', description: '正在判断信息完整性' },
+    { id: 'person_info_web_search', name: '人员信息检索', description: '正在检索相关人员信息' },
+    { id: 'analysis', name: '分析生成', description: '正在生成分析报告' },
+    { id: 'query', name: '问卷细化', description: '正在细化问卷问题' },
+  ]
+
+  const currentStageIdx = useMemo(() => {
+    if (!currentStage) return -1
+    const idx = STAGES.findIndex(s => s.id === currentStage)
+    return idx >= 0 ? idx : -1
+  }, [currentStage])
+
+  const progressPercent = useMemo(() => {
+    if (currentStageIdx < 0) return 0
+    // 当前阶段进度：已完成阶段数 / 总阶段数 * 100
+    const base = Math.floor((completedStages.size / STAGES.length) * 100)
+    // 如果当前阶段正在进行，增加一些进度
+    if (currentStage && !completedStages.has(currentStage)) {
+      return Math.min(95, base + 5)
+    }
+    return Math.min(100, base)
+  }, [currentStageIdx, completedStages, currentStage])
+
+  // 建立 SSE 连接监听进度
+  useEffect(() => {
+    if (!loading) {
+      // 清理旧连接
+      if (esRef.current) {
+        esRef.current.close()
+        esRef.current = null
+      }
+      return
+    }
+
+    const ws = workspaceId || 'global'
+    const url = `/api/v1/stream/progress?topic=questionnaire-builder&workspace_id=${encodeURIComponent(ws)}`
+    const es = new EventSource(url)
+    
+    es.onmessage = (e) => {
+      try {
+        const data = JSON.parse(e.data)
+        if (data.stage === 'complete') {
+          setCurrentStage(null)
+          setStageDescription('问卷生成完成')
+        } else if (data.stage && data.status) {
+          const stageId = data.stage
+          if (data.status === 'start') {
+            setCurrentStage(stageId)
+            setStageDescription(data.description || data.name || '')
+          } else if (data.status === 'end') {
+            setCompletedStages(prev => new Set([...prev, stageId]))
+            // 如果当前阶段结束，清空当前阶段（下一个阶段会立即开始）
+            if (currentStage === stageId) {
+              setCurrentStage(null)
+            }
+          }
+        }
+      } catch (err) {
+        console.error('解析进度事件失败:', err)
+      }
+    }
+
+    es.onerror = () => {
+      es.close()
+      esRef.current = null
+    }
+
+    esRef.current = es
+
+    return () => {
+      if (esRef.current) {
+        esRef.current.close()
+        esRef.current = null
+      }
+    }
+  }, [loading, workspaceId])
 
   const handleGenerate = async () => {
     setError(null)
     setResult(null)
+    setCurrentStage(null)
+    setStageDescription("")
+    setCompletedStages(new Set())
     const projects = targetProjects
       .split("\n")
       .map(p => p.trim())
@@ -185,13 +274,68 @@ export default function QuestionnaireBuilderPage() {
         {/* 生成进度 */}
         {loading && (
           <Card className="p-6 border-primary bg-primary/10">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-4">
               <Loader2 className="w-5 h-5 animate-spin text-primary" />
-              <span className="font-medium">正在生成...</span>
+              <span className="font-medium">正在生成问卷...</span>
             </div>
-            <p className="text-sm text-muted-foreground">
-              这可能需要几分钟时间，请耐心等待
-            </p>
+            
+            {/* 进度条 */}
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-muted-foreground">总体进度</span>
+                <span className="text-sm font-medium">{progressPercent}%</span>
+              </div>
+              <div className="w-full bg-muted rounded-full h-2">
+                <div 
+                  className="bg-primary h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+            </div>
+
+            {/* 当前阶段 */}
+            {currentStage && (
+              <div className="mb-4 p-3 bg-background rounded-md border">
+                <div className="flex items-center gap-2 mb-1">
+                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                  <span className="text-sm font-medium">
+                    {STAGES.find(s => s.id === currentStage)?.name || currentStage}
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground ml-6">
+                  {stageDescription}
+                </p>
+              </div>
+            )}
+
+            {/* 阶段列表 */}
+            <div className="space-y-2">
+              {STAGES.map((stage, idx) => {
+                const isCompleted = completedStages.has(stage.id)
+                const isCurrent = currentStage === stage.id
+                const isPending = !isCompleted && !isCurrent
+                
+                return (
+                  <div 
+                    key={stage.id}
+                    className={`flex items-center gap-2 text-sm p-2 rounded ${
+                      isCurrent ? 'bg-primary/10 border border-primary/20' : ''
+                    }`}
+                  >
+                    {isCompleted ? (
+                      <CheckCircle2 className="w-4 h-4 text-green-500" />
+                    ) : isCurrent ? (
+                      <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                    ) : (
+                      <div className="w-4 h-4 rounded-full border-2 border-muted-foreground/30" />
+                    )}
+                    <span className={isCompleted ? 'text-muted-foreground line-through' : isCurrent ? 'font-medium' : 'text-muted-foreground'}>
+                      {stage.name}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
           </Card>
         )}
 
