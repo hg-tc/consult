@@ -3,7 +3,7 @@
 # AI咨询平台 - 系统启动脚本
 # =============================================================================
 
-set -e  # 遇到错误立即退出
+# 不使用 set -e，因为某些 kill 操作可能失败但不影响启动流程
 
 # 颜色定义
 RED='\033[0;31m'
@@ -62,6 +62,32 @@ wait_for_service() {
     return 1
 }
 
+# 函数：停止现有后端服务
+stop_existing_backend() {
+    print_message $YELLOW "🛑 检查并停止现有后端服务..."
+    
+    # 检查并停止PID文件中的进程
+    if [ -f "$PROJECT_ROOT/backend.pid" ]; then
+        PID=$(cat "$PROJECT_ROOT/backend.pid")
+        if ps -p $PID > /dev/null 2>&1; then
+            kill $PID 2>/dev/null || true
+            print_message $GREEN "✅ 已停止后端服务 (PID: $PID)"
+        fi
+        rm -f "$PROJECT_ROOT/backend.pid"
+    fi
+    
+    # 检查并停止占用端口的进程
+    BACKEND_PORT=18000
+    if netstat -tlnp 2>/dev/null | grep -q ":$BACKEND_PORT "; then
+        print_message $YELLOW "发现占用端口 $BACKEND_PORT 的进程，正在停止..."
+        PID=$(netstat -tlnp 2>/dev/null | grep ":$BACKEND_PORT " | awk '{print $7}' | cut -d'/' -f1 | head -1)
+        if [ ! -z "$PID" ]; then
+            kill $PID 2>/dev/null || true
+            sleep 2
+        fi
+    fi
+}
+
 # 函数：启动后端服务
 start_backend() {
     print_message $BLUE "🚀 启动后端服务..."
@@ -80,16 +106,22 @@ start_backend() {
     # 加载环境变量
     if [ -f ".env" ]; then
         source .env
+        print_message $GREEN "✅ 已加载环境变量"
     fi
     
-    # 设置离线模式
+    # 设置离线模式和 HuggingFace 镜像
     export TRANSFORMERS_OFFLINE=1
     export HF_HUB_OFFLINE=1
     export HF_DATASETS_OFFLINE=1
+    export HF_ENDPOINT=https://hf-mirror.com
     
     # 确保本地 SearXNG 服务已就绪（源码方式，无 Docker）
-    "$PROJECT_ROOT/scripts/searxng_start_local.sh"
-
+    if [ -x "$PROJECT_ROOT/scripts/searxng_start_local.sh" ]; then
+        "$PROJECT_ROOT/scripts/searxng_start_local.sh"
+    else
+        print_message $YELLOW "⚠️  SearXNG 启动脚本不存在或不可执行，跳过"
+    fi
+    
     # 启动后端服务
     nohup python app_simple.py > "$LOG_FILE" 2>&1 &
     BACKEND_PID=$!
@@ -98,6 +130,32 @@ start_backend() {
     echo $BACKEND_PID > "$PROJECT_ROOT/backend.pid"
     
     print_message $GREEN "✅ 后端服务已启动 (PID: $BACKEND_PID)"
+}
+
+# 函数：停止现有前端服务
+stop_existing_frontend() {
+    print_message $YELLOW "🛑 检查并停止现有前端服务..."
+    
+    # 检查并停止PID文件中的进程
+    if [ -f "$PROJECT_ROOT/frontend.pid" ]; then
+        PID=$(cat "$PROJECT_ROOT/frontend.pid")
+        if ps -p $PID > /dev/null 2>&1; then
+            kill $PID 2>/dev/null || true
+            print_message $GREEN "✅ 已停止前端服务 (PID: $PID)"
+        fi
+        rm -f "$PROJECT_ROOT/frontend.pid"
+    fi
+    
+    # 检查并停止占用端口的进程
+    FRONTEND_PORT=3000
+    if netstat -tlnp 2>/dev/null | grep -q ":$FRONTEND_PORT "; then
+        print_message $YELLOW "发现占用端口 $FRONTEND_PORT 的进程，正在停止..."
+        PID=$(netstat -tlnp 2>/dev/null | grep ":$FRONTEND_PORT " | awk '{print $7}' | cut -d'/' -f1 | head -1)
+        if [ ! -z "$PID" ]; then
+            kill $PID 2>/dev/null || true
+            sleep 2
+        fi
+    fi
 }
 
 # 函数：启动前端服务
@@ -128,6 +186,28 @@ start_frontend() {
     print_message $GREEN "✅ 前端服务已启动 (PID: $FRONTEND_PID)"
 }
 
+# 函数：停止现有Nginx服务
+stop_existing_nginx() {
+    print_message $YELLOW "🛑 检查并停止现有Nginx服务..."
+    
+    # 检查并停止占用端口的进程
+    NGINX_PORT=13000
+    if netstat -tlnp 2>/dev/null | grep -q ":$NGINX_PORT "; then
+        PID=$(netstat -tlnp 2>/dev/null | grep ":$NGINX_PORT " | awk '{print $7}' | cut -d'/' -f1 | head -1)
+        if [ ! -z "$PID" ]; then
+            kill $PID 2>/dev/null || true
+            sleep 1
+            print_message $GREEN "✅ 已停止Nginx服务 (PID: $PID)"
+        fi
+    fi
+    
+    # 尝试通过 nginx -s quit 优雅停止（如果 nginx 在运行）
+    if command -v nginx &> /dev/null; then
+        nginx -s quit 2>/dev/null || true
+        sleep 1
+    fi
+}
+
 # 函数：启动Nginx
 start_nginx() {
     print_message $BLUE "🚀 启动Nginx..."
@@ -144,13 +224,13 @@ start_nginx() {
     fi
     
     # 测试配置
-    if ! nginx -t; then
+    if ! nginx -t 2>/dev/null; then
         print_message $RED "❌ Nginx配置测试失败"
         exit 1
     fi
     
     # 启动Nginx
-    nginx
+    nginx 2>/dev/null || true
     
     print_message $GREEN "✅ Nginx已启动"
 }
@@ -192,11 +272,13 @@ main() {
     print_message $BLUE "🚀 AI咨询平台启动脚本"
     print_message $BLUE "================================"
     
-    # 检查是否已运行
-    if check_service "后端" "18000" || check_service "前端" "3000"; then
-        print_message $YELLOW "⚠️  系统可能已在运行，请先运行 stop.sh"
-        exit 1
-    fi
+    # 停止现有服务（如果存在）
+    stop_existing_backend
+    stop_existing_frontend
+    stop_existing_nginx
+    
+    # 等待端口释放
+    sleep 2
     
     # 启动服务
     start_backend
