@@ -10,6 +10,7 @@ import uuid
 import json
 import logging
 import asyncio
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import List
@@ -1670,10 +1671,24 @@ async def get_tasks_api(workspace_id: str = None):
         
         task_queue = get_task_queue()
         
+        # 定期清理旧任务（超过1小时的已完成任务，最多保留50个）
+        task_queue.cleanup_old_tasks(max_age_hours=1, max_completed_count=50)
+        
         if workspace_id:
             tasks = task_queue.get_tasks_by_workspace(workspace_id)
         else:
             tasks = list(task_queue.tasks.values())
+        
+        # 验证任务状态，修复可能的状态异常
+        current_time = time.time()
+        for task in tasks:
+            # 如果任务状态是processing但已经很久没有更新，可能已经完成但状态没更新
+            if task.status.value == "processing":
+                # 如果开始时间超过30分钟且没有运行中的任务，标记为可能已完成
+                if task.started_at and (current_time - task.started_at > 1800):
+                    if task.id not in task_queue.running_tasks:
+                        # 可能是异常状态，但先不自动修复，只记录日志
+                        logger.warning(f"[任务状态] 任务 {task.id} 可能状态异常: processing状态但已超过30分钟")
         
         return {
             "tasks": [

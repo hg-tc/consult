@@ -160,7 +160,7 @@ class QuestionnaireBuilderWorkflow:
         if not accumulated_state.get("analysis") or not accumulated_state.get("md"):
             logging.warning("累积状态不完整，重新获取完整状态")
             result = await self.compiled_graph.ainvoke(initial, {**config, "recursion_limit": 100})
-        else:
+            else:
             result = accumulated_state
         
         # 发送完成事件
@@ -211,7 +211,7 @@ class QuestionnaireBuilderWorkflow:
                 return "(网络搜索失败)"
             if not results:
                 return "(未找到结果)"
-            lines: List[str] = []
+                lines: List[str] = []
             for idx, r in enumerate(results[:8], 1):
                 d = asdict(r)
                 title = d.get("title") or r.get("name") or r.get("snippet_title") or "未知标题"

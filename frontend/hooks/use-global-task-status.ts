@@ -132,10 +132,14 @@ export function useGlobalTaskStatus(workspaceId?: string) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const isInitialized = useRef(false)
+  const isFirstLoad = useRef(true) // 标记是否为首次加载
 
-  const fetchTasks = useCallback(async () => {
+  const fetchTasks = useCallback(async (showLoading = false) => {
     try {
-      setIsLoading(true)
+      // 只在首次加载或明确要求显示加载状态时才设置 isLoading
+      if (showLoading || isFirstLoad.current) {
+        setIsLoading(true)
+      }
       setError(null)
       
       const params = workspaceId ? `?workspace_id=${workspaceId}` : ''
@@ -150,11 +154,21 @@ export function useGlobalTaskStatus(workspaceId?: string) {
       globalQueueStats = data.queue_stats || null
       setTasks(globalTasks)
       setQueueStats(globalQueueStats)
+      
+      // 首次加载完成后，标记为已加载
+      if (isFirstLoad.current) {
+        isFirstLoad.current = false
+      }
     } catch (err) {
       console.error("[GlobalTaskStatus] Failed to fetch tasks:", err)
-      setError(err instanceof Error ? err.message : "Failed to fetch tasks")
+      // 只在首次加载或明确要求时才显示错误
+      if (showLoading || isFirstLoad.current) {
+        setError(err instanceof Error ? err.message : "Failed to fetch tasks")
+      }
     } finally {
-      setIsLoading(false)
+      if (showLoading || isFirstLoad.current) {
+        setIsLoading(false)
+      }
     }
   }, [workspaceId])
 
@@ -186,19 +200,24 @@ export function useGlobalTaskStatus(workspaceId?: string) {
   //   }
   // }, [workspaceId])
 
-  // 使用定时器定期刷新任务状态
+  // 初始加载（显示加载状态）
   useEffect(() => {
+    isFirstLoad.current = true
+    fetchTasks(true) // 首次加载显示加载状态
+  }, [workspaceId])
+
+  // 使用定时器定期刷新任务状态（后台静默刷新）
+  useEffect(() => {
+    // 首次加载后，每3秒静默刷新一次（不显示加载状态）
     const interval = setInterval(() => {
-      fetchTasks()
-    }, 5000) // 每5秒刷新一次
+      if (!isFirstLoad.current) {
+        // 只在非首次加载时进行静默刷新
+        fetchTasks(false) // 不显示加载状态
+      }
+    }, 3000) // 每3秒刷新一次
 
     return () => clearInterval(interval)
   }, [fetchTasks])
-
-  // 初始加载
-  useEffect(() => {
-    fetchTasks()
-  }, [workspaceId])
 
   const getTaskById = useCallback(async (taskId: string): Promise<TaskStatus | null> => {
     try {

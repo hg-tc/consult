@@ -93,8 +93,9 @@ function TaskProgressCard({ task, onCancel, onRefresh }: TaskProgressCardProps) 
               </span>
             </div>
             <Badge className={cn("text-xs", getStatusColor())}>
-              {task.status === "processing" ? "处理中" : 
-               task.status === "completed" ? "已完成" :
+              {task.status === "processing" ? (
+                task.progress >= 100 ? "已完成" : "处理中"
+              ) : task.status === "completed" ? "已完成" :
                task.status === "failed" ? "失败" :
                task.status === "cancelled" ? "已取消" : "等待中"}
             </Badge>
@@ -131,7 +132,7 @@ function TaskProgressCard({ task, onCancel, onRefresh }: TaskProgressCardProps) 
         </div>
         
         <div className="flex-shrink-0 flex gap-1">
-          {task.status === "processing" && onCancel && (
+          {task.status === "processing" && task.progress < 100 && onCancel && (
             <Button
               size="sm"
               variant="outline"
@@ -175,17 +176,46 @@ export function TaskProgressPanel({ workspaceId, className }: TaskProgressPanelP
   }
 
   // 使用useMemo优化任务过滤，避免不必要的重新计算
+  // 注意：如果progress是100，即使status是processing也视为已完成
   const activeTasks = useMemo(() => 
-    tasks.filter(task => 
-      task.status === "pending" || task.status === "processing"
-    ), [tasks])
+    tasks.filter(task => {
+      const isActiveStatus = task.status === "pending" || task.status === "processing"
+      // 如果进度是100，即使状态是processing，也视为已完成
+      if (isActiveStatus && task.progress >= 100) {
+        return false
+      }
+      return isActiveStatus
+    }), [tasks])
   
-  const recentTasks = useMemo(() => 
-    tasks.filter(task => 
-      task.status === "completed" || task.status === "failed" || task.status === "cancelled"
-    ).slice(0, 5), [tasks]) // 只显示最近5个已完成的任务
+  // 过滤已完成任务：只显示最近完成的（1小时内）或最近10个
+  const recentTasks = useMemo(() => {
+    const now = Date.now() / 1000 // 转换为秒
+    const oneHourAgo = now - 3600 // 1小时前
+    
+    const completedTasks = tasks.filter(task => {
+      const isCompleted = task.status === "completed" || task.status === "failed" || task.status === "cancelled"
+      if (!isCompleted) return false
+      
+      // 如果有完成时间，检查是否在1小时内
+      if (task.completed_at) {
+        return task.completed_at > oneHourAgo
+      }
+      // 如果没有完成时间，使用创建时间（防止任务状态异常）
+      if (task.created_at) {
+        return task.created_at > oneHourAgo
+      }
+      return false // 没有时间信息的任务不显示
+    })
+    
+    // 按完成时间倒序排列，只显示最近10个
+    return completedTasks
+      .sort((a, b) => (b.completed_at || b.created_at || 0) - (a.completed_at || a.created_at || 0))
+      .slice(0, 10)
+  }, [tasks])
 
-  if (isLoading && tasks.length === 0) {
+  // 只在首次加载且没有任务时显示加载状态
+  // 避免定期刷新时出现加载转圈
+  if (isLoading && tasks.length === 0 && !queueStats) {
     return (
       <Card className={cn("p-6", className)}>
         <div className="flex items-center justify-center py-8">
@@ -217,7 +247,7 @@ export function TaskProgressPanel({ workspaceId, className }: TaskProgressPanelP
             <Button
               size="sm"
               variant="outline"
-              onClick={fetchTasks}
+              onClick={() => fetchTasks(true)}
               className="h-8"
             >
               <RefreshCw className="w-3 h-3 mr-1" />
@@ -258,7 +288,7 @@ export function TaskProgressPanel({ workspaceId, className }: TaskProgressPanelP
                 key={task.id}
                 task={task}
                 onCancel={handleCancelTask}
-                onRefresh={fetchTasks}
+                onRefresh={() => fetchTasks(false)}
               />
             ))}
           </div>
@@ -268,15 +298,36 @@ export function TaskProgressPanel({ workspaceId, className }: TaskProgressPanelP
       {/* 最近完成的任务 */}
       {recentTasks.length > 0 && (
         <div>
-          <h3 className="text-sm font-medium text-foreground mb-3">
-            最近完成的任务 ({recentTasks.length})
-          </h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-medium text-foreground">
+              最近完成的任务 ({recentTasks.length})
+            </h3>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={async () => {
+                // 调用后端清理API
+                try {
+                  await fetch('/api/tasks/cleanup', { method: 'POST' })
+                  fetchTasks(false) // 静默刷新
+                } catch (e) {
+                  console.error('清理任务失败:', e)
+                  // 即使清理失败也刷新
+                  fetchTasks(false) // 静默刷新
+                }
+              }}
+              className="h-7 text-xs"
+            >
+              <X className="w-3 h-3 mr-1" />
+              清理旧任务
+            </Button>
+          </div>
           <div className="space-y-3">
             {recentTasks.map((task) => (
               <TaskProgressCard
                 key={task.id}
                 task={task}
-                onRefresh={fetchTasks}
+                onRefresh={() => fetchTasks(false)}
               />
             ))}
           </div>

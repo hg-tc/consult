@@ -15,7 +15,8 @@ export function StatusPanel() {
         <p className="text-muted-foreground">实时查看文档处理进度和任务状态</p>
       </div>
 
-      {isLoading && (
+      {/* 只在首次加载且没有数据时显示加载状态 */}
+      {isLoading && tasks.length === 0 && !queueStats && (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="w-8 h-8 text-primary animate-spin" />
           <span className="ml-2 text-muted-foreground">加载任务状态...</span>

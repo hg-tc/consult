@@ -246,10 +246,15 @@ class TaskQueue:
         if result:
             task.metadata.update(result)
         
+        # 从运行任务列表中移除（如果存在）
+        if task_id in self.running_tasks:
+            del self.running_tasks[task_id]
+            logger.debug(f"任务 {task_id} 已从运行任务列表中移除")
+        
         if self.persistent_storage:
             self._save_tasks()
         
-        logger.info(f"任务完成: {task_id}")
+        logger.info(f"任务完成: {task_id}, 状态已更新为COMPLETED, 完成时间: {task.completed_at}")
     
     def fail_task(self, task_id: str, error_message: str):
         """任务失败"""
@@ -341,27 +346,58 @@ class TaskQueue:
         }
         return stats
     
-    def cleanup_old_tasks(self, max_age_hours: int = 24):
-        """清理旧任务"""
+    def cleanup_old_tasks(self, max_age_hours: int = 24, max_completed_count: int = 50):
+        """清理旧任务
+        
+        Args:
+            max_age_hours: 最大保留时间（小时），超过此时间的已完成任务将被删除
+            max_completed_count: 最多保留的已完成任务数量，超出部分将被删除
+        """
         current_time = time.time()
         max_age_seconds = max_age_hours * 3600
         
+        # 获取所有已完成/失败/取消的任务
+        completed_tasks = [
+            (task_id, task) for task_id, task in self.tasks.items()
+            if task.status in [TaskStatus.COMPLETED, TaskStatus.FAILED, TaskStatus.CANCELLED]
+        ]
+        
+        # 按完成时间排序（最新的在前）
+        completed_tasks.sort(
+            key=lambda x: x[1].completed_at or x[1].created_at or 0, 
+            reverse=True
+        )
+        
         tasks_to_remove = []
-        for task_id, task in self.tasks.items():
-            if (task.status in [TaskStatus.COMPLETED, TaskStatus.FAILED, TaskStatus.CANCELLED] 
-                and task.completed_at 
-                and current_time - task.completed_at > max_age_seconds):
+        
+        # 1. 清理超过时间限制的任务
+        for task_id, task in completed_tasks:
+            task_time = task.completed_at or task.created_at
+            if task_time and (current_time - task_time > max_age_seconds):
                 tasks_to_remove.append(task_id)
         
+        # 2. 如果已完成任务数量超过限制，清理最旧的任务
+        remaining_completed = [t for t in completed_tasks if t[0] not in tasks_to_remove]
+        if len(remaining_completed) > max_completed_count:
+            # 保留最新的 max_completed_count 个，删除其余的
+            for task_id, _ in remaining_completed[max_completed_count:]:
+                if task_id not in tasks_to_remove:
+                    tasks_to_remove.append(task_id)
+        
+        # 执行删除
         for task_id in tasks_to_remove:
-            del self.tasks[task_id]
+            if task_id in self.tasks:
+                del self.tasks[task_id]
             if task_id in self.task_callbacks:
                 del self.task_callbacks[task_id]
+            if task_id in self.running_tasks:
+                del self.running_tasks[task_id]
         
         if tasks_to_remove and self.persistent_storage:
             self._save_tasks()
         
-        logger.info(f"清理了 {len(tasks_to_remove)} 个旧任务")
+        if tasks_to_remove:
+            logger.info(f"清理了 {len(tasks_to_remove)} 个旧任务，剩余 {len(self.tasks)} 个任务")
         return len(tasks_to_remove)
     
     def _get_parallel_processor(self):
