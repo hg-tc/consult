@@ -291,7 +291,7 @@ export default function QuestionnaireBuilderPage() {
                     <div className="text-xs opacity-70">可提交修订</div>
                   </div>
                   <div className="relative">
-                    <pre className="text-xs whitespace-pre-wrap bg-muted p-3 rounded max-h-64 overflow-auto border">{result.assessment_report_md}</pre>
+                    <pre className="text-xs whitespace-pre-wrap bg-muted p-3 rounded max-h-[60vh] overflow-auto border break-words">{result.assessment_report_md}</pre>
                     <button className="absolute top-2 right-2 text-xs px-2 py-1 border rounded bg-background" onClick={()=>navigator.clipboard.writeText(result.assessment_report_md || '')}>复制</button>
                   </div>
                   <div className="mt-2">
@@ -339,13 +339,13 @@ export default function QuestionnaireBuilderPage() {
                   <div className="text-xs opacity-70">附参考来源脚注</div>
                 </div>
                 <div className="relative">
-                  <pre className="text-xs whitespace-pre-wrap bg-muted p-3 rounded max-h-64 overflow-auto border">{result.outline_markdown || ""}</pre>
+                  <pre className="text-xs whitespace-pre-wrap bg-muted p-3 rounded max-h-[60vh] overflow-auto border break-words">{result.outline_markdown || ""}</pre>
                   <button className="absolute top-2 right-2 text-xs px-2 py-1 border rounded bg-background" onClick={()=>navigator.clipboard.writeText(result.outline_markdown || '')}>复制</button>
                 </div>
               </div>
               <div>
                 <h4 className="font-medium">题目（部分）</h4>
-                <pre className="text-xs whitespace-pre-wrap bg-muted p-3 rounded max-h-64 overflow-auto">{JSON.stringify(result.questionnaire?.questions?.slice(0, 10) || [], null, 2)}</pre>
+                <pre className="text-xs whitespace-pre-wrap bg-muted p-3 rounded max-h-[60vh] overflow-auto break-words">{JSON.stringify(result.questionnaire?.questions?.slice(0, 10) || [], null, 2)}</pre>
               </div>
               {Array.isArray(result.questionnaire?.required_documents) && result.questionnaire.required_documents.length>0 && (
                 <div>
@@ -365,13 +365,13 @@ export default function QuestionnaireBuilderPage() {
               {Array.isArray(result.questionnaire_items) && result.questionnaire_items.length>0 && (
                 <div>
                   <h4 className="font-medium">阶段三 · 问卷（部分）</h4>
-                  <div className="text-xs bg-muted p-3 rounded max-h-64 overflow-auto">
+                  <div className="text-xs bg-muted p-3 rounded max-h-[60vh] overflow-auto break-words">
                     {Object.entries(groupBySection(result.questionnaire_items)).map(([sec, items]: any)=> (
                       <div key={sec} className="mb-2">
                         <div className="font-semibold">{sec || '未分组'}</div>
                         <ul className="list-disc pl-5">
                           {(items as any[]).slice(0,8).map((it:any)=> (
-                            <li key={it.id}>{it.text}</li>
+                            <li key={it.id} className="break-words">{it.text}</li>
                           ))}
                         </ul>
                       </div>
@@ -382,12 +382,27 @@ export default function QuestionnaireBuilderPage() {
               {/* 引用展示 */}
               <div>
                 <h4 className="font-medium">引用来源（合并去重）</h4>
-                <div className="text-xs bg-muted p-3 rounded max-h-64 overflow-auto space-y-1">
-                  {(result.sources || []).map((s: any, idx: number) => (
-                    <div key={idx} className="truncate" title={s.url || s.original_path || ''}>
-                      [{idx + 1}] {(s.title || s.file_name || s.doc_id || '来源')} {(s.domain ? `(${s.domain})` : '')} {(s.url || s.original_path || '')}
-                    </div>
-                  ))}
+                <div className="text-xs bg-muted p-3 rounded max-h-64 overflow-auto space-y-2">
+                  {result.sources && result.sources.length > 0 ? (
+                    result.sources.map((s: any, idx: number) => (
+                      <div key={idx} className="break-words" title={s.url || s.original_path || s.title || ''}>
+                        <div className="font-medium">[{idx + 1}] {s.title || s.file_name || s.doc_id || '来源'}</div>
+                        {s.domain && <div className="text-muted-foreground">({s.domain})</div>}
+                        {(s.url || s.original_path) && (
+                          <a 
+                            href={s.url || s.original_path} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline break-all"
+                          >
+                            {s.url || s.original_path}
+                          </a>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-muted-foreground">暂无引用来源</div>
+                  )}
                 </div>
               </div>
               {/* 逐项引用（可折叠） */}

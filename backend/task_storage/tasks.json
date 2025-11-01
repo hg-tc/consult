@@ -11821,5 +11821,29 @@
       ]
     },
     "workspace_id": "global"
+  },
+  {
+    "id": "7e7eb1a6-032e-4b2e-ae44-ca09991a0e85",
+    "task_type": "global_document_processing",
+    "status": "completed",
+    "progress": {
+      "stage": "indexing",
+      "progress": 100,
+      "message": "任务完成",
+      "details": null
+    },
+    "created_at": 1761980559.2605588,
+    "started_at": 1761980559.3258176,
+    "completed_at": 1761980609.4595408,
+    "error_message": null,
+    "metadata": {
+      "original_filename": "企业级AI智能服务平台1761968956913.pptx",
+      "file_path": "uploads/global/e263e8ea-255d-49ef-8e40-972acf68a316.pptx",
+      "file_size": 8399856,
+      "document_id": "e263e8ea-255d-49ef-8e40-972acf68a316",
+      "hierarchy_path": "",
+      "chunk_count": 1877
+    },
+    "workspace_id": "global"
   }
 ]

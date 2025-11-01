@@ -57,7 +57,7 @@ class LangGraphRAGWorkflow:
             api_key = os.getenv('THIRD_PARTY_API_KEY') or os.getenv('OPENAI_API_KEY')
             api_base = os.getenv('THIRD_PARTY_API_BASE') or os.getenv('OPENAI_BASE_URL', 'https://api.openai.com/v1')
             self.llm = ChatOpenAI(
-                model="gpt-3.5-turbo",
+                model="gpt-5-2025-08-07",
                 temperature=0.1,
                 openai_api_key=api_key,
                 openai_api_base=api_base
@@ -321,7 +321,66 @@ class LangGraphRAGWorkflow:
         
         response = await self.llm.ainvoke(answer_prompt)
         state["draft_answer"] = response.content
-        state["sources_used"] = [d['metadata'].get('filename', '') for d in all_docs[:5]]
+        
+        # 提取文件来源，支持多种文件名字段和结构
+        sources = []
+        logger.info(f"[_answer_generation_node] 开始提取 sources，all_docs 数量: {len(all_docs)}")
+        
+        for i, d in enumerate(all_docs[:5]):
+            logger.debug(f"[_answer_generation_node] 处理文档 {i}: {type(d)}, keys: {d.keys() if isinstance(d, dict) else 'not dict'}")
+            
+            # 尝试多种方式获取文件名
+            filename = None
+            
+            # 方式1: 直接字段（可能是字符串）
+            if isinstance(d, str):
+                filename = d.strip() if d.strip() else None
+            # 方式2: 字典中的直接字段
+            elif isinstance(d, dict):
+                # 先检查直接的字段，过滤空字符串
+                for key in ['title', 'filename', 'file_name', 'name', 'document_name', 'doc_id', 'document_id']:
+                    value = d.get(key)
+                    if value and str(value).strip():
+                        filename = str(value).strip()
+                        break
+                
+                # 方式3: metadata 中的字段
+                if not filename:
+                    metadata = d.get('metadata', {})
+                    if isinstance(metadata, dict):
+                        for key in ['original_filename', 'filename', 'file_name', 'title', 'name', 'document_name']:
+                            value = metadata.get(key)
+                            if value and str(value).strip():
+                                filename = str(value).strip()
+                                break
+                    
+                    # 方式4: 从 file_path 提取
+                    if not filename:
+                        file_path = metadata.get('file_path') or d.get('file_path')
+                        if file_path and str(file_path).strip():
+                            path_str = str(file_path).strip()
+                            extracted = path_str.split('/')[-1] if '/' in path_str else path_str
+                            if extracted:
+                                filename = extracted
+                
+                # 方式5: 从 document_id 或其他 ID 作为后备
+                if not filename:
+                    doc_id = d.get('document_id') or d.get('node_id') or d.get('id')
+                    if doc_id:
+                        filename = f"文档_{doc_id[:20]}"
+            
+            # 确保 filename 非空且非空字符串
+            if filename and str(filename).strip():
+                filename_str = str(filename).strip()
+                sources.append(filename_str)
+                logger.debug(f"[_answer_generation_node] 提取到文件名: {filename_str}")
+            else:
+                logger.warning(f"[_answer_generation_node] 无法提取文件名，文档结构: {type(d)}, 文档内容: {str(d)[:200]}")
+                # 如果无法提取，使用索引作为后备
+                sources.append(f"来源_{i+1}")
+        
+        logger.info(f"[_answer_generation_node] 最终提取到 {len(sources)} 个来源: {sources}")
+        state["sources_used"] = sources
         state["processing_steps"].append("answer_generation")
         
         return state
@@ -413,41 +472,63 @@ class LangGraphRAGWorkflow:
     
     async def run(self, question: str, workspace_id: str = "global") -> Dict:
         """执行工作流"""
-        initial_state = RAGState(
-            question=question,
-            workspace_id=workspace_id,
-            conversation_history=[],
-            intent="",
-            complexity="",
-            requires_multi_hop=False,
-            workspace_docs=[],
-            global_docs=[],
-            web_results=[],
-            draft_answer="",
-            final_answer="",
-            quality_score=0.0,
-            needs_refinement=False,
-            iteration_count=0,
-            retrieval_strategy="",
-            sources_used=[],
-            processing_steps=[]
-        )
-        
-        final_state = await self.compiled_graph.ainvoke(
-            initial_state,
-            config={"configurable": {"thread_id": "1"}}
-        )
-        
-        return {
-            "answer": final_state["final_answer"],
-            "sources": final_state["sources_used"],
-            "metadata": {
-                "intent": final_state["intent"],
-                "complexity": final_state["complexity"],
-                "quality_score": final_state["quality_score"],
-                "iterations": final_state["iteration_count"],
-                "processing_steps": final_state["processing_steps"],
-                "retrieval_strategy": final_state["retrieval_strategy"]
+        try:
+            initial_state = RAGState(
+                question=question,
+                workspace_id=workspace_id,
+                conversation_history=[],
+                intent="",
+                complexity="",
+                requires_multi_hop=False,
+                workspace_docs=[],
+                global_docs=[],
+                web_results=[],
+                draft_answer="",
+                final_answer="",
+                quality_score=0.0,
+                needs_refinement=False,
+                iteration_count=0,
+                retrieval_strategy="",
+                sources_used=[],
+                processing_steps=[]
+            )
+            
+            final_state = await self.compiled_graph.ainvoke(
+                initial_state,
+                config={"configurable": {"thread_id": "1"}}
+            )
+            
+            # 确保返回的字段都有值
+            answer = final_state.get("final_answer") or final_state.get("draft_answer", "")
+            if not answer:
+                answer = "抱歉，无法生成答案。"
+            
+            return {
+                "answer": answer,
+                "sources": final_state.get("sources_used", []),
+                "metadata": {
+                    "intent": final_state.get("intent", "unknown"),
+                    "complexity": final_state.get("complexity", "unknown"),
+                    "quality_score": final_state.get("quality_score", 0.0),
+                    "iterations": final_state.get("iteration_count", 0),
+                    "processing_steps": final_state.get("processing_steps", []),
+                    "retrieval_strategy": final_state.get("retrieval_strategy", "unknown")
+                }
             }
-        }
+        except Exception as e:
+            logger.error(f"LangGraph 工作流执行失败: {e}", exc_info=True)
+            # 返回一个有效的错误响应，而不是抛出异常
+            return {
+                "answer": f"抱歉，处理您的问题时出现错误: {str(e)}",
+                "sources": [],
+                "metadata": {
+                    "intent": "error",
+                    "complexity": "unknown",
+                    "quality_score": 0.0,
+                    "iterations": 0,
+                    "processing_steps": ["error"],
+                    "retrieval_strategy": "none",
+                    "error": str(e)
+                }
+            }
 

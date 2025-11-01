@@ -1,12 +1,15 @@
 import os
 import uuid
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional, TypedDict, Annotated
+from dataclasses import asdict
+from operator import add
 
-from langgraph.graph import StateGraph, END
+from langgraph.graph import StateGraph, END, START
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_openai import ChatOpenAI
-from langchain_core.tools import tool as tool_dec
+from langchain_core.tools import tool as tool_dec, tool
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import AnyMessage, ToolMessage, HumanMessage, AIMessage, SystemMessage
 from langchain.agents import create_agent
 from app.utils.progress_broker import get_progress_broker
 import time
@@ -21,20 +24,11 @@ class QBState(TypedDict):
     company_name: Optional[str]
     target_projects: List[str]
     known_info: Dict[str, Any]
-    # 检索与聚合
-    sources: List[Dict[str, Any]]
-    tmp_hits: Dict[str, List[Dict[str, Any]]]
-    policy_corpus: Dict[str, List[Dict[str, Any]]]
-    policy_hits: Dict[str, List[Dict[str, Any]]]
-    # 控制
-    retry_counters: Dict[str, int]
-    needs_more_data: bool
-    # ReAct 输出与问卷
-    policy: Dict[str, Any]
-    network_info: Dict[str, Any]
-    assessment_overview: Dict[str, Any]
-    assessment_report_md: str
-    questionnaire: Dict[str, Any]
+    global_db_out: str
+    messages: Annotated[list[AnyMessage], add]
+    type: str
+    retry_count: int
+    max_retries: int
 
 
 class QuestionnaireBuilderWorkflow:
@@ -63,17 +57,11 @@ class QuestionnaireBuilderWorkflow:
             "company_name": request.get("company_name"),
             "target_projects": request.get("target_projects", []),
             "known_info": request.get("known_info", {}),
-            "policy_hits": {},
-            "sources": [],
-            "policy_corpus": {"official_docs": [], "case_docs": []},
-            "assessment_report_md": "",
-            "retry_counters": {},
-            "needs_more_data": False,
-            "tmp_hits": {},
-            "policy": {},
-            "network_info": {"queries": [], "results": []},
-            "assessment_overview": {},
-            "questionnaire": {},
+            "global_db_out": "",
+            "type": "",
+            "messages": [],
+            "retry_count": int(request.get("retry_count", 0)),
+            "max_retries": int(request.get("max_retries", 2)),
         }
         # LangGraph MemorySaver 需要提供 configurable.thread_id
         thread_id = (
@@ -97,16 +85,30 @@ class QuestionnaireBuilderWorkflow:
             },
             "configurable": {"thread_id": thread_id},
         }
-        result: QBState = await self.compiled_graph.ainvoke(initial, {**config, "recursion_limit": 40, "stream": False})
+        result: QBState = await self.compiled_graph.ainvoke(initial, {**config, "recursion_limit": 100, "stream": False})
+        
+        # 从最终消息中提取分析结果（一体化报告和问卷）
+        final_content = ""
+        msgs = result.get("messages", [])
+        if msgs:
+            # 获取最后一个消息的内容（应该是 analysis_node 的输出）
+            last_msg = msgs[-1]
+            if isinstance(last_msg, list) and len(last_msg) > 0:
+                last_msg = last_msg[0]
+            if hasattr(last_msg, "content"):
+                final_content = last_msg.content
+            elif isinstance(last_msg, dict):
+                final_content = last_msg.get("content", "")
+            else:
+                final_content = str(last_msg)
+        
+        # 返回一体化报告和问卷（包含在 final_content 中）
         response: Dict[str, Any] = {
-            "assessment_overview_md": (result.get("assessment_overview") or {}).get("overview_md", ""),
-            "questionnaire_md": (result.get("questionnaire") or {}).get("generated_md", ""),
-            "policy": result.get("policy", {}),
-            "network_info": result.get("network_info", {}),
-            "sources": result.get("sources", []),
+            "assessment_report_md": final_content,
+            "questionnaire_md": final_content,  # 一体化输出，包含报告和问卷
+            "combined_report_md": final_content,  # 新增：一体化报告字段
         }
 
-        # 相位裁剪已移除，直接返回
         return response
 
     def _build_graph(self) -> StateGraph:

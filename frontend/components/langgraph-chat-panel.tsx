@@ -15,6 +15,7 @@ interface Message {
   content: string
   timestamp: Date
   metadata?: any
+  sources?: any[]
 }
 
 export function LangGraphChatPanel() {
@@ -31,11 +32,15 @@ export function LangGraphChatPanel() {
 
   useEffect(() => {
     if (result) {
+      // 调试：打印 sources 数据
+      console.log('LangGraphChatPanel 收到结果:', result)
+      console.log('sources:', result.sources, '类型:', typeof result.sources, '长度:', result.sources?.length)
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: result.answer,
         timestamp: new Date(),
-        metadata: result.metadata
+        metadata: result.metadata,
+        sources: result.sources || []
       }])
     }
   }, [result])
@@ -72,8 +77,8 @@ export function LangGraphChatPanel() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* 对话区域 */}
-        <Card className="lg:col-span-2 flex flex-col h-[600px]">
-          <div className="p-4 border-b flex items-center justify-between">
+        <Card className="lg:col-span-2 flex flex-col h-[800px] overflow-hidden">
+          <div className="p-4 border-b flex items-center justify-between shrink-0">
             <div>
               <h3 className="font-semibold">智能对话</h3>
               <p className="text-sm text-gray-500">
@@ -92,7 +97,7 @@ export function LangGraphChatPanel() {
             )}
           </div>
 
-          <ScrollArea className="flex-1 p-4">
+          <ScrollArea className="flex-1 p-4 min-h-0">
             <div className="space-y-4">
               {messages.length === 0 ? (
                 <div className="text-center py-12 text-gray-500">
@@ -115,7 +120,7 @@ export function LangGraphChatPanel() {
             </div>
           </ScrollArea>
 
-          <div className="p-4 border-t">
+          <div className="p-4 border-t shrink-0">
             <div className="flex gap-2">
               <Textarea
                 value={input}
@@ -210,7 +215,30 @@ function MessageBubble({ message }: { message: Message }) {
           ? 'bg-primary text-white' 
           : 'bg-gray-100 text-gray-900'
       }`}>
-        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+        <div className="max-h-[500px] overflow-y-auto">
+          <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+        </div>
+        {message.sources && Array.isArray(message.sources) && message.sources.length > 0 && message.role === 'assistant' && (
+          <div className="mt-2 pt-2 border-t border-gray-300">
+            <div className="text-xs text-gray-600 mb-1.5">引用来源 ({message.sources.length})</div>
+            <div className="flex flex-wrap gap-1">
+              {message.sources.map((source: any, idx: number) => {
+                const filename = typeof source === 'string' 
+                  ? source 
+                  : (source?.filename || source?.original_filename || source?.file_name || source?.title || source?.doc_id || source?.document_id || '未知文件')
+                return (
+                  <span
+                    key={idx}
+                    className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-medium break-all"
+                    title={filename}
+                  >
+                    📄 {filename}
+                  </span>
+                )
+              })}
+            </div>
+          </div>
+        )}
         {message.metadata && message.role === 'assistant' && (
           <div className="mt-2 pt-2 border-t border-gray-300">
             <MetadataPanel metadata={message.metadata} />

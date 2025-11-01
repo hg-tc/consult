@@ -15,6 +15,7 @@ interface Message {
   content: string
   timestamp: Date
   metadata?: any
+  sources?: string[]
 }
 
 export default function LangGraphChatPage() {
@@ -31,11 +32,15 @@ export default function LangGraphChatPage() {
 
   useEffect(() => {
     if (result) {
+      // 调试：打印 sources 数据
+      console.log('收到结果:', result)
+      console.log('sources:', result.sources, '类型:', typeof result.sources, '长度:', result.sources?.length)
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: result.answer,
         timestamp: new Date(),
-        metadata: result.metadata
+        metadata: result.metadata,
+        sources: result.sources || []
       }])
     }
   }, [result])
@@ -82,8 +87,8 @@ export default function LangGraphChatPage() {
 
       <div className="grid gap-6 lg:grid-cols-3 max-w-7xl mx-auto">
         {/* 对话区域 */}
-        <Card className="lg:col-span-2 flex flex-col h-[600px]">
-          <div className="p-4 border-b flex items-center justify-between">
+        <Card className="lg:col-span-2 flex flex-col h-[800px] overflow-hidden">
+          <div className="p-4 border-b flex items-center justify-between shrink-0">
             <div>
               <h3 className="font-semibold">智能对话</h3>
               <p className="text-sm text-muted-foreground">
@@ -102,7 +107,7 @@ export default function LangGraphChatPage() {
             )}
           </div>
 
-          <ScrollArea className="flex-1 p-4">
+          <ScrollArea className="flex-1 p-4 min-h-0">
             <div className="space-y-4">
               {messages.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">
@@ -125,7 +130,7 @@ export default function LangGraphChatPage() {
             </div>
           </ScrollArea>
 
-          <div className="p-4 border-t">
+          <div className="p-4 border-t shrink-0">
             <div className="flex gap-2">
               <Textarea
                 value={input}
@@ -182,13 +187,22 @@ export default function LangGraphChatPage() {
               {/* 引用来源 */}
               {result?.sources && result.sources.length > 0 && (
                 <div className="mt-4">
-                  <h4 className="text-sm font-semibold mb-2">引用来源</h4>
+                  <h4 className="text-sm font-semibold mb-2 text-foreground">引用来源</h4>
                   <div className="space-y-1">
-                    {result.sources.map((source: any, idx: number) => (
-                      <div key={idx} className="text-xs bg-muted px-2 py-1 rounded">
-                        {typeof source === 'string' ? source : (source?.content || source?.title || JSON.stringify(source))}
-                      </div>
-                    ))}
+                    {result.sources.map((source: any, idx: number) => {
+                      const filename = typeof source === 'string' 
+                        ? source 
+                        : (source?.filename || source?.original_filename || source?.content || source?.title || '未知文件')
+                      return (
+                        <div 
+                          key={idx} 
+                          className="text-xs bg-muted px-2 py-1 rounded text-foreground font-medium flex items-center gap-1"
+                        >
+                          <span className="text-muted-foreground">📄</span>
+                          <span className="truncate" title={filename}>{filename}</span>
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               )}
@@ -220,10 +234,56 @@ function MessageBubble({ message }: { message: Message }) {
           ? 'bg-primary text-primary-foreground' 
           : 'bg-muted text-foreground'
       }`}>
-        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+        <div className="max-h-[500px] overflow-y-auto">
+          <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+        </div>
+        {message.sources && Array.isArray(message.sources) && message.sources.length > 0 && message.role === 'assistant' && (
+          <div className="mt-2 pt-2 border-t border-border/50">
+            <div className="text-xs text-muted-foreground mb-1.5 font-semibold">📚 引用来源 ({message.sources.length})</div>
+            <div className="flex flex-wrap gap-1.5">
+              {message.sources
+                .filter((source: any) => {
+                  // 过滤空字符串和无效值
+                  if (!source) return false
+                  const str = typeof source === 'string' ? source : String(source)
+                  return str.trim().length > 0
+                })
+                .map((source: any, idx: number) => {
+                  const filename = typeof source === 'string' 
+                    ? source.trim()
+                    : (source?.filename || source?.original_filename || source?.file_name || source?.title || source?.doc_id || source?.document_id || source?.name || source?.document_name || '未知文件')
+                  // 确保不是空字符串
+                  const displayName = filename && filename.trim() ? filename.trim() : `来源 ${idx + 1}`
+                  console.log(`[MessageBubble] 显示来源 ${idx}:`, { source, filename, displayName, type: typeof source })
+                  return (
+                    <span
+                      key={idx}
+                      className="text-xs bg-primary/10 text-primary px-2.5 py-1 rounded-md font-medium break-all hover:bg-primary/20 transition-colors cursor-pointer"
+                      title={`点击查看: ${displayName}`}
+                    >
+                      📄 {displayName}
+                    </span>
+                  )
+                })}
+            </div>
+          </div>
+        )}
+        {message.role === 'assistant' && (!message.sources || !Array.isArray(message.sources) || message.sources.length === 0) && (
+          <div className="mt-2 pt-2 border-t border-border/50">
+            <div className="text-xs text-muted-foreground italic">
+              暂无引用来源
+              {(() => {
+                console.log('[MessageBubble] 无引用来源:', { hasSources: !!message.sources, isArray: Array.isArray(message.sources), length: message.sources?.length })
+                return null
+              })()}
+            </div>
+          </div>
+        )}
         {message.metadata && message.role === 'assistant' && (
-          <div className="mt-2 pt-2 border-t">
-            <MetadataPanel metadata={message.metadata} />
+          <div className="mt-2 pt-2 border-t border-border/50">
+            <div className="bg-background/50 rounded-lg -m-1 p-2">
+              <MetadataPanel metadata={message.metadata} />
+            </div>
           </div>
         )}
       </div>

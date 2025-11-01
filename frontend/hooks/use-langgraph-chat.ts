@@ -40,10 +40,47 @@ export function useLangGraphChat() {
         })
       })
 
-      const data = await response.json()
+      // 先读取响应文本（响应体只能读取一次）
+      const text = await response.text()
       
+      // 检查响应状态
       if (!response.ok) {
-        throw new Error(data.error || '请求失败')
+        // 尝试解析错误响应
+        let errorMessage = `请求失败: ${response.status} ${response.statusText}`
+        if (text) {
+          try {
+            const contentType = response.headers.get('content-type')
+            if (contentType && contentType.includes('application/json')) {
+              const errorData = JSON.parse(text)
+              errorMessage = errorData.detail || errorData.error || errorMessage
+            } else {
+              errorMessage = text
+            }
+          } catch (parseErr) {
+            // 如果无法解析，使用原始文本
+            errorMessage = text || errorMessage
+          }
+        }
+        throw new Error(errorMessage)
+      }
+
+      // 检查响应内容类型
+      const contentType = response.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error(`服务器返回了非 JSON 响应: ${text || '空响应'}`)
+      }
+
+      // 检查响应是否为空
+      if (!text || text.trim().length === 0) {
+        throw new Error('服务器返回了空响应')
+      }
+
+      // 解析 JSON
+      let data: LangGraphResult
+      try {
+        data = JSON.parse(text)
+      } catch (jsonErr) {
+        throw new Error(`无法解析 JSON 响应: ${jsonErr instanceof Error ? jsonErr.message : '未知错误'}`)
       }
 
       setResult(data)
