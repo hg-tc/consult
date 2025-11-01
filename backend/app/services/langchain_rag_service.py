@@ -85,8 +85,9 @@ class LangChainRAGService:
                 os.environ['OPENAI_API_KEY'] = api_key
                 os.environ['OPENAI_BASE_URL'] = api_base
                 
+                from app.core.config import settings
                 self.llm = ChatOpenAI(
-                    model="gpt-3.5-turbo",
+                    model=settings.LLM_MODEL_NAME_RAG,
                     temperature=0.1,
                     openai_api_key=api_key,
                     openai_api_base=api_base,
@@ -714,13 +715,14 @@ class LangChainRAGService:
             elif not isinstance(response, str):
                 answer = str(response)
             
+            from app.core.config import settings
             result = {
                 "answer": answer,
                 "references": references,
                 "sources": source_docs,
                 "confidence": 0.9,
                 "metadata": {
-                    "model": "gpt-3.5-turbo",
+                    "model": settings.LLM_MODEL_NAME_RAG,
                     "mode": "rag",
                     "retrieved_chunks": len(source_docs)
                 }

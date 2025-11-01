@@ -46,6 +46,16 @@ class Settings(BaseSettings):
     # 大模型API配置
     OPENAI_API_KEY: Optional[str] = os.getenv("OPENAI_API_KEY")
     OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
+    
+    # 大模型名称配置（统一从.env读取）
+    LLM_MODEL_NAME: str = os.getenv("LLM_MODEL_NAME", "gpt-3.5-turbo")  # 默认模型名称
+    LLM_MODEL_NAME_RAG: str = os.getenv("LLM_MODEL_NAME_RAG", "gpt-3.5-turbo")  # RAG工作流使用的模型
+    LLM_MODEL_NAME_QUESTIONNAIRE: str = os.getenv("LLM_MODEL_NAME_QUESTIONNAIRE", "gpt-4o-mini")  # 问卷生成工作流使用的模型
+    LLM_MODEL_NAME_DOC_GEN: str = os.getenv("LLM_MODEL_NAME_DOC_GEN", "gpt-3.5-turbo")  # 文档生成工作流使用的模型
+    LLM_MODEL_NAME_PRODUCTION: str = os.getenv("LLM_MODEL_NAME_PRODUCTION", "gpt-3.5-turbo")  # 生产工作流使用的模型
+    
+    # Claude模型配置（如果有使用）
+    CLAUDE_MODEL_NAME: str = os.getenv("CLAUDE_MODEL_NAME", "claude-3-sonnet-20240229")
 
     # 向量数据库配置
     VECTOR_DB_PATH: str = "vector_db"

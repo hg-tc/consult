@@ -47,10 +47,11 @@ async def create_conversation(
     db: AsyncSession = Depends(get_db)
 ):
     """创建新对话"""
+    from app.core.config import settings
     conversation = Conversation(
         title=title,
         workspace_id=workspace_id,
-        model_name="gpt-3.5-turbo"
+        model_name=settings.LLM_MODEL_NAME
     )
 
     db.add(conversation)

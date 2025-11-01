@@ -49,12 +49,15 @@ class OpenAIClient(BaseLLMClient):
     async def chat_completion(
         self,
         messages: List[Dict[str, str]],
-        model: str = "gpt-3.5-turbo",
+        model: str = None,
         temperature: float = 0.7,
         max_tokens: int = 1000,
         **kwargs
     ) -> Dict[str, Any]:
         """OpenAI聊天完成"""
+        from app.core.config import settings
+        if model is None:
+            model = settings.LLM_MODEL_NAME
         try:
             response = await self.client.chat.completions.create(
                 model=model,
@@ -80,12 +83,15 @@ class OpenAIClient(BaseLLMClient):
     async def chat_completion_stream(
         self,
         messages: List[Dict[str, str]],
-        model: str = "gpt-3.5-turbo",
+        model: str = None,
         temperature: float = 0.7,
         max_tokens: int = 1000,
         **kwargs
     ) -> AsyncGenerator[str, None]:
-        """OpenAI流式聊天完成"""
+        """流式聊天完成"""
+        from app.core.config import settings
+        if model is None:
+            model = settings.LLM_MODEL_NAME
         try:
             response = await self.client.chat.completions.create(
                 model=model,
@@ -115,12 +121,15 @@ class ClaudeClient(BaseLLMClient):
     async def chat_completion(
         self,
         messages: List[Dict[str, str]],
-        model: str = "claude-3-sonnet-20240229",
+        model: str = None,
         temperature: float = 0.7,
         max_tokens: int = 1000,
         **kwargs
     ) -> Dict[str, Any]:
         """Claude聊天完成"""
+        from app.core.config import settings
+        if model is None:
+            model = settings.CLAUDE_MODEL_NAME
         try:
             # 转换消息格式
             system_message = ""
@@ -181,12 +190,15 @@ class ClaudeClient(BaseLLMClient):
     async def chat_completion_stream(
         self,
         messages: List[Dict[str, str]],
-        model: str = "claude-3-sonnet-20240229",
+        model: str = None,
         temperature: float = 0.7,
         max_tokens: int = 1000,
         **kwargs
     ) -> AsyncGenerator[str, None]:
-        """Claude流式聊天完成"""
+        """流式聊天完成"""
+        from app.core.config import settings
+        if model is None:
+            model = settings.CLAUDE_MODEL_NAME
         # Claude目前不支持流式输出，先返回普通响应
         result = await self.chat_completion(
             messages, model, temperature, max_tokens, **kwargs

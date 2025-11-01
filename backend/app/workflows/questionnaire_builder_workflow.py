@@ -45,9 +45,10 @@ class QuestionnaireBuilderWorkflow:
         self.web_search_service = web_search_service
         if llm is None:
             logger.info("No LLM provided")
+            from app.core.config import settings
             api_key = os.getenv('THIRD_PARTY_API_KEY') or os.getenv('OPENAI_API_KEY')
             api_base = os.getenv('THIRD_PARTY_API_BASE') or os.getenv('OPENAI_BASE_URL', 'https://api.openai.com/v1')
-            self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2, openai_api_key=api_key, openai_api_base=api_base).with_config({"stream": False})
+            self.llm = ChatOpenAI(model=settings.LLM_MODEL_NAME_QUESTIONNAIRE, temperature=0.2, openai_api_key=api_key, openai_api_base=api_base).with_config({"stream": False})
         else:
             # 统一禁用流式，避免 usage_metadata None 聚合问题
             self.llm = llm.with_config({"stream": False}) if hasattr(llm, "with_config") else llm
@@ -160,7 +161,7 @@ class QuestionnaireBuilderWorkflow:
         if not accumulated_state.get("analysis") or not accumulated_state.get("md"):
             logging.warning("累积状态不完整，重新获取完整状态")
             result = await self.compiled_graph.ainvoke(initial, {**config, "recursion_limit": 100})
-            else:
+        else:
             result = accumulated_state
         
         # 发送完成事件
@@ -203,6 +204,7 @@ class QuestionnaireBuilderWorkflow:
         @tool
         def search_web(query: str) -> str:
             """从网络中检索相关数据；输入中文查询，返回若干条标题与链接摘要"""
+            lines: List[str] = []
             try:
                 # 如果服务是异步实现，这里用 asyncio.run 同步封装
                 results = asyncio.run(self.web_search_service.search_web(query=query, num_results=6))
@@ -211,7 +213,6 @@ class QuestionnaireBuilderWorkflow:
                 return "(网络搜索失败)"
             if not results:
                 return "(未找到结果)"
-                lines: List[str] = []
             for idx, r in enumerate(results[:8], 1):
                 d = asdict(r)
                 title = d.get("title") or r.get("name") or r.get("snippet_title") or "未知标题"

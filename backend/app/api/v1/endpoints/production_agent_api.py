@@ -42,10 +42,11 @@ def get_production_workflow():
         if llm is None:
             # 初始化 LLM（第三方兼容）
             import os
+            from app.core.config import settings
             api_key = os.getenv('THIRD_PARTY_API_KEY') or os.getenv('OPENAI_API_KEY')
             api_base = os.getenv('THIRD_PARTY_API_BASE') or os.getenv('OPENAI_BASE_URL', 'https://api.openai.com/v1')
             llm = ChatOpenAI(
-                model="gpt-3.5-turbo",
+                model=settings.LLM_MODEL_NAME_PRODUCTION,
                 temperature=0.1,
                 openai_api_key=api_key,
                 openai_api_base=api_base

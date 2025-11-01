@@ -16,7 +16,7 @@ class Conversation(BaseModel):
     workspace_id = Column(Integer, ForeignKey("workspaces.id"), nullable=False)
 
     # 对话设置
-    model_name = Column(String, default="gpt-3.5-turbo")
+    model_name = Column(String)  # 默认值在创建时从settings读取
     system_prompt = Column(Text)
     settings = Column(JSON)  # 对话参数设置
 

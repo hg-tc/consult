@@ -54,10 +54,11 @@ class LangGraphRAGWorkflow:
         self.workspace_retriever = workspace_retriever
         self.global_retriever = global_retriever
         if llm is None:
+            from app.core.config import settings
             api_key = os.getenv('THIRD_PARTY_API_KEY') or os.getenv('OPENAI_API_KEY')
             api_base = os.getenv('THIRD_PARTY_API_BASE') or os.getenv('OPENAI_BASE_URL', 'https://api.openai.com/v1')
             self.llm = ChatOpenAI(
-                model="gpt-5-2025-08-07",
+                model=settings.LLM_MODEL_NAME_RAG,
                 temperature=0.1,
                 openai_api_key=api_key,
                 openai_api_base=api_base

@@ -50,9 +50,6 @@ class DocumentGeneratorApp(BaseApp):
                 global_retriever = LlamaIndexRetriever.get_instance("global")
                 
                 # 获取 LLM 和网络搜索服务
-                from app.services.langchain_rag_service import LangChainRAGService
-                from app.core.config import settings
-                rag_service = LangChainRAGService(vector_db_path=settings.LANGCHAIN_VECTOR_DB_PATH)
                 web_search_service = get_web_search_service()
                 
                 # 创建文档生成工作流
@@ -60,7 +57,7 @@ class DocumentGeneratorApp(BaseApp):
                     workspace_retriever=workspace_retriever,
                     global_retriever=global_retriever,
                     web_search_service=web_search_service,
-                    llm=rag_service.llm
+                    llm=None
                 )
                 
                 # 执行工作流

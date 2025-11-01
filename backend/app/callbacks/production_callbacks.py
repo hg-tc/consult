@@ -156,8 +156,9 @@ class CostTrackingHandler(AsyncCallbackHandler):
     def on_llm_end(self, response, **kwargs):
         """LLM 调用结束回调"""
         try:
+            from app.core.config import settings
             usage = response.llm_output.get("token_usage", {})
-            model = response.llm_output.get("model_name", "gpt-3.5-turbo")
+            model = response.llm_output.get("model_name", settings.LLM_MODEL_NAME)
             
             prompt_tokens = usage.get("prompt_tokens", 0)
             completion_tokens = usage.get("completion_tokens", 0)
@@ -167,7 +168,8 @@ class CostTrackingHandler(AsyncCallbackHandler):
             self.total_tokens += prompt_tokens + completion_tokens
             
             # 计算成本
-            costs = self.model_costs.get(model, self.model_costs["gpt-3.5-turbo"])
+            default_cost = self.model_costs.get(settings.LLM_MODEL_NAME, self.model_costs["gpt-3.5-turbo"])
+            costs = self.model_costs.get(model, default_cost)
             cost = (prompt_tokens * costs["prompt"] + 
                     completion_tokens * costs["completion"]) / 1000
             self.total_cost += cost

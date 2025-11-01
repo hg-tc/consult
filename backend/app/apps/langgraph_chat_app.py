@@ -60,15 +60,12 @@ class LangGraphChatApp(BaseApp):
                 global_retriever = LlamaIndexRetriever.get_instance("global")
                 
                 # 获取 LLM
-                from app.services.langchain_rag_service import LangChainRAGService
-                from app.core.config import settings
-                rag_service = LangChainRAGService(vector_db_path=settings.LANGCHAIN_VECTOR_DB_PATH)
                 
                 # 创建工作流
                 workflow = LangGraphRAGWorkflow(
                     workspace_retriever=workspace_retriever,
                     global_retriever=global_retriever,
-                    llm=rag_service.llm
+                    llm=None
                 )
                 
                 # 执行工作流（支持对话记忆）

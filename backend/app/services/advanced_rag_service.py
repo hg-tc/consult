@@ -63,8 +63,9 @@ class AdvancedRAGService:
             self.embeddings = self._initialize_embeddings()
             
             # 初始化LLM
+            from app.core.config import settings
             self.llm = ChatOpenAI(
-                model="gpt-3.5-turbo",
+                model=settings.LLM_MODEL_NAME_RAG,
                 temperature=0.1,
                 openai_api_base=os.getenv('THIRD_PARTY_API_BASE', 'https://api.openai.com/v1')
             )
@@ -365,13 +366,14 @@ class AdvancedRAGService:
             elif not isinstance(answer, str):
                 answer = str(answer)
             
+            from app.core.config import settings
             return {
                 "answer": answer,
                 "references": references,
                 "sources": search_results,
                 "confidence": 0.9,
                 "metadata": {
-                    "model": "gpt-3.5-turbo",
+                    "model": settings.LLM_MODEL_NAME_RAG,
                     "mode": "advanced_rag",
                     "retrieval_method": "hybrid",
                     "reranked": True,

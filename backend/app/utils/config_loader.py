@@ -53,7 +53,7 @@ class RAGConfig:
                 }
             },
             "llm": {
-                "model": "gpt-3.5-turbo",
+                "model": "gpt-3.5-turbo",  # 默认值，实际从settings读取
                 "temperature": 0.1
             }
         }
@@ -89,7 +89,12 @@ class RAGConfig:
     
     def get_llm_config(self) -> Dict[str, Any]:
         """获取 LLM 配置"""
-        return self.config.get("llm", {})
+        from app.core.config import settings
+        llm_config = self.config.get("llm", {})
+        # 如果配置中没有模型名称，从settings读取
+        if "model" not in llm_config or llm_config.get("model") == "gpt-3.5-turbo":
+            llm_config["model"] = settings.LLM_MODEL_NAME
+        return llm_config
 
 # 全局配置实例
 _rag_config: Optional[RAGConfig] = None

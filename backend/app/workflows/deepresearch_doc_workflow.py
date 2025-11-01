@@ -61,10 +61,11 @@ class DeepResearchDocWorkflow:
         self.global_retriever = global_retriever
         self.web_search_service = web_search_service
         if llm is None:
+            from app.core.config import settings
             api_key = os.getenv('THIRD_PARTY_API_KEY') or os.getenv('OPENAI_API_KEY')
             api_base = os.getenv('THIRD_PARTY_API_BASE') or os.getenv('OPENAI_BASE_URL', 'https://api.openai.com/v1')
             self.llm = ChatOpenAI(
-                model="gpt-3.5-turbo",
+                model=settings.LLM_MODEL_NAME_DOC_GEN,
                 temperature=0.3,
                 openai_api_key=api_key,
                 openai_api_base=api_base
