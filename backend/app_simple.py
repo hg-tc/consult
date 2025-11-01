@@ -201,6 +201,13 @@ from app.api.v1.endpoints.global_api import router as global_router
 # 注册全局API路由
 app.include_router(global_router)
 
+# 进度SSE路由
+try:
+    from app.apps.progress_stream_app import router as progress_router
+    app.include_router(progress_router)
+except Exception as _:
+    pass
+
 # 导入WebSocket
 from app.websocket.status_ws import websocket_endpoint, manager
 

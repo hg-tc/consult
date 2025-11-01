@@ -11,7 +11,7 @@ from enum import Enum
 import json
 import re
 
-from langchain.agents import Tool
+from langchain_core.tools import tool as tool_dec
 from langchain.schema import BaseMessage, HumanMessage, AIMessage
 from langchain_core.language_models import BaseChatModel
 
@@ -52,31 +52,26 @@ class ReActAgent:
         # 初始化工具
         self.tools = self._initialize_tools()
         
-    def _initialize_tools(self) -> List[Tool]:
+    def _initialize_tools(self) -> List[Any]:
         """初始化工具集"""
-        tools = [
-            Tool(
-                name="search_documents",
-                description="搜索本地文档库，获取相关文档内容",
-                func=self._search_documents_tool
-            ),
-            Tool(
-                name="search_web",
-                description="搜索互联网，获取最新信息和资料",
-                func=self._search_web_tool
-            ),
-            Tool(
-                name="calculate",
-                description="执行数学计算",
-                func=self._calculate_tool
-            ),
-            Tool(
-                name="generate_content",
-                description="基于收集的信息生成文档内容",
-                func=self._generate_content_tool
-            )
-        ]
-        return tools
+        # 使用 langchain_core.tools.tool 装饰器在运行时创建工具，包装实例方法
+        @tool_dec(name="search_documents", description="搜索本地文档库，获取相关文档内容")
+        async def search_documents(query: str) -> str:
+            return await self._search_documents_tool(query)
+
+        @tool_dec(name="search_web", description="搜索互联网，获取最新信息和资料")
+        async def search_web(query: str) -> str:
+            return await self._search_web_tool(query)
+
+        @tool_dec(name="calculate", description="执行数学计算")
+        def calculate(expression: str) -> str:
+            return self._calculate_tool(expression)
+
+        @tool_dec(name="generate_content", description="基于收集的信息生成文档内容")
+        async def generate_content(prompt: str) -> str:
+            return await self._generate_content_tool(prompt)
+
+        return [search_documents, search_web, calculate, generate_content]
     
     async def _search_documents_tool(self, query: str) -> str:
         """文档搜索工具"""

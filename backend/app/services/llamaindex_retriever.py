@@ -10,6 +10,8 @@ LlamaIndex 高级检索引擎
 import os
 
 # 强制离线模式 - 必须在 import 之前设置
+os.environ["HF_ENDPOINT"]="https://hf-mirror.com"
+os.environ["HF_HUB_DOWNLOAD_PROGRESS"] = "1"
 os.environ['HF_HUB_OFFLINE'] = '1'  # 禁用 HuggingFace Hub 连接
 os.environ['HF_DATASETS_OFFLINE'] = '1'  # 禁用数据集下载
 os.environ['TRANSFORMERS_OFFLINE'] = '1'  # 禁用 Transformers 在线功能
@@ -31,8 +33,8 @@ os.environ['http_proxy'] = ''
 os.environ['https_proxy'] = ''
 
 # 设置网络超时为0（立即失败，不等待）
-os.environ['HF_HUB_DOWNLOAD_TIMEOUT'] = '0.1'
-os.environ['REQUESTS_TIMEOUT'] = '0.1'
+os.environ['HF_HUB_DOWNLOAD_TIMEOUT'] = '1'
+os.environ['REQUESTS_TIMEOUT'] = '1'
 
 # 禁用所有可能触发网络请求的功能
 os.environ['HF_HUB_ENABLE_HF_TRANSFER'] = '0'  # 禁用HF传输（可能触发网络检查）
@@ -82,37 +84,136 @@ def _ensure_llamaindex_imported() -> None:
             return
         _import_start_time = time.time()
         logger.info(f"🔄 开始加载 LlamaIndex 模块（离线模式已启用）")
+        
+        # ============================================
+        # 配置 NLTK 以避免运行时下载（必须在导入 LlamaIndex 之前）
+        # ============================================
+        try:
+            import nltk
+            # 设置 NLTK 数据路径（优先使用环境变量）
+            nltk_data_dir = os.getenv('NLTK_DATA', os.path.expanduser('~/nltk_data'))
+            os.environ['NLTK_DATA'] = nltk_data_dir
+            
+            # 确保目录存在
+            Path(nltk_data_dir).mkdir(parents=True, exist_ok=True)
+            
+            # 设置 NLTK 数据路径（必须在下载/检查之前设置）
+            if nltk_data_dir not in nltk.data.path:
+                nltk.data.path.insert(0, nltk_data_dir)
+            
+            # 提前 Monkey patch: 拦截下载请求，避免卡住
+            # 必须在导入 LlamaIndex 之前，因为 GlobalsHelper 会在导入时尝试下载
+            original_download = nltk.download
+            def patched_download(*args, **kwargs):
+                resource = args[0] if args else 'unknown'
+                # 检查是否已有资源，如果有则返回 True
+                try:
+                    if resource == 'punkt' or resource == 'punkt_tab':
+                        nltk.data.find('tokenizers/punkt')
+                        return True
+                except LookupError:
+                    pass
+                logger.warning(
+                    f"🚫 NLTK 尝试下载资源 '{resource}'，已拦截（离线模式）。\n"
+                    f"   请在联网环境中预先下载，下载后会永久保存，无需重复下载。\n"
+                    f"   运行: python -m app.utils.download_nltk_data"
+                )
+                return False
+            nltk.download = patched_download
+            
+            # 检查 punkt 资源是否存在
+            punkt_found = False
+            punkt_path = None
+            try:
+                punkt_path = nltk.data.find('tokenizers/punkt')
+                punkt_found = True
+                logger.debug(f"NLTK punkt 资源已存在: {punkt_path}")
+            except LookupError:
+                # 检查本地文件是否存在（多个可能的位置）
+                tokenizers_dir = Path(nltk_data_dir) / 'tokenizers'
+                punkt_dir = tokenizers_dir / 'punkt'
+                punkt_tab_dir = tokenizers_dir / 'punkt_tab'
+                
+                # 如果 punkt_tab 存在但 punkt 不存在，创建符号链接（兼容性处理）
+                if punkt_tab_dir.exists() and not punkt_dir.exists():
+                    try:
+                        punkt_dir.symlink_to(punkt_tab_dir)
+                        logger.info(f"已创建符号链接: {punkt_dir} -> {punkt_tab_dir}（兼容性处理）")
+                    except Exception as e:
+                        logger.debug(f"创建符号链接失败: {e}，尝试其他方法")
+                
+                # 重新尝试查找
+                possible_paths = [
+                    punkt_dir,
+                    punkt_tab_dir,
+                ]
+                
+                for pp in possible_paths:
+                    if pp.exists():
+                        # 确保路径在搜索列表中
+                        if str(pp.parent.parent) not in nltk.data.path:
+                            nltk.data.path.insert(0, str(pp.parent.parent))
+                        try:
+                            punkt_path = nltk.data.find('tokenizers/punkt')
+                            punkt_found = True
+                            logger.info(f"从本地路径找到 NLTK punkt 资源: {pp}")
+                            break
+                        except LookupError:
+                            continue
+            
+            if not punkt_found:
+                logger.warning(
+                    f"⚠️ NLTK punkt 资源未找到（这是正常的，只需要下载一次）。\n"
+                    f"📥 解决方案（只需执行一次，下载后会永久保存）：\n"
+                    f"   方法1（推荐）: python -m app.utils.download_nltk_data\n"
+                    f"   方法2: python -c \"import nltk; nltk.download('punkt')\"\n"
+                    f"   方法3: 设置 NLTK_DATA={nltk_data_dir} 后运行上述命令\n"
+                    f"   下载位置: {nltk_data_dir}\n"
+                    f"   注意：下载一次后，后续运行会自动使用本地数据，不会再次下载。"
+                )
+                
+        except ImportError:
+            logger.warning("NLTK 未安装，某些文本处理功能可能不可用")
+        except Exception as e:
+            logger.warning(f"NLTK 配置失败: {e}，将继续尝试导入 LlamaIndex")
+        
         _module_times = {}
         try:
             _t0 = time.time()
             from llama_index.core.indices.vector_store import VectorStoreIndex as _V
             _module_times['VectorStoreIndex'] = time.time() - _t0
             VectorStoreIndex = _V
+            logger.debug(f"VectorStoreIndex ready, time: {time.time() - _t0}")
 
             _t0 = time.time()
             from llama_index.core.storage.storage_context import StorageContext as _SC
             _module_times['StorageContext'] = time.time() - _t0
             StorageContext = _SC
+            logger.debug(f"StorageContext ready, time: {time.time() - _t0}")
 
             _t0 = time.time()
             from llama_index.core.indices.loading import load_index_from_storage as _L
             _module_times['load_index_from_storage'] = time.time() - _t0
             load_index_from_storage = _L
+            logger.debug(f"load_index_from_storage ready, time: {time.time() - _t0}")
 
             _t0 = time.time()
             from llama_index.core.node_parser import SemanticSplitterNodeParser as _NP
             _module_times['SemanticSplitterNodeParser'] = time.time() - _t0
             SemanticSplitterNodeParser = _NP
-
+            logger.debug(f"SemanticSplitterNodeParser ready, time: {time.time() - _t0}")
+            
             _t0 = time.time()
             from llama_index.embeddings.huggingface import HuggingFaceEmbedding as _HF
             _module_times['HuggingFaceEmbedding'] = time.time() - _t0
             HuggingFaceEmbedding = _HF
-
+            logger.debug(f"HuggingFaceEmbedding ready, time: {time.time() - _t0}")
+            
             _t0 = time.time()
             from llama_index.core import SimpleDirectoryReader as _SDR
             _module_times['SimpleDirectoryReader'] = time.time() - _t0
             SimpleDirectoryReader = _SDR
+            logger.debug(f"SimpleDirectoryReader ready, time: {time.time() - _t0}")
 
             _total = time.time() - _import_start_time
             logger.info(f"✅ 所有 LlamaIndex 模块加载完成，总耗时: {_total:.3f}s")

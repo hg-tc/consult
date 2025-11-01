@@ -78,6 +78,8 @@ print_message $GREEN "📝 虚拟环境已激活"
 print_message $GREEN "📝 Python: $(which python)"
 print_message $GREEN "================================"
 
+export HF_ENDPOINT=https://hf-mirror.com
+export HF_HUB_OFFLINE=1
 # 前台运行（实时显示日志）
 python app_simple.py
 

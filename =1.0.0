@@ -1,0 +1,6 @@
+Found existing installation: langchain-community 0.2.17
+Uninstalling langchain-community-0.2.17:
+  Would remove:
+    /root/consult/backend/venv/lib/python3.10/site-packages/langchain_community-0.2.17.dist-info/*
+    /root/consult/backend/venv/lib/python3.10/site-packages/langchain_community/*
+Proceed (Y/n)? 

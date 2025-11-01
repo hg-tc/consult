@@ -2,9 +2,15 @@ import os
 import uuid
 from typing import Any, Dict, List, Optional, TypedDict
 
-from langgraph.graph import StateGraph
+from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_openai import ChatOpenAI
+from langchain_core.tools import tool as tool_dec
+from langchain_core.prompts import ChatPromptTemplate
+from langchain.agents import create_agent
+from app.utils.progress_broker import get_progress_broker
+import time
+import asyncio
 
 import logging
 logger = logging.getLogger(__name__)
@@ -15,32 +21,20 @@ class QBState(TypedDict):
     company_name: Optional[str]
     target_projects: List[str]
     known_info: Dict[str, Any]
-
-    client_profile: Dict[str, Any]
-    policy_hits: Dict[str, List[Dict[str, Any]]]
-    company_open_data: Dict[str, Any]
-    criteria: List[Dict[str, Any]]
-    gaps: List[Dict[str, Any]]
-    outline: Dict[str, Any]
-    questions: List[Dict[str, Any]]
-    rules: List[Dict[str, Any]]
-    scoring: Dict[str, Any]
-    required_documents: List[Dict[str, Any]]
-    success_rate_by_project: Dict[str, Any]
+    # 检索与聚合
     sources: List[Dict[str, Any]]
-    per_item_sources: Dict[str, List[Dict[str, Any]]]
-    # Phase 1 additions
+    tmp_hits: Dict[str, List[Dict[str, Any]]]
     policy_corpus: Dict[str, List[Dict[str, Any]]]
-    normalized_requirements: List[Dict[str, Any]]
-    phase1_outline_md: str
-    phase1_full_md: str
-    # Phase 2 additions
-    applicant_findings: Dict[str, Any]
+    policy_hits: Dict[str, List[Dict[str, Any]]]
+    # 控制
+    retry_counters: Dict[str, int]
+    needs_more_data: bool
+    # ReAct 输出与问卷
+    policy: Dict[str, Any]
+    network_info: Dict[str, Any]
+    assessment_overview: Dict[str, Any]
     assessment_report_md: str
-    # Phase 3 additions
-    questionnaire_outline: Dict[str, Any]
-    questionnaire_sections: List[Dict[str, Any]]
-    questionnaire_items: List[Dict[str, Any]]
+    questionnaire: Dict[str, Any]
 
 
 class QuestionnaireBuilderWorkflow:
@@ -53,9 +47,10 @@ class QuestionnaireBuilderWorkflow:
             logger.info("No LLM provided")
             api_key = os.getenv('THIRD_PARTY_API_KEY') or os.getenv('OPENAI_API_KEY')
             api_base = os.getenv('THIRD_PARTY_API_BASE') or os.getenv('OPENAI_BASE_URL', 'https://api.openai.com/v1')
-            self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2, openai_api_key=api_key, openai_api_base=api_base)
+            self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2, openai_api_key=api_key, openai_api_base=api_base).with_config({"stream": False})
         else:
-            self.llm = llm
+            # 统一禁用流式，避免 usage_metadata None 聚合问题
+            self.llm = llm.with_config({"stream": False}) if hasattr(llm, "with_config") else llm
 
         self.graph = self._build_graph()
         self.checkpointer = MemorySaver()
@@ -68,31 +63,17 @@ class QuestionnaireBuilderWorkflow:
             "company_name": request.get("company_name"),
             "target_projects": request.get("target_projects", []),
             "known_info": request.get("known_info", {}),
-            "client_profile": {},
             "policy_hits": {},
-            "company_open_data": {},
-            "criteria": [],
-            "gaps": [],
-            "outline": {},
-            "questions": [],
-            "rules": [],
-            "scoring": {},
-            "required_documents": [],
-            "success_rate_by_project": {},
             "sources": [],
-            "per_item_sources": {},
-            # Phase 1 defaults
             "policy_corpus": {"official_docs": [], "case_docs": []},
-            "normalized_requirements": [],
-            "phase1_outline_md": "",
-            "phase1_full_md": "",
-            # Phase 2 defaults
-            "applicant_findings": {"facts": [], "matches": []},
             "assessment_report_md": "",
-            # Phase 3 defaults
-            "questionnaire_outline": {},
-            "questionnaire_sections": [],
-            "questionnaire_items": [],
+            "retry_counters": {},
+            "needs_more_data": False,
+            "tmp_hits": {},
+            "policy": {},
+            "network_info": {"queries": [], "results": []},
+            "assessment_overview": {},
+            "questionnaire": {},
         }
         # LangGraph MemorySaver 需要提供 configurable.thread_id
         thread_id = (
@@ -116,67 +97,16 @@ class QuestionnaireBuilderWorkflow:
             },
             "configurable": {"thread_id": thread_id},
         }
-        result: QBState = await self.compiled_graph.ainvoke(initial, config)
-        # 生成带引用尾注的 Markdown（简单脚注样式）
-        outline_md = result["outline"].get("markdown", "")
-        if result.get("sources"):
-            footers: List[str] = ["\n\n---\n\n参考来源：\n"]
-            for idx, s in enumerate(result["sources"], start=1):
-                title = s.get("title") or s.get("file_name") or s.get("doc_id") or "来源"
-                url = s.get("url") or s.get("original_path") or s.get("path") or ""
-                domain = s.get("domain") or ""
-                footers.append(f"[{idx}] {title} {('(' + domain + ')') if domain else ''} {url}")
-            outline_md = outline_md + "\n" + "\n".join(footers)
-
+        result: QBState = await self.compiled_graph.ainvoke(initial, {**config, "recursion_limit": 40, "stream": False})
         response: Dict[str, Any] = {
-            "questionnaire": {
-                "target_projects": result["target_projects"],
-                "outline": result["outline"],
-                "sections": result["outline"].get("sections", []),
-                "questions": result["questions"],
-                "rules": result["rules"],
-                "required_documents": result["required_documents"],
-                "scoring": result["scoring"],
-            },
-            "outline_markdown": outline_md,
-            "success_rate_by_project": result["success_rate_by_project"],
-            "risk_notes": result.get("gaps", []),
-            "sources": result["sources"],
-            "per_item_sources": result["per_item_sources"],
-            # Phase extras
-            "phase1_outline_md": result.get("phase1_outline_md", ""),
-            "phase1_full_md": result.get("phase1_full_md", ""),
-            "normalized_requirements": result.get("normalized_requirements", []),
-            "assessment_report_md": result.get("assessment_report_md", ""),
-            "questionnaire_outline": result.get("questionnaire_outline", {}),
-            "questionnaire_items": result.get("questionnaire_items", []),
+            "assessment_overview_md": (result.get("assessment_overview") or {}).get("overview_md", ""),
+            "questionnaire_md": (result.get("questionnaire") or {}).get("generated_md", ""),
+            "policy": result.get("policy", {}),
+            "network_info": result.get("network_info", {}),
+            "sources": result.get("sources", []),
         }
 
-        if phase == "1":
-            keys = [
-                "phase1_outline_md",
-                "phase1_full_md",
-                "normalized_requirements",
-                "sources",
-                "per_item_sources",
-            ]
-            return {k: response[k] for k in keys}
-        if phase == "2":
-            keys = [
-                "assessment_report_md",
-                "normalized_requirements",
-                "sources",
-                "per_item_sources",
-            ]
-            return {k: response[k] for k in keys}
-        if phase == "3":
-            keys = [
-                "questionnaire_outline",
-                "questionnaire_items",
-                "sources",
-                "per_item_sources",
-            ]
-            return {k: response[k] for k in keys}
+        # 相位裁剪已移除，直接返回
         return response
 
     def _build_graph(self) -> StateGraph:
@@ -196,347 +126,438 @@ class QuestionnaireBuilderWorkflow:
             state["client_profile"] = profile
             return state
 
-        async def retrieve_policy_and_cases(state: QBState) -> QBState:
+        async def retrieve_internal_db(state: QBState) -> QBState:
             sources: List[Dict[str, Any]] = state["sources"]
-            hits: Dict[str, List[Dict[str, Any]]] = {}
+            tmp_hits: Dict[str, List[Dict[str, Any]]] = state.get("tmp_hits", {})
             for proj in state["target_projects"]:
-                q_variants = [
-                    f"{proj} 申请条件", f"{proj} 材料清单", f"{proj} 资格要求", f"{proj} 申报指引"
-                ]
-                proj_hits: List[Dict[str, Any]] = []
-                # 内部检索（全局）
+                q_variants = [f"{proj} 申请条件", f"{proj} 材料清单", f"{proj} 资格要求", f"{proj} 申报指引"]
                 for q in q_variants:
                     results = await self.global_retriever.retrieve(query=q, top_k=5, use_hybrid=True, use_compression=True)
                     for r in results:
-                        proj_hits.append({"type": "db", **r})
+                        tmp_hits.setdefault(proj, []).append({"type": "db", **r})
                         src_id = r.get("document_id") or r.get("node_id") or r.get("id")
                         sources.append({"id": f"db::{src_id}", "type": "db", **r})
-                # 工作区检索
+            state["tmp_hits"] = tmp_hits
+            state["sources"] = self._dedupe_sources(sources)
+            return state
+
+        async def retrieve_workspace_db(state: QBState) -> QBState:
+            sources: List[Dict[str, Any]] = state["sources"]
+            tmp_hits: Dict[str, List[Dict[str, Any]]] = state.get("tmp_hits", {})
+            for proj in state["target_projects"]:
+                q_variants = [f"{proj} 申请条件", f"{proj} 材料清单", f"{proj} 资格要求", f"{proj} 申报指引"]
                 for q in q_variants:
                     results = await self.workspace_retriever.retrieve(query=q, top_k=5, use_hybrid=True, use_compression=True)
                     for r in results:
-                        proj_hits.append({"type": "db", **r})
+                        tmp_hits.setdefault(proj, []).append({"type": "db", **r})
                         src_id = r.get("document_id") or r.get("node_id") or r.get("id")
                         sources.append({"id": f"db::{src_id}", "type": "db", **r})
-                # 互联网检索
-                for q in q_variants:
-                    # 使用上下文管理器确保会话建立
-                    async with self.web_search_service as ws:
-                        web = await ws.search_web(q, num_results=5)
-                    for w in web:
-                        entry = {"title": w.title, "url": w.url, "snippet": w.snippet, "source_type": getattr(w, 'source_type', 'web')}
-                        proj_hits.append({"type": "web", **entry})
+            state["tmp_hits"] = tmp_hits
+            state["sources"] = self._dedupe_sources(sources)
+            return state
+
+        async def web_search_collect(state: QBState) -> QBState:
+            """基于公司与 policy 的多轮 ReAct 检索：动态生成查询→检索→校验，累计到 network_info。"""
+            broker = get_progress_broker()
+            ws = state.get("workspace_id") or "global"
+            company = state.get("company_name") or ""
+            await broker.publish("questionnaire-builder", ws, {"stage": "web_search_collect", "status": "start", "company_name": company, "ts": time.time()})
+            sources: List[Dict[str, Any]] = state["sources"]
+            tmp_hits: Dict[str, List[Dict[str, Any]]] = state.get("tmp_hits", {})
+            company = state.get("company_name") or ""
+            policy_text = (state.get("policy") or {}).get("policy_text", "")
+
+            # 累积容器（闭包可修改）
+            state.setdefault("network_info", {}).setdefault("queries", [])
+            state.setdefault("network_info", {}).setdefault("results", [])
+            queries_acc: List[str] = list(state["network_info"]["queries"])
+            aggregated: List[Dict[str, Any]] = list(state["network_info"]["results"])
+
+            # 工具1：生成下一批查询（<=3）
+            async def _gen_queries(instruction: str) -> str:
+                tpl_text = (
+                    "你是检索词生成器。请为‘下一轮’生成3到5条中文查询（每行一条）。\n"
+                    "企业：{company}\n政策要点（可截断）：{policy}\n"
+                    "规则：\n"
+                    "- 优先触达官方来源关键词（通知/指南/实施/细则/zwgk/xxgk）。\n"
+                    "- 覆盖企业信息源（企查查/爱企查/启信宝/天眼查 + 企业名）。\n"
+                    "- 可使用引号与 site: 约束（示例：\\\"办理流程\\\" site:sz.gov.cn）。\n"
+                    "- 聚焦阈值/时间点/材料格式等关键口径；避免与已用查询重复。"
+                )
+                rendered = tpl_text.format(company=company or "未提供", policy=(policy_text[:1200] or "无"))
+                txt = await self.llm.ainvoke(rendered)
+                return str(getattr(txt, "content", txt))
+
+            @tool_dec(name="gen_queries", description="生成下一批检索查询（<=3），每行一条，中文")
+            async def gen_queries(instruction: str) -> str:
+                return await _gen_queries(instruction)
+
+            # 工具2：执行单条检索并累计结果
+            async def _web_search_once(q: str) -> str:
+                q = (q or "").strip()
+                if not q:
+                    return "空查询"
+                queries_acc.append(q)
+                async with self.web_search_service as ws:
+                    web = await ws.search_web(q, num_results=6)
+                added = 0
+                for w in web:
+                    entry = {"title": w.title, "url": w.url, "snippet": w.snippet, "source_type": getattr(w, 'source_type', 'web'), "query": q}
+                    # 去重（按 URL）
+                    if not any(e.get("url") == entry["url"] for e in aggregated):
+                        aggregated.append(entry)
+                        tmp_hits.setdefault("web", []).append({"type": "web", **entry})
                         sources.append({"id": f"web::{w.url}", "type": "web", **entry})
-                # 粗分官方/案例，并过滤低相关来源
+                        added += 1
+                return f"added={added}"
+
+            @tool_dec(name="web_search", description="对给定中文查询执行一次互联网检索并累计结果，返回新增条数")
+            async def web_search(q: str) -> str:
+                return await _web_search_once(q)
+
+            # 工具3：在本地累计结果中检索（验证/补洞）
+            async def _lookup_local(query: str) -> str:
+                q = (query or "").lower()
+                lines: List[str] = []
+                for e in aggregated[:300]:
+                    blob = f"{e.get('title','')}\n{e.get('snippet','')}\n{e.get('url','')}".lower()
+                    if all(k.strip() in blob for k in q.split() if k.strip()):
+                        lines.append(f"- {e.get('title','来源')} | {e.get('url','')}\n  {e.get('snippet','')[:220]}")
+                        if len(lines) >= 10:
+                            break
+                return "\n".join(lines) or "无匹配片段"
+
+            @tool_dec(name="lookup_local", description="在已累计的结果集中按关键词检索匹配片段，帮助验证覆盖情况")
+            async def lookup_local(query: str) -> str:
+                return await _lookup_local(query)
+
+            # ReAct 提示（1.0.2）：使用 messages_modifier（system + {messages} 占位）
+            loop_system = (
+                "多轮检索任务：为企业（{company}）基于政策要点进行覆盖式检索。\n"
+                "目标覆盖：官方来源、企业信息侧关键要点、条件/门槛/材料/流程/时间等关键口径。\n"
+                "流程：每轮先调用 gen_queries 生成≤3条，再对每条用 web_search 检索；必要时用 lookup_local 验证。\n"
+                "终止：覆盖充分且最近一轮无新增时输出 ‘OK’ 作为 Final Answer。仅输出动作/OK，不输出总结。"
+            )
+            loop_messages = ChatPromptTemplate.from_messages([
+                ("system", loop_system.format(company=company or "未提供")),
+                ("placeholder", "{messages}")
+            ])
+
+            loop_agent = create_agent(
+                model=self.llm,
+                tools=[gen_queries, web_search, lookup_local],
+                prompt=loop_messages,
+            )
+            # 直接调用 agent（非流式）
+            await loop_agent.ainvoke({
+                "messages": [{"role": "user", "content": "开始执行覆盖式检索，按流程进行。"}]
+            }, config={"stream": False})
+
+            # 写回去重后的 queries / results
+            # 去重 queries（保序）
+            seen_q = set()
+            dedup_q = []
+            for q in queries_acc:
+                if q not in seen_q:
+                    seen_q.add(q)
+                    dedup_q.append(q)
+            state["network_info"]["queries"] = dedup_q
+            # 去重 results（按 URL 保序）
+            seen_u = set()
+            dedup_res = []
+            for e in aggregated:
+                u = e.get("url")
+                if u and u not in seen_u:
+                    seen_u.add(u)
+                    dedup_res.append(e)
+            state["network_info"]["results"] = dedup_res
+
+            # 递增重试计数
+            rc = state.get("retry_counters", {})
+            rc["web_search"] = rc.get("web_search", 0) + 1
+            state["retry_counters"] = rc
+            state["tmp_hits"] = tmp_hits
+            state["sources"] = self._dedupe_sources(sources)
+            await broker.publish("questionnaire-builder", ws, {"stage": "web_search_collect", "status": "end", "company_name": company, "ts": time.time()})
+            return state
+
+        async def triage_and_filter(state: QBState) -> QBState:
+            # 将 tmp_hits 归并为 policy_hits，同步生成官方/案例集合
+            broker = get_progress_broker()
+            ws = state.get("workspace_id") or "global"
+            company = state.get("company_name") or ""
+            await broker.publish("questionnaire-builder", ws, {"stage": "triage_and_filter", "status": "start", "company_name": company, "ts": time.time()})
+            tmp_hits: Dict[str, List[Dict[str, Any]]] = state.get("tmp_hits", {})
+            hits: Dict[str, List[Dict[str, Any]]] = {}
+            official_docs: List[Dict[str, Any]] = []
+            case_docs: List[Dict[str, Any]] = []
+            needs_more = False
+            for proj, items in tmp_hits.items():
+                proj_hits: List[Dict[str, Any]] = []
                 official = []
                 cases = []
-                for h in proj_hits:
+                for h in items:
                     title = (h.get("title") or h.get("text") or "").lower()
                     url = (h.get("url") or "").lower()
-                    # 简单降噪：忽略百科/泛资讯在官方集合
                     is_official = (
                         any(k in title for k in ["通知", "指引", "实施", "细则", "办事", "指南"]) or
                         any(k in url for k in ["gov.cn", ".gov.cn", "gov.hk", "qh.gov", "sz.gov.cn"]) or
                         any(k in title for k in ["管理局", "印发", "办法", "规定"]) or
                         any(k in url for k in ["/zwgk/", "/xxgk/"])
                     ) and not any(b in url for b in ["baike.baidu.com", "baike.so.com"]) and not any(b in title for b in ["百科", "新闻", "解读"])
-
                     is_noise = any(b in url for b in ["baike.baidu.com", "zhihu.com", "sohu.com/news", "toutiao", "weibo.com"]) and not is_official
-
                     if is_noise:
                         continue
-
+                    proj_hits.append(h)
                     if is_official:
                         official.append(h)
                     else:
                         cases.append(h)
                 hits[proj] = proj_hits
-                state["policy_corpus"]["official_docs"] += official
-                state["policy_corpus"]["case_docs"] += cases
-            # 去重
+                official_docs += official
+                case_docs += cases
+                # 简单信号：若官方来源过少则需要更多数据
+                if len(official) < 3:
+                    needs_more = True
             state["policy_hits"] = hits
-            state["sources"] = self._dedupe_sources(sources)
+            state["policy_corpus"]["official_docs"] += official_docs
+            state["policy_corpus"]["case_docs"] += case_docs
+            # 是否继续循环 Web 搜索（最多 2 次）
+            retries = state.get("retry_counters", {}).get("web_search", 0)
+            state["needs_more_data"] = needs_more and retries < 2
+            await broker.publish("questionnaire-builder", ws, {"stage": "triage_and_filter", "status": "end", "company_name": company, "ts": time.time()})
             return state
 
-        async def resolve_company_open_data(state: QBState) -> QBState:
-            company = state.get("company_name")
-            if not company:
-                return state
-            async with self.web_search_service as ws:
-                web = await ws.search_web(f"{company} 公司 经营 范围 注册 资本 人员 规模", num_results=8)
-            state["company_open_data"] = {"raw": [{"title": w.title, "url": w.url, "snippet": w.snippet} for w in web]}
-            # 索引引用
-            sources = state["sources"]
-            for w in web:
-                sources.append({"id": f"web::{w.url}", "type": "web", "title": w.title, "url": w.url, "snippet": w.snippet})
-            state["sources"] = self._dedupe_sources(sources)
-            return state
+        # 文档生成 Agent：基于 policy + network_info 评估申请概况
+        async def doc_assessment_agent(state: QBState) -> QBState:
+            broker = get_progress_broker()
+            ws = state.get("workspace_id") or "global"
+            company = state.get("company_name") or ""
+            await broker.publish("questionnaire-builder", ws, {"stage": "doc_assessment", "status": "start", "company_name": company, "ts": time.time()})
+            policy_text = (state.get("policy") or {}).get("policy_text", "")
+            results: List[Dict[str, Any]] = (state.get("network_info") or {}).get("results", [])
 
-        async def normalize_criteria(state: QBState) -> QBState:
-            # 这里简化：将命中的片段粗略映射为条件/材料条目，由 LLM 后续细化
-            criteria: List[Dict[str, Any]] = []
-            per_item_sources: Dict[str, List[Dict[str, Any]]] = {}
-            for proj, items in state["policy_hits"].items():
-                for idx, it in enumerate(items):
-                    crit_id = f"{proj}::hit::{idx}"
-                    criteria.append({
-                        "id": crit_id,
-                        "name": it.get("title") or it.get("text", "条件/材料"),
-                        "type": "text",
-                        "applicable_projects": [proj],
-                    })
-                    per_item_sources[crit_id] = [{"source_id": (it.get("id") or it.get("url") or crit_id)}]
-            state["criteria"] = criteria
-            # 合并引用
-            state["per_item_sources"].update(per_item_sources)
-            # 由 criteria 精简生成 normalized_requirements（占位）
-            normalized: List[Dict[str, Any]] = []
-            for c in criteria:
-                normalized.append({
-                    "id": c["id"],
-                    "type": "condition",
-                    "name": c.get("name", "条件/材料"),
-                    "description": c.get("name", ""),
-                    "applicable_projects": c.get("applicable_projects", []),
-                    "source_refs": state["per_item_sources"].get(c["id"], []),
-                })
-            state["normalized_requirements"] = normalized
-            return state
+            # 本地查找工具：在抓取结果中查证条件相关线索
+            async def _lookup_local(q: str) -> str:
+                ql = (q or "").lower()
+                lines: List[str] = []
+                for e in results[:400]:
+                    blob = f"{e.get('title','')}\n{e.get('snippet','')}\n{e.get('url','')}".lower()
+                    if all(k.strip() in blob for k in ql.split() if k.strip()):
+                        lines.append(f"- {e.get('title','来源')} | {e.get('url','')}\n  {e.get('snippet','')[:240]}")
+                        if len(lines) >= 12:
+                            break
+                return "\n".join(lines) or "无匹配片段"
 
-        async def phase1_outline_first(state: QBState) -> QBState:
-            sections = [
-                {"id": "scope", "title": "适用范围与对象"},
-                {"id": "eligibility", "title": "资格条件（硬性/加分）"},
-                {"id": "thresholds", "title": "门槛与阈值（地域/规模/时段等）"},
-                {"id": "materials", "title": "材料清单与格式要求"},
-                {"id": "process", "title": "办理流程与时间节点"},
-                {"id": "variants", "title": "不同情形与常见变体"},
-                {"id": "policies", "title": "政策依据与版本"},
-            ]
-            md = (
-                "# 申报条件判断与理解（大纲）\n"
-                "- 适用范围与对象\n"
-                "- 资格条件（硬性/加分）\n"
-                "- 门槛与阈值（地域/规模/时段等）\n"
-                "- 材料清单与格式要求\n"
-                "- 办理流程与时间节点\n"
-                "- 不同情形与常见变体\n"
-                "- 政策依据与版本"
+            @tool_dec(name="lookup_local", description="在已抓取结果中按关键词检索相关片段（用于验证条件是否满足）")
+            async def lookup_tool(q: str) -> str:
+                return await _lookup_local(q)
+
+            assess_system = (
+                "你是政策申报评估助手。请基于“政策要点”与已抓取的网络结果，生成一份完整且详尽的中文 Markdown 报告，用于评估申请概况。\n\n"
+                "报告必须包含并按以下结构输出（仅输出报告，不展示思考过程）：\n"
+                "# 申请概况总览\n- 企业：{company}\n- 评估范围：目标项目与相关政策\n- 一句话总体判断（是否具备申报潜力及风险级别）\n\n"
+                "# 需要满足的条件（分类清单）\n- 将条件按 类别/门槛/材料/流程/时间 等分类分条列出，尽量来源于政策要点\n\n"
+                "# 已满足的条件与证据\n- 对每条已满足条件，给出证据要点（可引用 lookup_local 返回的片段摘要），标注来源链接\n\n"
+                "# 未满足的条件\n- 分条列出当前不满足的条件及其差距说明\n\n"
+                "# 未知/待补充信息\n- 分条列出需要补充核实的信息点（将用于后续问卷）\n\n"
+                "# 官方来源与参考\n- 汇总可识别的官方来源条目（标题 + 链接）\n\n"
+                "# 建议与后续行动\n- 给出下一步补证/优化建议、优先级、可行动检查项\n\n"
+                "输入背景：\n企业：{company}\n政策要点（可截断）：{policy}\n\n"
+                "可用工具：\n{tools}\n工具名称：{tool_names}"
             )
-            state["phase1_outline_md"] = md
-            state["outline"] = {"markdown": md, "sections": sections}
+            assess_messages = ChatPromptTemplate.from_messages([
+                ("system", assess_system.format(company=company or "未提供", policy=(policy_text[:1500] or "无"))),
+                ("placeholder", "{messages}")
+            ])
+
+            agent = create_agent(
+                model=self.llm,
+                tools=[lookup_tool],
+                prompt=assess_messages,
+            )
+            res_msg = await agent.ainvoke({
+                "messages": [{"role": "user", "content": "依据上述要求产出完整评估报告。"}]
+            }, config={"stream": False})
+            output = getattr(res_msg, "content", "") or ""
+            state["assessment_overview"] = {"overview_md": output}
+            # 同步便于外部读取
+            state["assessment_report_md"] = output or state.get("assessment_report_md", "")
+            await broker.publish("questionnaire-builder", ws, {"stage": "doc_assessment", "status": "end", "company_name": company, "ts": time.time()})
             return state
 
-        async def phase1_expand_sections(state: QBState) -> QBState:
-            # 基于 policy_corpus 与 normalized_requirements 生成更丰富的条目
-            def pick_points(hits: List[Dict[str, Any]], keywords: List[str], limit: int = 12) -> List[str]:
-                points: List[str] = []
-                for h in hits:
-                    title = (h.get("title") or h.get("text") or "").strip()
-                    snip = (h.get("snippet") or h.get("text") or "").strip()
-                    blob = (title + "\n" + snip).lower()
-                    if any(k in blob for k in keywords):
-                        brief = title or snip[:60]
-                        if brief:
-                            points.append(brief)
-                    if len(points) >= limit:
-                        break
-                return points
+        async def questionnaire_from_assessment(state: QBState) -> QBState:
+            """基于评估概况与未知要点生成调查问卷（Markdown），使用离线模板。"""
+            broker = get_progress_broker()
+            ws = state.get("workspace_id") or "global"
+            company = state.get("company_name") or ""
+            await broker.publish("questionnaire-builder", ws, {"stage": "questionnaire", "status": "start", "company_name": company, "ts": time.time()})
+            try:
+                from pathlib import Path
+                prompt_path = Path(__file__).resolve().parent.parent / "prompts" / "assessment_to_questionnaire.md"
+                with open(prompt_path, "r", encoding="utf-8") as f:
+                    tpl_text = f.read()
+            except Exception:
+                tpl_text = (
+                    "你是一名政策申报问卷设计专家。请根据评估概况生成问卷（Markdown）。\n"
+                    "企业：{company}\n项目：{projects}\n\n评估：\n{assessment_overview_md}"
+                )
 
-            official = state.get("policy_corpus", {}).get("official_docs", [])
-            cases = state.get("policy_corpus", {}).get("case_docs", [])
-            reqs = state.get("normalized_requirements", [])
+            company = state.get("company_name") or ""
+            projects = ", ".join(state.get("target_projects") or [])
+            overview_md = (state.get("assessment_overview") or {}).get("overview_md", "")
 
-            # 分类关键词
-            kw_scope = ["适用范围", "对象", "面向", "企业", "个人", "在前海", "在本市"]
-            kw_elig = ["条件", "资格", "须", "应", "需满足", "不得", "要求"]
-            kw_thr = ["累计", "不少于", "不超过", "≥", "≤", "达到", "门槛", "阈值", "时间节点", "期内"]
-            kw_mat = ["材料", "清单", "证明", "复印件", "原件", "表格", "模板", "盖章"]
-            kw_proc = ["流程", "步骤", "受理", "审核", "公示", "发放", "办理", "时限"]
-            kw_var = ["情形", "视同", "变更", "变体", "例外", "特殊", "豁免"]
+            # 默认：优先使用 LangChain Hub 在线 Prompt（质量更高），失败时回退到离线模板
+            use_hub = os.getenv("USE_LC_HUB", "true").lower() in {"1", "true", "yes", "on"}
+            hub_prompt_name = os.getenv("LANGCHAIN_HUB_PROMPT", "rlm/questionnaire-generator")
+            rendered = None
+            if use_hub:
+                try:
+                    from langchain import hub
+                    hp = hub.pull(hub_prompt_name)
+                    # 尝试格式化（不同 Hub 资产可能有不同接口，这里做兜底）
+                    try:
+                        rendered = hp.format(company=company or "未提供", projects=projects or "未指定", assessment_overview_md=overview_md or "")
+                    except Exception:
+                        rendered = await hp.ainvoke({
+                            "company": company or "未提供",
+                            "projects": projects or "未指定",
+                            "assessment_overview_md": overview_md or "",
+                        })
+                except Exception:
+                    rendered = None
 
-            # 提炼
-            pts_scope = pick_points(official + cases, kw_scope, limit=10)
-            pts_elig = [
-                f"{i+1}. {r.get('name','要点')}" for i, r in enumerate(reqs[:20])
-            ]
-            if not pts_elig:
-                pts_elig = pick_points(official, kw_elig, limit=12)
-            pts_thr = pick_points(official, kw_thr, limit=10)
-            pts_mat = pick_points(official, kw_mat, limit=12)
-            pts_proc = pick_points(official, kw_proc, limit=8)
-            pts_var = pick_points(official + cases, kw_var, limit=8)
-
-            lines: List[str] = ["# 申报条件判断与理解（完整）"]
-            if pts_scope:
-                lines.append("\n## 适用范围与对象\n")
-                for p in pts_scope:
-                    lines.append(f"- {p}")
-            if pts_elig:
-                lines.append("\n## 资格条件（硬性/加分）\n")
-                for p in pts_elig:
-                    lines.append(f"- {p}")
-            if pts_thr:
-                lines.append("\n## 门槛与阈值（地域/规模/时段等）\n")
-                for p in pts_thr:
-                    lines.append(f"- {p}")
-            if pts_mat:
-                lines.append("\n## 材料清单与格式要求\n")
-                for p in pts_mat:
-                    lines.append(f"- {p}")
-            if pts_proc:
-                lines.append("\n## 办理流程与时间节点\n")
-                for p in pts_proc:
-                    lines.append(f"- {p}")
-            if pts_var:
-                lines.append("\n## 不同情形与常见变体\n")
-                for p in pts_var:
-                    lines.append(f"- {p}")
-
-            # 政策依据（列出前若干官方来源）
-            if official:
-                lines.append("\n## 政策依据与版本\n")
-                for i, h in enumerate(official[:10], start=1):
-                    title = (h.get("title") or h.get("text") or "来源").strip()
-                    url = (h.get("url") or "").strip()
-                    lines.append(f"{i}. {title} {(' '+url) if url else ''}")
-
-            state["phase1_full_md"] = "\n".join(lines)
+            if rendered is None:
+                try:
+                    rendered = tpl_text.format(
+                        company=company or "未提供",
+                        projects=projects or "未指定",
+                        assessment_overview_md=overview_md or "",
+                    )
+                except Exception:
+                    rendered = f"企业：{company or '未提供'}\n项目：{projects or '未指定'}\n\n评估：\n{overview_md or ''}"
+            resp = await self.llm.ainvoke(rendered)
+            questionnaire_md = str(getattr(resp, "content", resp))
+            state.setdefault("questionnaire", {})
+            state["questionnaire"]["generated_md"] = questionnaire_md
+            # 同步便于 API 返回
+            state["questionnaire_outline"] = state.get("questionnaire_outline") or {}
+            state["phase1_outline_md"] = state.get("phase1_outline_md", "")
+            await broker.publish("questionnaire-builder", ws, {"stage": "questionnaire", "status": "end", "company_name": company, "ts": time.time()})
             return state
 
-        async def phase1_critic_and_aggregate(state: QBState) -> QBState:
-            if not state.get("normalized_requirements") and state.get("criteria"):
-                norm: List[Dict[str, Any]] = []
-                for c in state["criteria"]:
-                    norm.append({
-                        "id": c["id"],
-                        "type": "condition",
-                        "name": c.get("name", "条件/材料"),
-                        "description": c.get("name", ""),
-                        "applicable_projects": c.get("applicable_projects", []),
-                        "source_refs": state["per_item_sources"].get(c["id"], []),
-                    })
-                state["normalized_requirements"] = norm
+        # 已移除未使用节点：resolve_company_open_data 等
+
+
+        # ============== ReAct 节点：面向条件的长文描述（基于全局/工作区检索迭代完善） ==============
+        async def react_requirements_synthesis(state: QBState) -> QBState:
+            broker = get_progress_broker()
+            ws = state.get("workspace_id") or "global"
+            company = state.get("company_name") or ""
+            await broker.publish("questionnaire-builder", ws, {"stage": "react_requirements_synthesis", "status": "start", "company_name": company, "ts": time.time()})
+            # 工具：统一封装全局与工作区检索
+            async def _db_search_tool(query: str) -> str:
+                snippets: List[str] = []
+                # 全局检索
+                try:
+                    g_results = await self.global_retriever.retrieve(query=query, top_k=6, use_hybrid=True, use_compression=True)
+                    for r in g_results:
+                        title = r.get("title") or r.get("name") or r.get("document_id") or "片段"
+                        text = r.get("text") or r.get("content") or ""
+                        snippets.append(f"[GLOBAL] {title}: {text[:300]}")
+                except Exception:
+                    pass
+                # 工作区检索
+                try:
+                    w_results = await self.workspace_retriever.retrieve(query=query, top_k=6, use_hybrid=True, use_compression=True)
+                    for r in w_results:
+                        title = r.get("title") or r.get("name") or r.get("document_id") or "片段"
+                        text = r.get("text") or r.get("content") or ""
+                        snippets.append(f"[WORKSPACE] {title}: {text[:300]}")
+                except Exception:
+                    pass
+                return "\n".join(snippets[:12]) or "未找到有效片段"
+
+            # LangChain 工具（异步）
+            @tool_dec(name="db_search", description="查询全局与工作区数据库以获取与项目要求/条件相关的片段，输入中文查询，输出若干要点片段")
+            async def db_tool(q: str) -> str:
+                return await _db_search_tool(q)
+
+            # ReAct 提示词
+            tp = ", ".join(state.get("target_projects") or [])
+            known = state.get("known_info") or {}
+            known_blob = "\n".join([f"- {k}: {v}" for k, v in list(known.items())[:12]])
+            react_template = (
+                "你是中国政策与补贴申报顾问。用户希望申请以下项目：{target_projects}\n"
+                "已知信息（可能不完整）：\n{known_info}\n\n"
+                "请采用 ReAct（Reason+Act）多轮检索与核对，仅在需要时调用工具。目标：输出面向实操的“申报条件综述”。\n"
+                "执行要点：\n"
+                "- 列出待确认类别：资格/门槛（含数值/阈值）/材料/流程/时间/例外情形。\n"
+                "- 分类别逐轮补齐要点：优先引用明确口径、阈值与出处。\n"
+                "- 对地域/规模/时段等差异情形，明确分支与条件。\n"
+                "- 注意区分官方来源与一般解读。\n\n"
+                "可用工具：\n{tools}\n工具名称：{tool_names}\n\n"
+                "问题：{input}\n\n"
+                "{agent_scratchpad}"
+            )
+            react_system = react_template.format(
+                target_projects=tp or "未指定",
+                known_info=known_blob or "无",
+                tools="{tools}",  # 由 prebuilt 注入
+                tool_names="{tool_names}",
+                input="{input}",
+                agent_scratchpad="{agent_scratchpad}",
+            )
+            react_messages = ChatPromptTemplate.from_messages([
+                ("system", react_system),
+                ("placeholder", "{messages}")
+            ])
+
+            agent = create_agent(
+                model=self.llm,
+                tools=[db_tool],
+                prompt=react_messages,
+            )
+
+            res_msg = await agent.ainvoke({
+                "messages": [{"role": "user", "content": "根据这些项目生成条件要求总览。"}]
+            }, config={"stream": False})
+            output_text = getattr(res_msg, "content", "") or ""
+            if output_text:
+                # 不生成 markdown，写入 policy，供后续节点使用
+                state["policy"] = {
+                    "policy_text": output_text,
+                    "projects": state.get("target_projects", []),
+                }
+            await broker.publish("questionnaire-builder", ws, {"stage": "react_requirements_synthesis", "status": "end", "company_name": company, "ts": time.time()})
             return state
 
-        async def phase2_collect_applicant_web(state: QBState) -> QBState:
-            company = state.get("company_name")
-            if not company:
-                return state
-            async with self.web_search_service as ws:
-                web = await ws.search_web(f"{company} 注册资本 员工人数 社保 纳税 场地 处罚 证书", num_results=8)
-            facts = [{"title": w.title, "url": w.url, "snippet": w.snippet} for w in web]
-            state["applicant_findings"] = {"facts": facts}
-            srcs = state["sources"]
-            for w in web:
-                srcs.append({"id": f"web::{w.url}", "type": "web", "title": w.title, "url": w.url, "snippet": w.snippet})
-            state["sources"] = self._dedupe_sources(srcs)
-            return state
-
-        async def phase2_assess_and_report(state: QBState) -> QBState:
-            matches = []
-            for r in state.get("normalized_requirements", []):
-                matches.append({"req_id": r["id"], "status": "unknown", "rationale": "待人工/问卷补充", "needed_evidence": []})
-            state["applicant_findings"]["matches"] = matches
-            lines = [
-                "# 主体符合性评估（初稿）",
-                "\n## 概览",
-                f"- 满足：0 项\n- 不满足：0 项\n- 未知：{len(matches)} 项",
-                "\n## 需补证清单\n- 将在问卷阶段补充采集",
-            ]
-            state["assessment_report_md"] = "\n".join(lines)
-            return state
-
-        async def phase3_generate_questionnaire_outline(state: QBState) -> QBState:
-            outline = {
-                "markdown": "# 问卷大纲\n- 主体资质\n- 经营指标\n- 场地材料\n- 佐证上传",
-                "sections": [
-                    {"id": "basic", "title": "主体资质"},
-                    {"id": "biz", "title": "经营指标"},
-                    {"id": "site", "title": "场地材料"},
-                    {"id": "evidence", "title": "佐证上传"},
-                ],
-            }
-            state["questionnaire_outline"] = outline
-            state["questionnaire_sections"] = outline["sections"]
-            return state
-
-        async def phase3_deep_research_sections(state: QBState) -> QBState:
-            items: List[Dict[str, Any]] = []
-            for r in state.get("normalized_requirements", [])[:20]:
-                items.append({
-                    "id": f"ask::{r['id']}",
-                    "section": "basic",
-                    "text": f"关于 “{r.get('name','要求')}” 的具体情况？",
-                    "type": "text",
-                    "applicable_projects": r.get("applicable_projects", []),
-                    "source_refs": r.get("source_refs", []),
-                })
-            state["questionnaire_items"] = items
-            return state
-
-        async def generate_outline_and_questions(state: QBState) -> QBState:
-            # 提示 LLM 产出结构化大纲与题目（此处放置占位结构）
-            outline = {
-                "markdown": "# 问卷大纲\n- 主体资质\n- 经营指标\n- 场地信息\n- 人员社保\n- 财税合规\n- 历史补贴\n- 材料上传",
-                "sections": [
-                    {"id": "basic", "title": "主体资质"},
-                    {"id": "biz", "title": "经营指标"},
-                    {"id": "site", "title": "场地信息"},
-                    {"id": "staff", "title": "人员与社保"},
-                ],
-            }
-            questions = [
-                {"id": "q_basic_region", "section": "basic", "text": "公司注册地位于何处？", "type": "enum", "options": ["前海", "深圳", "广东", "外省", "香港", "海外"], "applicable_projects": state["target_projects"]},
-                {"id": "q_biz_revenue", "section": "biz", "text": "近一年营业收入（万元）", "type": "numeric", "applicable_projects": state["target_projects"]},
-                {"id": "q_site_lease", "section": "site", "text": "是否在前海有合法租赁场地？", "type": "single", "options": ["是", "否"], "applicable_projects": state["target_projects"]},
-            ]
-            state["outline"] = outline
-            state["questions"] = questions
-            state["required_documents"] = [{"name": "营业执照", "applicable_projects": state["target_projects"], "mandatory": True}]
-            state["rules"] = []
-            state["scoring"] = {}
-            state["success_rate_by_project"] = {p: {"range": "中等", "reasons": []} for p in state["target_projects"]}
-            return state
-
-        async def finalize(state: QBState) -> QBState:
-            return state
-
-        graph.add_node("validate_input", validate_input)
-        graph.add_node("collect_client_context", collect_client_context)
-        graph.add_node("retrieve_policy_and_cases", retrieve_policy_and_cases)
-        graph.add_node("resolve_company_open_data", resolve_company_open_data)
-        graph.add_node("normalize_criteria", normalize_criteria)
-        # Phase 1
-        graph.add_node("phase1_outline_first", phase1_outline_first)
-        graph.add_node("phase1_expand_sections", phase1_expand_sections)
-        graph.add_node("phase1_critic_and_aggregate", phase1_critic_and_aggregate)
-        # Phase 2
-        graph.add_node("phase2_collect_applicant_web", phase2_collect_applicant_web)
-        graph.add_node("phase2_assess_and_report", phase2_assess_and_report)
-        # Phase 3
-        graph.add_node("phase3_generate_questionnaire_outline", phase3_generate_questionnaire_outline)
-        graph.add_node("phase3_deep_research_sections", phase3_deep_research_sections)
-        graph.add_node("generate_outline_and_questions", generate_outline_and_questions)
-        graph.add_node("finalize", finalize)
 
         graph.set_entry_point("validate_input")
-        graph.add_edge("validate_input", "collect_client_context")
-        graph.add_edge("collect_client_context", "retrieve_policy_and_cases")
-        graph.add_edge("retrieve_policy_and_cases", "resolve_company_open_data")
-        graph.add_edge("resolve_company_open_data", "normalize_criteria")
-        # Phase 1 chain
-        graph.add_edge("normalize_criteria", "phase1_outline_first")
-        graph.add_edge("phase1_outline_first", "phase1_expand_sections")
-        graph.add_edge("phase1_expand_sections", "phase1_critic_and_aggregate")
-        # Phase 2 chain
-        graph.add_edge("phase1_critic_and_aggregate", "phase2_collect_applicant_web")
-        graph.add_edge("phase2_collect_applicant_web", "phase2_assess_and_report")
-        # Phase 3 chain
-        graph.add_edge("phase2_assess_and_report", "phase3_generate_questionnaire_outline")
-        graph.add_edge("phase3_generate_questionnaire_outline", "phase3_deep_research_sections")
-        graph.add_edge("phase3_deep_research_sections", "generate_outline_and_questions")
-        graph.add_edge("generate_outline_and_questions", "finalize")
+        # 注册在用节点（确保均已添加）
+        graph.add_node("validate_input", validate_input)
+        graph.add_node("react_requirements_synthesis", react_requirements_synthesis)
+        graph.add_node("web_search_collect", web_search_collect)
+        graph.add_node("triage_and_filter", triage_and_filter)
+        graph.add_node("doc_assessment_agent", doc_assessment_agent)
+        graph.add_node("questionnaire_from_assessment", questionnaire_from_assessment)
+        
+        # ReAct 路径：校验 → 条件综合（policy）→ 基于 policy+公司信息生成检索词并检索
+        graph.add_edge("validate_input", "react_requirements_synthesis")
+        graph.add_edge("react_requirements_synthesis", "web_search_collect")
+        # 检索后可回到 triage_and_filter 进入后续链路，或直接 finalize（此处接入原管线）
+        graph.add_edge("web_search_collect", "triage_and_filter")
+
+        # 条件边：需要更多数据则进入 Web 搜索节点，否则进入后续流程
+        graph.add_conditional_edges(
+            "triage_and_filter",
+            lambda s: "web" if s.get("needs_more_data") else "next",
+            {"web": "web_search_collect", "next": "doc_assessment_agent"}
+        )
+        
+        graph.add_edge("doc_assessment_agent", "questionnaire_from_assessment")
+        graph.add_edge("questionnaire_from_assessment", END)
+
 
         return graph
 
