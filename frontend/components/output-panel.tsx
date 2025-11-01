@@ -91,9 +91,31 @@ interface GeneratedFile {
 }
 
 export function OutputPanel() {
-  const [selectedWorkspace, setSelectedWorkspace] = useState<string | null>("1") // 默认选择工作区1
-  const [searchMode, setSearchMode] = useState<"workspace" | "global">("workspace")
+  // 从 localStorage 加载工作区选择
+  const [selectedWorkspace, setSelectedWorkspace] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return "1"
+    return localStorage.getItem('output_panel_selected_workspace') || "1"
+  })
+  
+  // 从 localStorage 加载搜索模式
+  const [searchMode, setSearchMode] = useState<"workspace" | "global">(() => {
+    if (typeof window === 'undefined') return "workspace"
+    return (localStorage.getItem('output_panel_search_mode') as "workspace" | "global") || "workspace"
+  })
+  
   const { workspaces } = useWorkspaces()
+  
+  // 保存工作区选择
+  useEffect(() => {
+    if (selectedWorkspace) {
+      localStorage.setItem('output_panel_selected_workspace', selectedWorkspace)
+    }
+  }, [selectedWorkspace])
+  
+  // 保存搜索模式
+  useEffect(() => {
+    localStorage.setItem('output_panel_search_mode', searchMode)
+  }, [searchMode])
 
   const { messages, files, actions, isLoading, isError, isSending, sendMessage, downloadFile, executeAction, clearHistory } =
     useAgent(selectedWorkspace)

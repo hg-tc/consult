@@ -87,7 +87,16 @@ class WebSearchService:
             self.ssl_ctx.options |= getattr(ssl, 'OP_LEGACY_SERVER_CONNECT', 0)
         except Exception:
             pass
-        connector = aiohttp.TCPConnector(ssl=self.ssl_ctx, enable_cleanup_closed=True)
+        # 配置TCPConnector以减少连接断开错误（上下文管理器版本）
+        connector = aiohttp.TCPConnector(
+            ssl=self.ssl_ctx,
+            enable_cleanup_closed=True,
+            force_close=False,
+            limit=100,
+            limit_per_host=30,
+            keepalive_timeout=60,
+            ttl_dns_cache=300,
+        )
         if self.http_proxy or self.https_proxy:
             kwargs["trust_env"] = True  # 让 aiohttp 读取环境代理
         self.session = aiohttp.ClientSession(
@@ -159,7 +168,21 @@ class WebSearchService:
                 self.ssl_ctx.options |= getattr(ssl, 'OP_LEGACY_SERVER_CONNECT', 0)
             except Exception:
                 pass
-            connector = aiohttp.TCPConnector(ssl=self.ssl_ctx, enable_cleanup_closed=True)
+            # 配置TCPConnector以减少连接断开错误：
+            # - limit: 连接池大小（默认100）
+            # - limit_per_host: 每个主机的连接数（默认30）
+            # - ttl_dns_cache: DNS缓存时间（默认300秒）
+            # - force_close: 设置为False，允许连接复用（减少断开）
+            # - keepalive_timeout: 保持连接活跃时间（默认15秒，增加到60秒）
+            connector = aiohttp.TCPConnector(
+                ssl=self.ssl_ctx,
+                enable_cleanup_closed=True,
+                force_close=False,  # 允许连接复用，减少断开
+                limit=100,  # 连接池总大小
+                limit_per_host=30,  # 每个主机的最大连接数
+                keepalive_timeout=60,  # 保持连接60秒（默认15秒可能太短）
+                ttl_dns_cache=300,  # DNS缓存5分钟
+            )
             if self.http_proxy or self.https_proxy:
                 kwargs["trust_env"] = True
             try:
@@ -255,8 +278,13 @@ class WebSearchService:
                         if not old_session.closed:
                             # 创建任务来关闭，但不等待
                             task = current_loop.create_task(old_session.close())
-                            # 添加回调来忽略结果（避免警告传播）
-                            task.add_done_callback(lambda t: None)
+                            # 添加回调来捕获异常（避免Future exception警告）
+                            def handle_task_done(t):
+                                try:
+                                    t.result()  # 获取结果，这样异常会被捕获
+                                except Exception:
+                                    pass  # 忽略关闭时的异常
+                            task.add_done_callback(handle_task_done)
                     except Exception as e:
                         # 如果无法关闭，忽略（session 会在下次调用时重新创建）
                         logger.debug(f"关闭旧 session 时出错（可忽略）: {e}")
@@ -342,7 +370,13 @@ class WebSearchService:
                         try:
                             if not old_session.closed:
                                 task = current_loop.create_task(old_session.close())
-                                task.add_done_callback(lambda t: None)
+                                # 添加回调来捕获异常（避免Future exception警告）
+                                def handle_task_done(t):
+                                    try:
+                                        t.result()  # 获取结果，这样异常会被捕获
+                                    except Exception:
+                                        pass  # 忽略关闭时的异常
+                                task.add_done_callback(handle_task_done)
                         except Exception:
                             pass
                         await self._ensure_session()
@@ -410,52 +444,70 @@ class WebSearchService:
                         logger.warning("重试时 session 初始化失败")
                         break
                 
-                async with self.session.get(url, params=params, headers=req_headers) as resp:
-                    if resp.status != 200:
-                        logger.error(f"SearXNG 请求失败: HTTP {resp.status}, 查询: {query}, URL: {url}")
-                        try:
-                            error_text = await resp.text()
-                            logger.debug(f"SearXNG 错误响应内容: {error_text[:500]}")
-                        except Exception:
-                            pass
-                        return []
-                    
-                    logger.info(f"SearXNG 请求成功: HTTP {resp.status}, 查询: {query}")
-                    data = await resp.json()
-                    results: List[SearchResult] = []
-                    raw_results = data.get('results', [])
-                    
-                    if not raw_results:
-                        logger.warning(f"SearXNG 返回空结果，查询: {query}, 原始响应结果数: 0")
+                try:
+                    async with self.session.get(url, params=params, headers=req_headers) as resp:
+                        if resp.status != 200:
+                            logger.error(f"SearXNG 请求失败: HTTP {resp.status}, 查询: {query}, URL: {url}")
+                            try:
+                                error_text = await resp.text()
+                                logger.debug(f"SearXNG 错误响应内容: {error_text[:500]}")
+                            except Exception:
+                                pass
+                            return []
+                        
+                        logger.info(f"SearXNG 请求成功: HTTP {resp.status}, 查询: {query}")
+                        data = await resp.json()
+                        results: List[SearchResult] = []
+                        raw_results = data.get('results', [])
+                        
+                        if not raw_results:
+                            logger.warning(f"SearXNG 返回空结果，查询: {query}, 原始响应结果数: 0")
+                        else:
+                            logger.info(f"SearXNG 获取到 {len(raw_results)} 个原始结果，查询: {query}")
+                        
+                        for i, r in enumerate(raw_results[:num_results]):
+                            results.append(SearchResult(
+                                title=r.get('title') or r.get('url') or '搜索结果',
+                                url=r.get('url', ''),
+                                snippet=r.get('content') or r.get('pretty_url') or '',
+                                relevance_score=1.0 - (i * 0.05),
+                                source_type='web'
+                            ))
+                        
+                        logger.info(f"SearXNG 搜索成功: 查询 '{query}', 返回 {len(results)} 个结果")
+                        return results
+                except RuntimeError as e:
+                    if "Event loop is closed" in str(e):
+                        last_error = e
+                        logger.warning(f"SearXNG 请求失败（Event loop 已关闭），尝试: {attempt + 1}/{max_retries}")
+                        if attempt < max_retries - 1:
+                            continue  # 重试
+                        else:
+                            logger.error(f"SearXNG 搜索失败: Event loop 已关闭，无法重试, 查询: {query}, endpoint: {self.searxng_endpoint}")
+                            return []
                     else:
-                        logger.info(f"SearXNG 获取到 {len(raw_results)} 个原始结果，查询: {query}")
-                    
-                    for i, r in enumerate(raw_results[:num_results]):
-                        results.append(SearchResult(
-                            title=r.get('title') or r.get('url') or '搜索结果',
-                            url=r.get('url', ''),
-                            snippet=r.get('content') or r.get('pretty_url') or '',
-                            relevance_score=1.0 - (i * 0.05),
-                            source_type='web'
-                        ))
-                    
-                    logger.info(f"SearXNG 搜索成功: 查询 '{query}', 返回 {len(results)} 个结果")
-                    return results
-                    
-            except RuntimeError as e:
-                if "Event loop is closed" in str(e):
-                    last_error = e
-                    logger.warning(f"SearXNG 请求失败（Event loop 已关闭），尝试: {attempt + 1}/{max_retries}")
+                        raise
+            except (aiohttp.ClientError, aiohttp.ServerDisconnectedError) as e:
+                logger.debug(f"SearXNG 网络请求异常: {type(e).__name__}: {e}, 查询: {query}, endpoint: {self.searxng_endpoint}")
+                # 如果是连接断开错误，尝试重置session并重试
+                if isinstance(e, aiohttp.ServerDisconnectedError):
+                    logger.debug("检测到服务器断开连接，重置session并重试")
+                    try:
+                        if self.session and not self.session.closed:
+                            await self.session.close()
+                    except Exception:
+                        pass
+                    self.session = None
+                    # 最后一次尝试（如果还有重试次数）
                     if attempt < max_retries - 1:
-                        continue  # 重试
-                    else:
-                        logger.error(f"SearXNG 搜索失败: Event loop 已关闭，无法重试, 查询: {query}, endpoint: {self.searxng_endpoint}")
-                        return []
+                        await self._ensure_session()
+                        continue
+                last_error = e
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(min(2 ** attempt, 10))  # 指数退避
+                    continue  # 重试
                 else:
-                    raise
-            except aiohttp.ClientError as e:
-                logger.error(f"SearXNG 网络请求异常: {e}, 查询: {query}, endpoint: {self.searxng_endpoint}", exc_info=True)
-                return []
+                    return []
             except Exception as e:
                 logger.error(f"SearXNG 搜索失败: {type(e).__name__}: {e}, 查询: {query}, endpoint: {self.searxng_endpoint}", exc_info=True)
                 return []
@@ -555,21 +607,26 @@ class WebSearchService:
         }
 
         async def fetch_once(url: str, ssl_ctx=None):
-            async with self.session.get(url, headers=common_headers, allow_redirects=True, ssl=ssl_ctx) as resp:
-                if resp.status != 200:
-                    raise aiohttp.ClientResponseError(resp.request_info, resp.history, status=resp.status)
-                raw = await resp.read()
-                if detect_charset:
+            try:
+                async with self.session.get(url, headers=common_headers, allow_redirects=True, ssl=ssl_ctx) as resp:
+                    if resp.status != 200:
+                        raise aiohttp.ClientResponseError(resp.request_info, resp.history, status=resp.status)
+                    raw = await resp.read()
+                    if detect_charset:
+                        try:
+                            best = detect_charset(raw).best()
+                            enc = (best.encoding if best else None) or 'utf-8'
+                            return raw.decode(enc, errors='replace')
+                        except Exception:
+                            return raw.decode('gb18030', errors='replace')
                     try:
-                        best = detect_charset(raw).best()
-                        enc = (best.encoding if best else None) or 'utf-8'
-                        return raw.decode(enc, errors='replace')
+                        return raw.decode('utf-8')
                     except Exception:
                         return raw.decode('gb18030', errors='replace')
-                try:
-                    return raw.decode('utf-8')
-                except Exception:
-                    return raw.decode('gb18030', errors='replace')
+            except (aiohttp.ServerDisconnectedError, aiohttp.ClientError) as e:
+                # 捕获连接断开错误，重新抛出以便上层处理
+                logger.debug(f"抓取内容时连接断开: {url}, 错误: {type(e).__name__}")
+                raise
 
         tries = 0
         max_tries = 2
@@ -580,6 +637,14 @@ class WebSearchService:
             # 首选默认 SSL 上下文
             try:
                 html = await fetch_once(url_to_fetch, self.ssl_ctx)
+            except (aiohttp.ServerDisconnectedError, aiohttp.ClientError) as e:
+                # 处理连接断开错误
+                logger.debug(f"抓取内容失败（连接错误）: {url_to_fetch}, 错误: {type(e).__name__}")
+                tries += 1
+                if tries >= max_tries:
+                    return
+                await asyncio.sleep(0.6 * tries)
+                continue
             except aiohttp.ClientResponseError as cre:
                 if cre.status == 403 and 'zhihu.com' in parsed.netloc and 'm.zhihu.com' not in parsed.netloc:
                     url_to_fetch = safe_url.replace('://www.zhihu.com', '://m.zhihu.com')

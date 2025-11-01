@@ -648,8 +648,31 @@ async def list_global_documents():
             
             if docstore_file.exists():
                 import json
-                with open(docstore_file, 'r', encoding='utf-8') as f:
-                    docstore_data = json.load(f)
+                # 检查文件大小，空文件会导致 JSON 解析错误
+                file_size = docstore_file.stat().st_size
+                if file_size == 0:
+                    logger.warning(f"⚠️ docstore.json 文件为空: {docstore_file}")
+                    raise ValueError("docstore.json 文件为空，跳过加载")
+                
+                try:
+                    with open(docstore_file, 'r', encoding='utf-8') as f:
+                        content = f.read().strip()
+                        # 检查内容是否为空或只有空白字符
+                        if not content:
+                            logger.warning(f"⚠️ docstore.json 文件内容为空: {docstore_file}")
+                            raise ValueError("docstore.json 文件内容为空，跳过加载")
+                        
+                        # 尝试解析 JSON
+                        docstore_data = json.loads(content)
+                        
+                        # 验证数据结构
+                        if not isinstance(docstore_data, dict):
+                            logger.warning(f"⚠️ docstore.json 格式错误（不是字典）: {docstore_file}")
+                            raise ValueError("docstore.json 格式错误")
+                        
+                except json.JSONDecodeError as je:
+                    logger.warning(f"⚠️ docstore.json JSON 解析失败: {je}, 文件: {docstore_file}")
+                    raise ValueError(f"JSON 解析失败: {je}")
                 
                 # 解析 LlamaIndex 格式的 docstore
                 # 使用层级路径作为唯一标识，解决重名问题

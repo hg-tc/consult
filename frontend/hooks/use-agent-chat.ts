@@ -17,11 +17,41 @@ interface WorkflowState {
 }
 
 export function useAgentChat(workspaceId: string) {
-  const [messages, setMessages] = useState<Message[]>([])
+  const STORAGE_KEY = `agent_chat_messages_${workspaceId}`
+  
+  // 从 localStorage 加载消息历史
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window === 'undefined') return []
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        return parsed.map((msg: any) => ({
+          ...msg,
+          timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date()
+        }))
+      }
+    } catch (e) {
+      console.error('[useAgentChat] 加载消息失败:', e)
+    }
+    return []
+  })
+  
   const [isGenerating, setIsGenerating] = useState(false)
   const [workflowState, setWorkflowState] = useState<WorkflowState | null>(null)
   const [streamingContent, setStreamingContent] = useState("")
   const wsRef = useRef<WebSocket | null>(null)
+
+  // 保存消息到 localStorage
+  useEffect(() => {
+    if (messages.length > 0) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(messages))
+      } catch (e) {
+        console.error('[useAgentChat] 保存消息失败:', e)
+      }
+    }
+  }, [messages, STORAGE_KEY])
 
   useEffect(() => {
     return () => {

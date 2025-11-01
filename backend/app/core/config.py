@@ -47,6 +47,11 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: Optional[str] = os.getenv("OPENAI_API_KEY")
     OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
     
+    # 超时配置
+    API_TIMEOUT: int = int(os.getenv("API_TIMEOUT", "300"))  # API请求超时时间（秒），默认300秒
+    WORKFLOW_TIMEOUT: int = int(os.getenv("WORKFLOW_TIMEOUT", "1200"))  # 工作流超时时间（秒），默认1200秒（20分钟），与Nginx proxy_read_timeout一致
+    LLM_REQUEST_TIMEOUT: int = int(os.getenv("LLM_REQUEST_TIMEOUT", "120"))  # LLM请求超时时间（秒），默认120秒
+    
     # 大模型名称配置（统一从.env读取）
     LLM_MODEL_NAME: str = os.getenv("LLM_MODEL_NAME", "gpt-3.5-turbo")  # 默认模型名称
     LLM_MODEL_NAME_RAG: str = os.getenv("LLM_MODEL_NAME_RAG", "gpt-3.5-turbo")  # RAG工作流使用的模型

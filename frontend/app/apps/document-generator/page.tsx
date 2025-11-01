@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useDeepResearchDoc } from '@/hooks/use-deepresearch-doc'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -13,9 +13,22 @@ import { useRouter } from 'next/navigation'
 
 export default function DocumentGeneratorPage() {
   const router = useRouter()
-  const [taskDescription, setTaskDescription] = useState('')
-  const [targetWords, setTargetWords] = useState(5000)
-  const [writingStyle, setWritingStyle] = useState('专业、严谨、客观')
+  const STORAGE_PREFIX = 'document_generator_'
+  
+  // 从 localStorage 加载表单数据
+  const [taskDescription, setTaskDescription] = useState(() => {
+    if (typeof window === 'undefined') return ''
+    return localStorage.getItem(`${STORAGE_PREFIX}taskDescription`) || ''
+  })
+  const [targetWords, setTargetWords] = useState(() => {
+    if (typeof window === 'undefined') return 5000
+    const saved = localStorage.getItem(`${STORAGE_PREFIX}targetWords`)
+    return saved ? parseInt(saved, 10) : 5000
+  })
+  const [writingStyle, setWritingStyle] = useState(() => {
+    if (typeof window === 'undefined') return '专业、严谨、客观'
+    return localStorage.getItem(`${STORAGE_PREFIX}writingStyle`) || '专业、严谨、客观'
+  })
   
   const { 
     generateDocument, 
@@ -24,6 +37,21 @@ export default function DocumentGeneratorPage() {
     error,
     downloadDocument 
   } = useDeepResearchDoc()
+
+  // 保存表单数据到 localStorage
+  useEffect(() => {
+    if (taskDescription) {
+      localStorage.setItem(`${STORAGE_PREFIX}taskDescription`, taskDescription)
+    }
+  }, [taskDescription])
+
+  useEffect(() => {
+    localStorage.setItem(`${STORAGE_PREFIX}targetWords`, targetWords.toString())
+  }, [targetWords])
+
+  useEffect(() => {
+    localStorage.setItem(`${STORAGE_PREFIX}writingStyle`, writingStyle)
+  }, [writingStyle])
 
   const handleGenerate = async () => {
     if (!taskDescription.trim()) return

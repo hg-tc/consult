@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 
 export interface DocRequirements {
   target_words?: number
@@ -26,9 +26,31 @@ export interface DeepResearchResult {
 }
 
 export function useDeepResearchDoc() {
+  const STORAGE_KEY = 'deepresearch_doc_result'
+  
   const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState<DeepResearchResult | null>(null)
+  // 从 localStorage 加载结果
+  const [result, setResult] = useState<DeepResearchResult | null>(() => {
+    if (typeof window === 'undefined') return null
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY)
+      return saved ? JSON.parse(saved) : null
+    } catch (e) {
+      return null
+    }
+  })
   const [error, setError] = useState<string | null>(null)
+
+  // 保存结果到 localStorage
+  useEffect(() => {
+    if (result) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(result))
+      } catch (e) {
+        console.error('[useDeepResearchDoc] 保存结果失败:', e)
+      }
+    }
+  }, [result])
 
   const generateDocument = useCallback(async (
     taskDescription: string,
@@ -77,6 +99,12 @@ export function useDeepResearchDoc() {
   const clearResult = useCallback(() => {
     setResult(null)
     setError(null)
+    // 清除 localStorage
+    try {
+      localStorage.removeItem(STORAGE_KEY)
+    } catch (e) {
+      console.error('[useDeepResearchDoc] 清除结果缓存失败:', e)
+    }
   }, [])
 
   const downloadDocument = useCallback(() => {

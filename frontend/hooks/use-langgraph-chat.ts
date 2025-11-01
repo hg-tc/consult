@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
+import { getClientId } from '@/lib/client-id'
 
 interface LangGraphResult {
   answer: string
@@ -24,6 +25,50 @@ export function useLangGraphChat() {
   const [threadId, setThreadId] = useState<string | null>(null)
   const [conversationHistory, setConversationHistory] = useState<any[]>([])
 
+  // localStorage 键名
+  const STORAGE_KEY_THREAD_ID = 'langgraph_chat_thread_id'
+  const STORAGE_KEY_HISTORY = 'langgraph_chat_history'
+
+  // 从 localStorage 加载 threadId 和对话历史
+  useEffect(() => {
+    try {
+      const savedThreadId = localStorage.getItem(STORAGE_KEY_THREAD_ID)
+      if (savedThreadId) {
+        setThreadId(savedThreadId)
+      }
+      
+      const savedHistory = localStorage.getItem(STORAGE_KEY_HISTORY)
+      if (savedHistory) {
+        const parsed = JSON.parse(savedHistory)
+        setConversationHistory(parsed)
+      }
+    } catch (e) {
+      console.error('[useLangGraphChat] 加载缓存失败:', e)
+    }
+  }, [])
+
+  // 保存 threadId 到 localStorage
+  useEffect(() => {
+    if (threadId) {
+      try {
+        localStorage.setItem(STORAGE_KEY_THREAD_ID, threadId)
+      } catch (e) {
+        console.error('[useLangGraphChat] 保存threadId失败:', e)
+      }
+    }
+  }, [threadId])
+
+  // 保存对话历史到 localStorage
+  useEffect(() => {
+    if (conversationHistory.length > 0) {
+      try {
+        localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(conversationHistory))
+      } catch (e) {
+        console.error('[useLangGraphChat] 保存历史失败:', e)
+      }
+    }
+  }, [conversationHistory])
+
   const sendMessage = useCallback(async (
     question: string,
     workspaceId: string = 'global'
@@ -33,6 +78,12 @@ export function useLangGraphChat() {
     setResult(null)
 
     try {
+      // 获取客户端ID，确保不同设备的对话记忆隔离
+      const clientId = getClientId()
+      
+      // 如果thread_id存在，添加客户端ID前缀，确保不同设备的thread_id不冲突
+      const isolatedThreadId = threadId ? `${clientId}:${threadId}` : undefined
+      
       const response = await fetch('/api/apps/langgraph-chat/chat', {
         method: 'POST',
         headers: { 
@@ -41,8 +92,9 @@ export function useLangGraphChat() {
         body: JSON.stringify({
           question,
           workspace_id: workspaceId,
-          thread_id: threadId,  // 传递 thread_id 以维持对话记忆
-          conversation_history: conversationHistory  // 传递对话历史
+          thread_id: isolatedThreadId,  // 使用带客户端ID前缀的thread_id
+          conversation_history: conversationHistory,  // 传递对话历史
+          client_id: clientId  // 也传递客户端ID，便于后端识别
         })
       })
 
@@ -92,8 +144,14 @@ export function useLangGraphChat() {
       setResult(data)
       
       // 更新 thread_id 和对话历史
+      // 注意：后端返回的thread_id可能包含客户端ID，需要提取原始ID
       if (data.thread_id) {
-        setThreadId(data.thread_id)
+        const clientId = getClientId()
+        // 如果thread_id包含客户端ID前缀，去除它
+        const extractedThreadId = data.thread_id.startsWith(`${clientId}:`) 
+          ? data.thread_id.substring(clientId.length + 1)
+          : data.thread_id
+        setThreadId(extractedThreadId)
       }
       
       // 更新对话历史
@@ -128,6 +186,13 @@ export function useLangGraphChat() {
     setThreadId(null)
     setConversationHistory([])
     clearResult()
+    // 清除 localStorage
+    try {
+      localStorage.removeItem(STORAGE_KEY_THREAD_ID)
+      localStorage.removeItem(STORAGE_KEY_HISTORY)
+    } catch (e) {
+      console.error('[useLangGraphChat] 清除缓存失败:', e)
+    }
   }, [clearResult])
 
   return { 

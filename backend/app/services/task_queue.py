@@ -173,7 +173,7 @@ class TaskQueue:
         """获取指定状态的任务"""
         return [task for task in self.tasks.values() if task.status == status]
     
-    def update_task_progress(self, task_id: str, stage: TaskStage, 
+    def update_task_progress(self, task_id: str, stage: Optional[TaskStage], 
                            progress: int, message: str, details: Dict[str, Any] = None):
         """更新任务进度"""
         if task_id not in self.tasks:
@@ -184,15 +184,20 @@ class TaskQueue:
         old_progress = task.progress.progress
         old_stage = task.progress.stage
         
+        # 如果stage为None，保持原有的stage
+        new_stage = stage if stage is not None else (task.progress.stage if task.progress.stage else TaskStage.UPLOADING)
+        
         task.progress = TaskProgress(
-            stage=stage,
+            stage=new_stage,
             progress=progress,
             message=message,
             details=details or {}
         )
         
-        logger.info(f"📊 更新任务进度: {task_id} - {stage.value} {progress}% - {message}")
-        logger.debug(f"📊 进度变化: {old_stage.value} {old_progress}% -> {stage.value} {progress}%")
+        stage_display = stage.value if stage else (new_stage.value if new_stage else "未知")
+        logger.info(f"📊 更新任务进度: {task_id} - {stage_display} {progress}% - {message}")
+        if old_stage:
+            logger.debug(f"📊 进度变化: {old_stage.value} {old_progress}% -> {stage_display} {progress}%")
         
         # 触发回调（支持异步函数）
         callback_count = 0
@@ -271,6 +276,11 @@ class TaskQueue:
             progress=task.progress.progress,
             message=f"任务失败: {error_message}"
         )
+        
+        # 从运行任务列表中移除（如果存在）
+        if task_id in self.running_tasks:
+            del self.running_tasks[task_id]
+            logger.debug(f"任务 {task_id} 已从运行任务列表中移除")
         
         if self.persistent_storage:
             self._save_tasks()
@@ -356,10 +366,11 @@ class TaskQueue:
         current_time = time.time()
         max_age_seconds = max_age_hours * 3600
         
-        # 获取所有已完成/失败/取消的任务
+        # 获取所有已完成/失败/取消的任务（排除正在处理中的任务）
         completed_tasks = [
             (task_id, task) for task_id, task in self.tasks.items()
             if task.status in [TaskStatus.COMPLETED, TaskStatus.FAILED, TaskStatus.CANCELLED]
+            and task_id not in self.running_tasks  # 确保不清理正在运行的任务
         ]
         
         # 按完成时间排序（最新的在前）

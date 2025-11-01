@@ -1665,30 +1665,78 @@ async def process_zip_async(task_id: str, zip_path: str, workspace_id: str = "gl
 # 任务状态API
 @app.get("/api/tasks")
 async def get_tasks_api(workspace_id: str = None):
-    """获取任务列表API"""
+    """获取任务列表API（仅用于文件处理任务，不包含问卷生成任务）"""
     try:
         from app.services.task_queue import get_task_queue
         
         task_queue = get_task_queue()
         
-        # 定期清理旧任务（超过1小时的已完成任务，最多保留50个）
-        task_queue.cleanup_old_tasks(max_age_hours=1, max_completed_count=50)
+        # 只清理文件处理相关的任务（排除问卷生成任务）
+        # 清理超过24小时的已完成任务，最多保留50个
+        file_processing_tasks = [
+            (task_id, task) for task_id, task in task_queue.tasks.items()
+            if task.task_type not in ["questionnaire_generation"]
+            and task.status.value in ["completed", "failed", "cancelled"]
+        ]
+        if len(file_processing_tasks) > 50:
+            # 只清理文件处理任务
+            current_time = time.time()
+            tasks_to_remove = []
+            sorted_tasks = sorted(
+                file_processing_tasks,
+                key=lambda x: x[1].completed_at or x[1].created_at or 0,
+                reverse=True
+            )
+            for task_id, task in sorted_tasks[50:]:  # 保留最新的50个
+                if task_id not in task_queue.running_tasks:
+                    tasks_to_remove.append(task_id)
+            for task_id in tasks_to_remove:
+                if task_id in task_queue.tasks:
+                    del task_queue.tasks[task_id]
+                if task_id in task_queue.task_callbacks:
+                    del task_queue.task_callbacks[task_id]
+                if task_id in task_queue.running_tasks:
+                    del task_queue.running_tasks[task_id]
+            if tasks_to_remove and task_queue.persistent_storage:
+                task_queue._save_tasks()
         
+        # 获取所有任务（包括问卷生成任务，但主要展示文件处理任务）
         if workspace_id:
             tasks = task_queue.get_tasks_by_workspace(workspace_id)
         else:
             tasks = list(task_queue.tasks.values())
         
-        # 验证任务状态，修复可能的状态异常
+        # 验证文件处理任务状态，修复可能的状态异常（不处理问卷生成任务）
         current_time = time.time()
         for task in tasks:
+            # 跳过问卷生成任务的状态检查
+            if task.task_type == "questionnaire_generation":
+                continue
+                
             # 如果任务状态是processing但已经很久没有更新，可能已经完成但状态没更新
             if task.status.value == "processing":
-                # 如果开始时间超过30分钟且没有运行中的任务，标记为可能已完成
+                # 如果开始时间超过30分钟且没有运行中的任务，标记为失败（任务可能已中断或崩溃）
                 if task.started_at and (current_time - task.started_at > 1800):
                     if task.id not in task_queue.running_tasks:
-                        # 可能是异常状态，但先不自动修复，只记录日志
-                        logger.warning(f"[任务状态] 任务 {task.id} 可能状态异常: processing状态但已超过30分钟")
+                        # 自动修复异常状态：标记为失败
+                        logger.warning(f"[任务状态] 文件处理任务 {task.id} 状态异常: processing状态但已超过30分钟且不在running_tasks中，自动标记为失败")
+                        try:
+                            task_queue.fail_task(
+                                task_id=task.id,
+                                error_message="任务超时：处理时间超过30分钟且任务已中断，可能因服务重启或任务崩溃导致"
+                            )
+                        except Exception as e:
+                            logger.error(f"修复任务状态失败: {task.id}, 错误: {e}")
+                # 如果任务创建时间超过2小时，即使还在running_tasks中，也标记为超时失败
+                elif task.created_at and (current_time - task.created_at > 7200):
+                    logger.warning(f"[任务状态] 文件处理任务 {task.id} 超时: 创建时间超过2小时，自动标记为失败")
+                    try:
+                        task_queue.fail_task(
+                            task_id=task.id,
+                            error_message="任务超时：处理时间超过2小时"
+                        )
+                    except Exception as e:
+                        logger.error(f"修复任务超时状态失败: {task.id}, 错误: {e}")
         
         return {
             "tasks": [
@@ -1712,8 +1760,10 @@ async def get_tasks_api(workspace_id: str = None):
             "queue_stats": task_queue.get_queue_stats()
         }
         
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"获取任务列表失败: {str(e)}")
+        logger.error(f"获取任务列表失败: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"获取任务列表失败: {str(e)}")
 
 @app.get("/api/tasks/parallel-status")

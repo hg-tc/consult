@@ -139,8 +139,8 @@ server {
     
     # 增加上传限制
     client_max_body_size 50M;
-    client_body_timeout 60s;
-    client_header_timeout 60s;
+    client_body_timeout 600s;
+    client_header_timeout 600s;
     
     # 前端开发服务器代理
     location / {
@@ -185,10 +185,11 @@ server {
         proxy_buffering off;
         proxy_request_buffering off;
         
-        # 增加超时时间
-        proxy_connect_timeout 60s;
-        proxy_send_timeout 60s;
-        proxy_read_timeout 60s;
+        # 大幅增加超时时间（适用于长时间运行的任务，如问卷生成、文档处理）
+        # 设置为600秒，与WORKFLOW_TIMEOUT保持一致
+        proxy_connect_timeout 1200s;
+        proxy_send_timeout 1200s;
+        proxy_read_timeout 1200s;
     }
     
     # 安全头

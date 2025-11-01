@@ -20,11 +20,42 @@ interface Message {
 
 export default function LangGraphChatPage() {
   const router = useRouter()
-  const [messages, setMessages] = useState<Message[]>([])
+  const STORAGE_KEY_MESSAGES = 'langgraph_chat_messages'
+  
+  // 从 localStorage 加载消息历史
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window === 'undefined') return []
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_MESSAGES)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        // 将 timestamp 字符串转换为 Date 对象
+        return parsed.map((msg: any) => ({
+          ...msg,
+          timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date()
+        }))
+      }
+    } catch (e) {
+      console.error('[LangGraphChatPage] 加载消息失败:', e)
+    }
+    return []
+  })
+  
   const [input, setInput] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const { sendMessage, loading, result, error, clearResult, clearConversation, threadId } = useLangGraphChat()
+
+  // 保存消息到 localStorage
+  useEffect(() => {
+    if (messages.length > 0) {
+      try {
+        localStorage.setItem(STORAGE_KEY_MESSAGES, JSON.stringify(messages))
+      } catch (e) {
+        console.error('[LangGraphChatPage] 保存消息失败:', e)
+      }
+    }
+  }, [messages])
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -64,6 +95,12 @@ export default function LangGraphChatPage() {
   const clearMessages = () => {
     setMessages([])
     clearResult()
+    // 清除 localStorage
+    try {
+      localStorage.removeItem(STORAGE_KEY_MESSAGES)
+    } catch (e) {
+      console.error('[LangGraphChatPage] 清除消息缓存失败:', e)
+    }
   }
 
   return (

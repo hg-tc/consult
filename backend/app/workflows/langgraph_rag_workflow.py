@@ -526,6 +526,8 @@ class LangGraphRAGWorkflow:
         
         try:
             # 生成或使用提供的 thread_id
+            # 注意：如果thread_id包含客户端ID前缀（格式：client_id:thread_id），保持原样
+            # 这样不同客户端的对话记忆会自动隔离
             if thread_id is None:
                 thread_id = str(uuid.uuid4())
             
