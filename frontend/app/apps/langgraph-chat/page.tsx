@@ -24,7 +24,7 @@ export default function LangGraphChatPage() {
   const [input, setInput] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  const { sendMessage, loading, result, error, clearResult } = useLangGraphChat()
+  const { sendMessage, loading, result, error, clearResult, clearConversation, threadId } = useLangGraphChat()
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -96,14 +96,24 @@ export default function LangGraphChatPage() {
               </p>
             </div>
             {messages.length > 0 && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={clearMessages}
-              >
-                <RefreshCw className="w-4 h-4 mr-2" />
-                清空对话
-              </Button>
+              <div className="flex gap-2">
+                {threadId && (
+                  <div className="text-xs text-muted-foreground flex items-center">
+                    对话ID: {threadId.slice(0, 8)}...
+                  </div>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    clearMessages()
+                    clearConversation()
+                  }}
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  清空对话
+                </Button>
+              </div>
             )}
           </div>
 

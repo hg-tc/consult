@@ -29,6 +29,9 @@ class LangGraphChatApp(BaseApp):
             try:
                 question = data.get("question") or data.get("message", "")
                 workspace_id = data.get("workspace_id") or data.get("workspaceId", "global")
+                thread_id = data.get("thread_id") or data.get("threadId")  # 支持对话记忆
+                conversation_history = data.get("conversation_history") or data.get("conversationHistory")
+                
                 # Debug 入参
                 try:
                     q_preview = str(question)
@@ -37,7 +40,7 @@ class LangGraphChatApp(BaseApp):
                     if len(q_preview) > 300:
                         q_preview = q_preview[:300] + "...<truncated>"
                     logger.debug(
-                        f"[langgraph_chat_app.chat.debug] workspace_id={workspace_id}, type(question)={type(question)}, question_preview={q_preview}"
+                        f"[langgraph_chat_app.chat.debug] workspace_id={workspace_id}, thread_id={thread_id}, type(question)={type(question)}, question_preview={q_preview}"
                     )
                 except Exception as _dbg_err:
                     logger.warning(f"langgraph_chat_app /chat 入参调试信息记录失败: {_dbg_err}")
@@ -68,12 +71,18 @@ class LangGraphChatApp(BaseApp):
                     llm=rag_service.llm
                 )
                 
-                # 执行工作流
-                result = await workflow.run(question, workspace_id)
+                # 执行工作流（支持对话记忆）
+                result = await workflow.run(
+                    question, 
+                    workspace_id, 
+                    thread_id=thread_id,
+                    conversation_history=conversation_history
+                )
                 
                 return {
                     "answer": result["answer"],
                     "sources": result["sources"],
+                    "thread_id": result.get("thread_id"),  # 返回 thread_id，前端需要保存
                     "metadata": result["metadata"]
                 }
             except HTTPException:

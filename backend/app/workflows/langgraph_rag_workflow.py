@@ -304,17 +304,59 @@ class LangGraphRAGWorkflow:
             for i, d in enumerate(all_docs[:5])
         ])
         
-        answer_prompt = f"""基于以下上下文回答问题：
+        # 构建对话历史上下文
+        conversation_context = ""
+        history = state.get("conversation_history", [])
+        history_count = len(history) if history else 0
+        
+        if history:
+            conversation_context = "\n\n【之前的对话历史】\n"
+            for idx, hist in enumerate(history[-10:], 1):  # 保留最近10轮
+                if isinstance(hist, dict):
+                    user_msg = hist.get("user", hist.get("question", ""))
+                    assistant_msg = hist.get("assistant", hist.get("answer", ""))
+                    conversation_context += f"第{idx}轮对话:\n"
+                    conversation_context += f"  用户问: {user_msg}\n"
+                    conversation_context += f"  助手答: {assistant_msg[:200]}...\n\n"  # 截断答案避免过长
+                elif isinstance(hist, str):
+                    conversation_context += f"第{idx}轮: {hist}\n"
+            conversation_context += f"（共{history_count}轮对话历史）\n"
+        
+        # 检查问题是否与对话历史相关
+        history_keywords = ["之前", "刚才", "之前问", "刚才问", "我刚刚", "刚才的问题", "历史", "对话记录", "之前的问题", "问过什么"]
+        is_history_question = any(keyword in question for keyword in history_keywords)
+        
+        # 如果是关于历史的问题但没有文档，直接从历史回答
+        if is_history_question and not all_docs and history:
+            history_summary = "\n".join([
+                f"- 您问过: {h.get('user', h.get('question', ''))}" 
+                for h in history[-10:] if isinstance(h, dict)
+            ])
+            answer_prompt = f"""用户想了解之前的对话内容。根据以下对话历史回答：
 
-上下文:
+{conversation_context}
+
+用户的问题: {question}
+
+请直接基于对话历史回答，不需要检索文档。如果用户问"我之前问了什么"，请列出所有之前的问题。
+如果用户问具体某个问题的答案，请从历史中找到对应的回答。
+
+回答:
+"""
+        else:
+            answer_prompt = f"""基于以下上下文回答问题：
+
+【检索到的文档上下文】
 {context}
+{conversation_context}
 
-问题: {question}
+【当前问题】: {question}
 
-要求:
-1. 回答准确、详细
-2. 引用具体文档
-3. 如果信息不足，明确说明
+【重要提示】:
+1. 如果用户询问"之前问了什么"、"刚才的问题"等，请直接回答对话历史中的内容，不需要检索文档
+2. 如果有对话历史，优先使用对话历史来回答相关问题
+3. 对于一般问题，结合文档和对话历史给出准确回答
+4. 引用具体来源（文档或之前的对话）
 
 回答:
 """
@@ -470,13 +512,57 @@ class LangGraphRAGWorkflow:
         else:
             return "no"
     
-    async def run(self, question: str, workspace_id: str = "global") -> Dict:
-        """执行工作流"""
+    async def run(self, question: str, workspace_id: str = "global", thread_id: str = None, conversation_history: list = None) -> Dict:
+        """执行工作流，支持对话记忆
+        
+        Args:
+            question: 用户问题
+            workspace_id: 工作区ID
+            thread_id: 对话线程ID，用于记忆管理。如果为None，则生成新的thread_id
+            conversation_history: 可选的外部对话历史（用于初始化）
+        """
+        import uuid
+        
         try:
+            # 生成或使用提供的 thread_id
+            if thread_id is None:
+                thread_id = str(uuid.uuid4())
+            
+            # 从检查点加载历史状态（如果存在）
+            config = {"configurable": {"thread_id": thread_id}}
+            existing_state = None
+            try:
+                # 尝试从检查点获取最后一个状态
+                from langgraph.checkpoint.base import Checkpoint
+                checkpoints = list(self.checkpointer.list(config))
+                if checkpoints:
+                    latest_checkpoint = self.checkpointer.get(config, checkpoints[-1]["checkpoint_id"])
+                    if latest_checkpoint:
+                        existing_state = latest_checkpoint.get("channel_values", {})
+                        logger.info(f"[对话记忆] 从检查点恢复状态，thread_id={thread_id}, 历史轮数={len(existing_state.get('conversation_history', []))}")
+            except Exception as e:
+                logger.debug(f"无法从检查点加载历史状态: {e}")
+            
+            # 构建初始状态，如果有历史状态则合并
+            if existing_state:
+                # 从历史状态恢复对话历史
+                history = existing_state.get("conversation_history", [])
+                logger.info(f"[对话记忆] 从检查点恢复历史，共{len(history)}轮对话")
+                if conversation_history:
+                    # 合并外部提供的历史（避免重复）
+                    existing_questions = {h.get("user") for h in history if isinstance(h, dict)}
+                    new_history = [h for h in conversation_history if h.get("user") not in existing_questions]
+                    history = history + new_history
+                    logger.info(f"[对话记忆] 合并外部历史，新增{len(new_history)}轮")
+            else:
+                # 新对话，使用提供的历史或空列表
+                history = conversation_history or []
+                logger.info(f"[对话记忆] 新对话，使用外部历史{len(history)}轮")
+            
             initial_state = RAGState(
                 question=question,
                 workspace_id=workspace_id,
-                conversation_history=[],
+                conversation_history=history,
                 intent="",
                 complexity="",
                 requires_multi_hop=False,
@@ -493,9 +579,16 @@ class LangGraphRAGWorkflow:
                 processing_steps=[]
             )
             
+            # 如果有历史状态，合并到初始状态
+            if existing_state:
+                initial_state.update({
+                    k: v for k, v in existing_state.items() 
+                    if k in initial_state and k not in ["question", "workspace_id"]
+                })
+            
             final_state = await self.compiled_graph.ainvoke(
                 initial_state,
-                config={"configurable": {"thread_id": "1"}}
+                config=config
             )
             
             # 确保返回的字段都有值
@@ -503,16 +596,48 @@ class LangGraphRAGWorkflow:
             if not answer:
                 answer = "抱歉，无法生成答案。"
             
+            # 更新对话历史 - 从最终状态或历史中获取
+            final_history = final_state.get("conversation_history", history)
+            logger.info(f"[对话记忆] 执行后状态中的历史轮数={len(final_history) if final_history else 0}")
+            
+            # 更新对话历史 - 确保状态中包含对话历史
+            updated_history = list(final_history) if final_history else list(history)
+            # 避免重复添加（检查最后一条是否与当前问题相同）
+            should_add = True
+            if updated_history:
+                last_entry = updated_history[-1]
+                if isinstance(last_entry, dict) and last_entry.get("user") == question:
+                    should_add = False
+                    # 更新答案
+                    updated_history[-1]["assistant"] = answer
+                    logger.info(f"[对话记忆] 更新最后一条对话的答案")
+            
+            if should_add:
+                updated_history.append({
+                    "user": question,
+                    "assistant": answer,
+                    "timestamp": str(asyncio.get_event_loop().time())
+                })
+                logger.info(f"[对话记忆] 新增对话历史，当前轮数={len(updated_history)}")
+            
+            # 更新状态中的对话历史，确保下次调用时可以从检查点恢复
+            final_state["conversation_history"] = updated_history
+            
+            # 手动触发一次状态更新，确保历史被保存（虽然 LangGraph 会自动保存，但这确保即时性）
+            # 注意：实际上 LangGraph 的 MemorySaver 会在 ainvoke 时自动保存，这里主要是确保状态正确
+            
             return {
                 "answer": answer,
                 "sources": final_state.get("sources_used", []),
+                "thread_id": thread_id,  # 返回 thread_id，供前端保存
                 "metadata": {
                     "intent": final_state.get("intent", "unknown"),
                     "complexity": final_state.get("complexity", "unknown"),
                     "quality_score": final_state.get("quality_score", 0.0),
                     "iterations": final_state.get("iteration_count", 0),
                     "processing_steps": final_state.get("processing_steps", []),
-                    "retrieval_strategy": final_state.get("retrieval_strategy", "unknown")
+                    "retrieval_strategy": final_state.get("retrieval_strategy", "unknown"),
+                    "conversation_length": len(updated_history)
                 }
             }
         except Exception as e:

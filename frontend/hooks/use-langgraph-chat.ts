@@ -5,6 +5,7 @@ import { useState, useCallback } from 'react'
 interface LangGraphResult {
   answer: string
   sources: string[]
+  thread_id?: string
   metadata: {
     intent?: string
     complexity?: string
@@ -12,6 +13,7 @@ interface LangGraphResult {
     iterations?: number
     processing_steps?: string[]
     retrieval_strategy?: string
+    conversation_length?: number
   }
 }
 
@@ -19,6 +21,8 @@ export function useLangGraphChat() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<LangGraphResult | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [threadId, setThreadId] = useState<string | null>(null)
+  const [conversationHistory, setConversationHistory] = useState<any[]>([])
 
   const sendMessage = useCallback(async (
     question: string,
@@ -36,7 +40,9 @@ export function useLangGraphChat() {
         },
         body: JSON.stringify({
           question,
-          workspace_id: workspaceId
+          workspace_id: workspaceId,
+          thread_id: threadId,  // 传递 thread_id 以维持对话记忆
+          conversation_history: conversationHistory  // 传递对话历史
         })
       })
 
@@ -84,6 +90,24 @@ export function useLangGraphChat() {
       }
 
       setResult(data)
+      
+      // 更新 thread_id 和对话历史
+      if (data.thread_id) {
+        setThreadId(data.thread_id)
+      }
+      
+      // 更新对话历史
+      if (data.answer) {
+        setConversationHistory(prev => [
+          ...prev,
+          {
+            user: question,
+            assistant: data.answer,
+            timestamp: new Date().toISOString()
+          }
+        ])
+      }
+      
       return data
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : '请求失败'
@@ -93,19 +117,28 @@ export function useLangGraphChat() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [threadId, conversationHistory])
 
   const clearResult = useCallback(() => {
     setResult(null)
     setError(null)
   }, [])
 
+  const clearConversation = useCallback(() => {
+    setThreadId(null)
+    setConversationHistory([])
+    clearResult()
+  }, [clearResult])
+
   return { 
     sendMessage, 
     loading, 
     result, 
     error,
-    clearResult
+    clearResult,
+    clearConversation,
+    threadId,
+    conversationHistory
   }
 }
 
